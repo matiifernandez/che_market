@@ -112,4 +112,5 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.raise_error_on_money_parsing = false
+  Money.locale_backend = :i18n
 end

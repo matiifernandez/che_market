@@ -16,20 +16,10 @@ SimpleForm.setup do |config|
     b.use :hint, wrap_with: { tag: :p, class: "mt-1 text-sm text-gray-500" }
   end
 
-  # Wrapper for boolean (checkboxes)
-  config.wrappers :checkbox, class: "mb-4 flex items-center" do |b|
-    b.use :html5
-    b.use :input, class: "h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-    b.use :label, class: "ml-2 block text-sm text-gray-700"
-    b.use :full_error, wrap_with: { tag: :p, class: "mt-1 text-sm text-red-600" }
-    b.use :hint, wrap_with: { tag: :p, class: "mt-1 text-sm text-gray-500" }
-  end
-
   # Default configuration
   config.default_wrapper = :default
-  config.boolean_wrapper = :checkbox
+  config.boolean_style = :inline
   config.button_class = "px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-  config.boolean_label_class = nil
   config.generate_additional_classes_for = []
   config.browser_validations = false
   config.label_text = lambda { |label, required, explicit_label| "#{label}" }

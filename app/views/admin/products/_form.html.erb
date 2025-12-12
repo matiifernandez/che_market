@@ -1,0 +1,22 @@
+<%= simple_form_for [:admin, @product] do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :name %>
+  <%= f.input :description, as: :rich_text_area %>
+  <%= f.input :price %>
+  <%= f.input :stock %>
+  <%= f.input :category_id, collection: Category.order(:name), label_method: :name, value_method: :id, include_blank: "Sin categoria" %>
+  <%= f.input :active %>
+  <%= f.input :images, as: :file, input_html: { multiple: true } %>
+
+  <% if @product.images.attached? %>
+    <div>
+      <p>Imagenes actuales:</p>
+      <% @product.images.each do |image| %>
+        <%= image_tag image, size: "100x100" %>
+        <% end %>
+    </div>
+  <% end %>
+
+  <%= f.button :submit %>
+<% end %>

@@ -1,0 +1,18 @@
+<nav>
+  <a href="<%= root_path %>">Che Market</a>
+
+  <div>
+    <a href="<%= products_path%>">Productos</a>
+
+    <% if user_signed_in? %>
+      <span><%= current_user.email %></span>
+      <% if current_user.admin? %>
+        <a href="<%+ admin_root_path %>">Admin</a>
+      <% end %>
+      <%= button_to "Salir", destroy_user_session_path, method: :delete %>
+    <% else %>
+      <a href="<%= new_user_session_path %>">Ingresar</a>
+      <a href="<%= new_user_registration_path %>">Registrarse</a>
+    <% end %>
+  </div>
+</nav>

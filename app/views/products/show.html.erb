@@ -1,0 +1,23 @@
+<a href="<%= products_path %>">&larr; Volver a productos</a>
+
+<h1><%= @product.name %></h1>
+
+<p><strong>Precio:</strong> <%= humanized_money_with_symbol(@product.price) %></p>
+<p><strong>Stock:</strong> <%= @product.stock %> disponibles</p>
+<p><strong>Categoría:</strong> <%= @product.category&.name || "Sin categoría" %></p>
+
+<% if @product.description.present? %>
+  <div>
+    <strong>Descripción:</strong>
+    <%= @product.description %>
+  </div>
+<% end %>
+
+<% if @product.images.attached? %>
+  <div>
+    <strong>Imágenes:</strong>
+    <% @product.images.each do |image| %>
+      <%= image_tag image, size: "200x200" %>
+    <% end %>
+  </div>
+<% end %>

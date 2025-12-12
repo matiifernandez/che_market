@@ -1,0 +1,18 @@
+<h1>Productos</h1>
+
+<% if @category %>
+  <p>Categoría: <%= @category.name %></p>
+  <a href="<%= products_path%>">Ver todos</a>
+<% end %>
+
+<% if @products.any? %>
+  <% @products.each do |product| %>
+    <div>
+      <h2><a href="<%= product_path(product)%>"><%= product.name %></a></h2>
+      <p>Precio: <%= humanized_money_with_symbol(product.price) %></p>
+      <p>Categoría: <%= product.category&.name || "Sin categoría" %></p>
+    </div>
+<% end %>
+<% else %>
+  <p>No hay productos disponibles.</p>
+<% end %>

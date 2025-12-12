@@ -1,0 +1,28 @@
+<h1>Categorías</h1>
+
+<a href="<%= new_admin_category_path %>">+ Nueva categoría</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Slug</th>
+      <th>Productos</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @categories.each do |category| %>
+      <tr>
+        <td><%= category.name %></td>
+        <td><%= category.slug %></td>
+        <td><%= category.products.count %></td>
+        <td>
+          <a href="<%= admin_category_path(category) %>">Ver</a>
+          <a href="<%= edit_admin_category_path(category) %>">Editar</a>
+          <%= button_to "Eliminar", admin_category_path(category), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,8 @@
+<%= simple_form_for [:admin, @category] do |f| %>
+  <%= f.error_notification %>
+
+  <%= f.input :name %>
+  <%= f.input :slug, hint: "Es para la URL - Se genera automáticamente si lo dejás vacío" %>
+
+  <%= f.button :submit %>
+<% end %>

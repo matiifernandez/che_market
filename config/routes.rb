@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'products/index'
+  get 'products/show'
+  # get 'pages/home'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -8,4 +11,15 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Public
+  root "pages#home"
+  resources :products, only: [:index, :show]
+
+  # Admin
+  namespace :admin do
+    root "dashboard#index"
+    resources :products
+    resources :categories
+  end
 end

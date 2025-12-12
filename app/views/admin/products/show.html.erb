@@ -1,0 +1,29 @@
+<a href="<%= admin_products_path %>">&larr; Volver</a>
+
+<h1><%= @product.name %></h1>
+
+<p><strong>Precio:</strong> <%= humanized_money_with_symbol(@product.price) %></p>
+<p><strong>Stock:</strong> <%= @product.stock %></p>
+<p><strong>Categoría:</strong> <%= @product.category&.name || "Sin categoría" %></p>
+<p><strong>Activo:</strong> <%= @product.active? ? "Sí" : "No" %></p>
+
+<% if @product.description.present? %>
+  <div>
+    <strong>Descripción:</strong>
+    <%= @product.description %>
+  </div>
+<% end %>
+
+<% if @product.images.attached? %>
+  <div>
+    <strong>Imágenes:</strong>
+    <% @product.images.each do |image| %>
+      <%= image_tag image, size: "200x200" %>
+    <% end %>
+  </div>
+<% end %>
+
+<div>
+  <a href="<%= edit_admin_product_path(@product) %>">Editar</a>
+  <%= button_to "Eliminar", admin_product_path(@product), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
+</div>

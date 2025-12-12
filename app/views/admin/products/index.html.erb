@@ -1,0 +1,32 @@
+<h1>Productos</h1>
+
+<a href="<%= new_admin_product_path %>">+ Nuevo producto</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Categoría</th>
+      <th>Activo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product.name %></td>
+        <td><%= humanized_money_with_symbol(product.price) %></td>
+        <td><%= product.stock %></td>
+        <td><%= product.category&.name || "-" %></td>
+        <td><%= product.active? ? "Sí" : "No" %></td>
+        <td>
+          <a href="<%= admin_product_path(product) %>">Ver</a>
+          <a href="<%= edit_admin_product_path(product) %>">Editar</a>
+          <%= button_to "Eliminar", admin_product_path(product), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,31 @@
+<h1>Panel de Administración</h1>
+
+<div>
+  <div>
+    <h2>Productos</h2>
+    <p><%= @producs_count %></p>
+    <a href="<%= admin_products_path%>">Ver todos</a>
+  </div>
+
+  <div>
+    <h2>Categorías</h2>
+    <p><%= @categories_count %></p>
+    <a href="<%= admin_categories_path%>">Ver todas</a>
+  </div>
+</div>
+
+<h2>Productos recientes</h2>
+<% if @recent_products.any? %>
+  <ul>
+    <% @recent_products.each do |product| %>
+      <li>
+        <a href="<%= admin_product_path(product) %>"><%= product.name %></a>
+        - <%= humanized_money_with_symbol(product.price) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No hay productos todavía</p>
+<% end %>
+
+<a href="<%= new_admin_product_path %>">+ Nuevo producto</a>

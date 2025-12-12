@@ -1,23 +1,88 @@
-<a href="<%= products_path %>">&larr; Volver a productos</a>
+<!-- Breadcrumb -->
+<nav class="mb-8">
+  <ol class="flex items-center space-x-2 text-sm">
+    <li>
+      <a href="<%= products_path %>" class="text-gray-500 hover:text-gray-700">Productos</a>
+    </li>
+    <% if @product.category %>
+      <li class="text-gray-400">/</li>
+      <li>
+        <a href="<%= products_path(category: @product.category.slug) %>" class="text-gray-500 hover:text-gray-700">
+          <%= @product.category.name %>
+        </a>
+      </li>
+    <% end %>
+    <li class="text-gray-400">/</li>
+    <li class="text-gray-900 font-medium"><%= @product.name %></li>
+  </ol>
+</nav>
 
-<h1><%= @product.name %></h1>
-
-<p><strong>Precio:</strong> <%= humanized_money_with_symbol(@product.price) %></p>
-<p><strong>Stock:</strong> <%= @product.stock %> disponibles</p>
-<p><strong>Categoría:</strong> <%= @product.category&.name || "Sin categoría" %></p>
-
-<% if @product.description.present? %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+  <!-- Imágenes -->
   <div>
-    <strong>Descripción:</strong>
-    <%= @product.description %>
-  </div>
-<% end %>
+    <div class="bg-gray-200 rounded-lg overflow-hidden mb-4 h-96 flex items-center justify-center">
+      <% if @product.images.attached? %>
+        <%= image_tag @product.images.first, class: "w-full h-full object-cover", id: "main-image" %>
+      <% else %>
+        <span class="text-8xl">📦</span>
+      <% end %>
+    </div>
 
-<% if @product.images.attached? %>
-  <div>
-    <strong>Imágenes:</strong>
-    <% @product.images.each do |image| %>
-      <%= image_tag image, size: "200x200" %>
+    <% if @product.images.attached? && @product.images.count > 1 %>
+      <div class="grid grid-cols-4 gap-2">
+        <% @product.images.each do |image| %>
+          <%= image_tag image, class: "w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-75 transition" %>
+        <% end %>
+      </div>
     <% end %>
   </div>
-<% end %>
+
+  <!-- Info del producto -->
+  <div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @product.name %></h1>
+
+    <p class="text-3xl font-bold text-indigo-600 mb-6">
+      <%= humanized_money_with_symbol(@product.price) %>
+    </p>
+
+    <div class="mb-6">
+      <% if @product.stock > 0 %>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          ✓ En stock (<%= @product.stock %> disponibles)
+        </span>
+      <% else %>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+          ✗ Sin stock
+        </span>
+      <% end %>
+    </div>
+
+    <% if @product.category %>
+      <p class="text-gray-600 mb-6">
+        Categoría:
+        <a href="<%= products_path(category: @product.category.slug) %>" class="text-indigo-600 hover:text-indigo-800">
+          <%= @product.category.name %>
+        </a>
+      </p>
+    <% end %>
+
+    <% if @product.description.present? %>
+      <div class="prose prose-indigo mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
+        <div class="text-gray-600">
+          <%= @product.description %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Botón de compra (placeholder por ahora) -->
+    <div class="space-y-4">
+      <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200">
+        Agregar al carrito
+      </button>
+      <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-4 px-6 rounded-lg text-lg transition duration-200">
+        Comprar ahora
+      </button>
+    </div>
+  </div>
+</div>

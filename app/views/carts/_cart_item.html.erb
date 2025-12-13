@@ -22,11 +22,11 @@
   <!-- Cantidad -->
   <div class="flex items-center gap-2">
     <%= form_with url: update_item_cart_path(item.product), method: :patch, data: {turbo: false}, class: "flex items-center gap-2" do %>
-      <button type="submit" name="quantity" value="<%= item.quantity - 1 %>" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition">
+      <button type="submit" name="quantity" value="<%= item.quantity - 1 %>" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition cursor-pointer">
         −
       </button>
       <span class="w-8 text-center font-medium"><%= item.quantity %></span>
-      <button type="submit" name="quantity" value="<%= item.quantity + 1 %>" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition">
+      <button type="submit" name="quantity" value="<%= item.quantity + 1 %>" class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition cursor-pointer">
         +
       </button>
     <% end %>
@@ -38,7 +38,7 @@
   </div>
 
   <!-- Eliminar -->
-  <%= button_to remove_item_cart_path(item.product), method: :delete, data: {turbo: false}, class: "text-red-500 hover:text-red-700 transition" do %>
+  <%= button_to remove_item_cart_path(item.product), method: :delete, data: {turbo: false}, class: "text-red-500 hover:text-red-700 transition cursor-pointer" do %>
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
       <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
     </svg>

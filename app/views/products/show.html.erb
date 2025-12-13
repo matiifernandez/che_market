@@ -78,7 +78,7 @@
     <!-- Botones de compra -->
     <div class="space-y-4">
       <% if @product.stock > 0 %>
-        <%= button_to add_item_cart_path(@product), method: :post, data: {turbo: false} , class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200" do %>
+        <%= button_to add_item_cart_path(@product), method: :post, data: {turbo: false} , class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200 cursor-pointer" do %>
           Agregar al carrito
         <% end %>
       <% else %>

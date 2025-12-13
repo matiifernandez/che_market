@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   belongs_to :category, optional: true
   has_rich_text :description
   has_many_attached :images
+  has_many :cart_items, dependent: :destroy
 
   # Money rails
   monetize :price_cents
@@ -15,4 +16,5 @@ class Product < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :in_stock, -> { where('stock > 0') }
   scope :available, -> { active.in_stock }
+
 end

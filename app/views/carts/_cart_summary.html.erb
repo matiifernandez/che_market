@@ -1,0 +1,27 @@
+<h2 class="text-lg font-semibold text-gray-900 mb-4">Resumen</h2>
+
+<div class="space-y-3 mb-6">
+  <div class="flex justify-between text-gray-600">
+    <span>Productos (<%= cart.items_count %>)</span>
+    <span><%= humanized_money_with_symbol(cart.total) %></span>
+  </div>
+  <div class="flex justify-between text-gray-600">
+    <span>Envío</span>
+    <span class="text-sm">Calculado en checkout</span>
+  </div>
+</div>
+
+<div class="border-t pt-4 mb-6">
+  <div class="flex justify-between text-lg font-bold text-gray-900">
+    <span>Total</span>
+    <span><%= humanized_money_with_symbol(cart.total) %></span>
+  </div>
+</div>
+
+<button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+  Proceder al checkout
+</button>
+
+<a href="<%= products_path %>" class="block text-center text-indigo-600 hover:text-indigo-800 mt-4">
+  ← Seguir comprando
+</a>

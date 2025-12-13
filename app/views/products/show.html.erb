@@ -67,7 +67,7 @@
     <% end %>
 
     <% if @product.description.present? %>
-      <div class="prose prose-indigo mb-8">
+      <div class="prose prose-indigo mb-8 overflow-hidden">
         <h3 class="text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
         <div class="text-gray-600">
           <%= @product.description %>
@@ -75,14 +75,17 @@
       </div>
     <% end %>
 
-    <!-- Botón de compra (placeholder por ahora) -->
+    <!-- Botones de compra -->
     <div class="space-y-4">
-      <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200">
-        Agregar al carrito
-      </button>
-      <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-4 px-6 rounded-lg text-lg transition duration-200">
-        Comprar ahora
-      </button>
+      <% if @product.stock > 0 %>
+        <%= button_to add_item_cart_path(@product), method: :post, data: {turbo: false} , class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200" do %>
+          Agregar al carrito
+        <% end %>
+      <% else %>
+        <button disabled class="w-full bg-gray-400 text-white font-semibold py-4 px-6 rounded-lg text-lg cursor-not-allowed">
+          Sin stock
+        </button>
+      <% end %>
     </div>
   </div>
 </div>

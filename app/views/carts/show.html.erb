@@ -1,0 +1,31 @@
+<h1 class="text-3xl font-bold text-gray-900 mb-8">Tu Carrito</h1>
+
+<% if @cart.cart_items.any? %>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Lista de items -->
+    <div class="lg:col-span-2">
+      <div id="cart-items" class="bg-white rounded-lg shadow divide-y divide-gray-200">
+        <% @cart.cart_items.includes(:product).each do |item| %>
+          <%= render "cart_item", item: item %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Resumen -->
+    <div class="lg:col-span-1">
+      <div id="cart-summary" class="bg-white rounded-lg shadow p-6 sticky top-24">
+        <%= render "cart_summary", cart: @cart %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="text-center py-16">
+    <span class="text-6xl mb-4 block">🛒</span>
+    <h2 class="text-xl font-semibold text-gray-900 mb-2">Tu carrito está vacío</h2>
+    <p class="text-gray-600 mb-6">Agregá productos para comenzar tu compra</p>
+    <a href="<%= products_path %>" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200">
+      Ver productos
+    </a>
+  </div>
+<% end %>

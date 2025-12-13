@@ -118,6 +118,10 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    dotenv (3.2.0)
+    dotenv-rails (3.2.0)
+      dotenv (= 3.2.0)
+      railties (>= 6.1)
     drb (2.2.3)
     erb (6.0.0)
     erubi (1.13.1)
@@ -312,6 +316,7 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.9)
+    stripe (18.0.1)
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
@@ -365,6 +370,7 @@ DEPENDENCIES
   cloudinary
   debug
   devise
+  dotenv-rails
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
@@ -377,6 +383,7 @@ DEPENDENCIES
   simple_form
   sprockets-rails
   stimulus-rails
+  stripe
   tailwindcss-rails
   turbo-rails
   tzinfo-data

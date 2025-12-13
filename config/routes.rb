@@ -10,6 +10,12 @@ Rails.application.routes.draw do
     patch "update/:product_id", to: "carts#update_item", as: :update_item
   end
 
+  # Checkout
+  resource :checkout, only: [:create] do
+    get "success", on: :collection
+    get "cancel", on: :collection
+  end
+
   # Public products
   resources :products, only: [:index, :show]
 

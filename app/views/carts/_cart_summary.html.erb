@@ -18,9 +18,7 @@
   </div>
 </div>
 
-<button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 cursor-pointer">
-  Proceder al checkout
-</button>
+<%= button_to "Proceder al checkout", checkout_path, method: :post, data: { turbo: false }, class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 cursor-pointer" %>
 
 <a href="<%= products_path %>" class="block text-center text-indigo-600 hover:text-indigo-800 mt-4">
   ← Seguir comprando

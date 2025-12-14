@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin - Che Market</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen">
+    <div class="flex">
+      <!-- Sidebar -->
+      <%= render "layouts/admin_sidebar" %>
+
+      <!-- Main content -->
+      <div class="flex-1 ml-64">
+        <!-- Top bar -->
+        <header class="bg-white shadow h-16 flex items-center justify-between px-6">
+          <h1 class="text-xl font-semibold text-gray-800">
+            <%= yield :page_title %>
+          </h1>
+          <div class="flex items-center space-x-4">
+            <span class="text-gray-600 text-sm"><%= current_user.email %></span>
+            <a href="<%= root_path %>" class="text-indigo-600 hover:text-indigo-800 text-sm">
+              ← Volver a la tienda
+            </a>
+          </div>
+        </header>
+
+        <!-- Flash messages -->
+        <% if notice %>
+          <div class="mx-6 mt-4">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              <%= notice %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if alert %>
+          <div class="mx-6 mt-4">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <%= alert %>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Page content -->
+        <main class="p-6">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

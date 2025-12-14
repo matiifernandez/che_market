@@ -1,29 +1,76 @@
-<a href="<%= admin_products_path %>">&larr; Volver</a>
+<% content_for :page_title, @product.name %>
 
-<h1><%= @product.name %></h1>
+<div class="mb-6">
+  <a href="<%= admin_products_path %>" class="text-indigo-600 hover:text-indigo-800">
+    ← Volver a productos
+  </a>
+</div>
 
-<p><strong>Precio:</strong> <%= humanized_money_with_symbol(@product.price) %></p>
-<p><strong>Stock:</strong> <%= @product.stock %></p>
-<p><strong>Categoría:</strong> <%= @product.category&.name || "Sin categoría" %></p>
-<p><strong>Activo:</strong> <%= @product.active? ? "Sí" : "No" %></p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Imágenes y descripción -->
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Imágenes</h2>
+      <% if @product.images.attached? %>
+        <div class="grid grid-cols-4 gap-4">
+          <% @product.images.each do |image| %>
+            <%= image_tag image, class: "w-full h-24 object-cover rounded-lg" %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500">No hay imágenes</p>
+      <% end %>
+    </div>
 
-<% if @product.description.present? %>
-  <div>
-    <strong>Descripción:</strong>
-    <%= @product.description %>
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Descripción</h2>
+      <% if @product.description.present? %>
+        <div class="text-gray-600">
+          <%= @product.description %>
+        </div>
+      <% else %>
+        <p class="text-gray-500">Sin descripción</p>
+      <% end %>
+    </div>
   </div>
-<% end %>
 
-<% if @product.images.attached? %>
-  <div>
-    <strong>Imágenes:</strong>
-    <% @product.images.each do |image| %>
-      <%= image_tag image, size: "200x200" %>
-    <% end %>
+  <!-- Info y acciones -->
+  <div class="space-y-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Información</h2>
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between">
+          <span class="text-gray-600">Precio</span>
+          <span class="font-semibold"><%= humanized_money_with_symbol(@product.price) %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Stock</span>
+          <span class="font-semibold"><%= @product.stock %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Categoría</span>
+          <span class="font-semibold"><%= @product.category&.name || "-" %></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Estado</span>
+          <% if @product.active? %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              Activo
+            </span>
+          <% else %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              Inactivo
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <a href="<%= edit_admin_product_path(@product) %>" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
+        Editar producto
+      </a>
+      <%= button_to "Eliminar producto", admin_product_path(@product), method: :delete, data: { turbo_confirm: "¿Estás seguro?" }, class: "w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer" %>
+    </div>
   </div>
-<% end %>
-
-<div>
-  <a href="<%= edit_admin_product_path(@product) %>">Editar</a>
-  <%= button_to "Eliminar", admin_product_path(@product), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
 </div>

@@ -1,11 +1,60 @@
-<a href="<%= admin_categories_path %>">&larr; Volver</a>
+<% content_for :page_title, @category.name %>
 
-<h1><%= @category.name %></h1>
+<div class="mb-6">
+  <a href="<%= admin_categories_path %>" class="text-indigo-600 hover:text-indigo-800">
+    ← Volver a categorías
+  </a>
+</div>
 
-<p><strong>Slug:</strong> <%= @category.slug %></p>
-<p><strong>Productos:</strong> <%= @category.products.count %></p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Info de la categoría -->
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center mb-6">
+        <span class="text-4xl mr-4"><%= category_emoji(@category.slug) %></span>
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900"><%= @category.name %></h2>
+          <p class="text-gray-500">Slug: <%= @category.slug %></p>
+        </div>
+      </div>
 
-<div>
-  <a href="<%= edit_admin_category_path(@category) %>">Editar</a>
-  <%= button_to "Eliminar", admin_category_path(@category), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Productos en esta categoría (<%= @category.products.count %>)</h3>
+
+      <% if @category.products.any? %>
+        <div class="divide-y divide-gray-200">
+          <% @category.products.each do |product| %>
+            <div class="py-3 flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                  <% if product.images.attached? %>
+                    <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
+                  <% else %>
+                    <div class="w-full h-full flex items-center justify-center">
+                      <span class="text-lg">📦</span>
+                    </div>
+                  <% end %>
+                </div>
+                <span class="ml-3 text-gray-900"><%= product.name %></span>
+              </div>
+              <a href="<%= admin_product_path(product) %>" class="text-indigo-600 hover:text-indigo-800 text-sm">
+                Ver
+              </a>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500">No hay productos en esta categoría</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Acciones -->
+  <div>
+    <div class="bg-white rounded-lg shadow p-6 space-y-3">
+      <a href="<%= edit_admin_category_path(@category) %>" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
+        Editar categoría
+      </a>
+      <%= button_to "Eliminar categoría", admin_category_path(@category), method: :delete, data: { turbo_confirm: "¿Estás seguro? Los productos quedarán sin categoría." }, class: "w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer" %>
+    </div>
+  </div>
 </div>

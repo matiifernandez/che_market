@@ -1,5 +1,9 @@
-<a href="<%= admin_products_path %>">&larr; Volver</a>
+<% content_for :page_title, "Nuevo producto" %>
 
-<h1>Nuevo producto</h1>
+<div class="mb-6">
+  <a href="<%= admin_products_path %>" class="text-indigo-600 hover:text-indigo-800">
+    ← Volver a productos
+  </a>
+</div>
 
 <%= render "form" %>

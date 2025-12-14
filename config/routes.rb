@@ -24,5 +24,6 @@ Rails.application.routes.draw do
     root "dashboard#index"
     resources :products
     resources :categories
+    resources :orders, only: [:index, :show, :update]
   end
 end

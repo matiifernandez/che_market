@@ -1,5 +1,9 @@
-<a href="<%= admin_categories_path %>">&larr; Volver</a>
+<% content_for :page_title, "Nueva categoría" %>
 
-<h1>Nueva categoría</h1>
+<div class="mb-6">
+  <a href="<%= admin_categories_path %>" class="text-indigo-600 hover:text-indigo-800">
+    ← Volver a categorías
+  </a>
+</div>
 
 <%= render "form" %>

@@ -1,8 +1,15 @@
-<%= simple_form_for [:admin, @category] do |f| %>
-  <%= f.error_notification %>
+<div class="bg-white rounded-lg shadow p-6 max-w-lg">
+  <%= simple_form_for [:admin, @category], html: { class: "space-y-6" } do |f| %>
+    <%= f.error_notification %>
 
-  <%= f.input :name %>
-  <%= f.input :slug, hint: "Es para la URL - Se genera automáticamente si lo dejás vacío" %>
+    <%= f.input :name, label: "Nombre" %>
+    <%= f.input :slug, label: "Slug", hint: "Es el nombre que va a aparecer en la url. se genera automáticamente si lo dejás vacío" %>
 
-  <%= f.button :submit %>
-<% end %>
+    <div class="flex justify-end space-x-4">
+      <a href="<%= admin_categories_path %>" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+        Cancelar
+      </a>
+      <%= f.button :submit, class: "px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

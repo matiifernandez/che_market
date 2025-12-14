@@ -1,28 +1,43 @@
-<h1>Categorías</h1>
+<% content_for :page_title, "Categorías" %>
 
-<a href="<%= new_admin_category_path %>">+ Nueva categoría</a>
+<div class="mb-6 flex justify-end">
+  <a href="<%= new_admin_category_path %>" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 cursor-pointer">
+    + Nueva categoría
+  </a>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Slug</th>
-      <th>Productos</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @categories.each do |category| %>
+<div class="bg-white rounded-lg shadow overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
       <tr>
-        <td><%= category.name %></td>
-        <td><%= category.slug %></td>
-        <td><%= category.products.count %></td>
-        <td>
-          <a href="<%= admin_category_path(category) %>">Ver</a>
-          <a href="<%= edit_admin_category_path(category) %>">Editar</a>
-          <%= button_to "Eliminar", admin_category_path(category), method: :delete, data: { turbo_confirm: "Estás seguro?" } %>
-        </td>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Productos</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <% @categories.each do |category| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <span class="text-2xl mr-3"><%= category_emoji(category.slug) %></span>
+              <span class="text-sm font-medium text-gray-900"><%= category.name %></span>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <%= category.slug %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <%= category.products.count %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+            <a href="<%= admin_category_path(category) %>" class="text-indigo-600 hover:text-indigo-800">Ver</a>
+            <a href="<%= edit_admin_category_path(category) %>" class="text-indigo-600 hover:text-indigo-800">Editar</a>
+            <%= button_to "Eliminar", admin_category_path(category), method: :delete, data: { turbo_confirm: "¿Estás seguro?" }, class: "text-red-600 hover:text-red-800 cursor-pointer" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

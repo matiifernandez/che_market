@@ -1,31 +1,101 @@
-<h1>Panel de Administración</h1>
+<% content_for :page_title, "Dashboard" %>
 
-<div>
-  <div>
-    <h2>Productos</h2>
-    <p><%= @producs_count %></p>
-    <a href="<%= admin_products_path%>">Ver todos</a>
+<!-- Stats cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <!-- Productos -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center">
+      <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-500">Productos</p>
+        <p class="text-2xl font-semibold text-gray-900"><%= @products_count %></p>
+      </div>
+    </div>
   </div>
 
-  <div>
-    <h2>Categorías</h2>
-    <p><%= @categories_count %></p>
-    <a href="<%= admin_categories_path%>">Ver todas</a>
+  <!-- Categorías -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center">
+      <div class="p-3 rounded-full bg-green-100 text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-500">Categorías</p>
+        <p class="text-2xl font-semibold text-gray-900"><%= @categories_count %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Órdenes -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center">
+      <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-500">Órdenes</p>
+        <p class="text-2xl font-semibold text-gray-900"><%= Order.count %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ingresos -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center">
+      <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-500">Ingresos</p>
+        <p class="text-2xl font-semibold text-gray-900"><%= humanized_money_with_symbol(Money.new(Order.sum(:total_cents))) %></p>
+      </div>
+    </div>
   </div>
 </div>
 
-<h2>Productos recientes</h2>
-<% if @recent_products.any? %>
-  <ul>
+<!-- Recent products -->
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+    <h2 class="text-lg font-semibold text-gray-900">Productos recientes</h2>
+    <a href="<%= new_admin_product_path %>" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 cursor-pointer">
+      + Nuevo producto
+    </a>
+  </div>
+  <div class="divide-y divide-gray-200">
     <% @recent_products.each do |product| %>
-      <li>
-        <a href="<%= admin_product_path(product) %>"><%= product.name %></a>
-        - <%= humanized_money_with_symbol(product.price) %>
-      </li>
+      <div class="px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+            <% if product.images.attached? %>
+              <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
+            <% else %>
+              <div class="w-full h-full flex items-center justify-center">
+                <span class="text-xl">📦</span>
+              </div>
+            <% end %>
+          </div>
+          <div class="ml-4">
+            <p class="font-medium text-gray-900"><%= product.name %></p>
+            <p class="text-sm text-gray-500"><%= product.category&.name || "Sin categoría" %></p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="font-semibold text-gray-900"><%= humanized_money_with_symbol(product.price) %></span>
+          <a href="<%= edit_admin_product_path(product) %>" class="text-indigo-600 hover:text-indigo-800 text-sm">
+            Editar
+          </a>
+        </div>
+      </div>
     <% end %>
-  </ul>
-<% else %>
-  <p>No hay productos todavía</p>
-<% end %>
-
-<a href="<%= new_admin_product_path %>">+ Nuevo producto</a>
+  </div>
+</div>

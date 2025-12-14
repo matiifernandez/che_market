@@ -1,22 +1,38 @@
-<%= simple_form_for [:admin, @product] do |f| %>
-  <%= f.error_notification %>
+<div class="bg-white rounded-lg shadow p-6">
+  <%= simple_form_for [:admin, @product], html: { class: "space-y-6" } do |f| %>
+    <%= f.error_notification %>
 
-  <%= f.input :name %>
-  <%= f.input :description, as: :rich_text_area %>
-  <%= f.input :price %>
-  <%= f.input :stock %>
-  <%= f.input :category_id, collection: Category.order(:name), label_method: :name, value_method: :id, include_blank: "Sin categoria" %>
-  <%= f.input :active %>
-  <%= f.input :images, as: :file, input_html: { multiple: true } %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :name, label: "Nombre" %>
+      <%= f.input :category_id, collection: Category.order(:name), label_method: :name, value_method: :id, include_blank: "Sin categoría", label: "Categoría" %>
+    </div>
 
-  <% if @product.images.attached? %>
-    <div>
-      <p>Imagenes actuales:</p>
-      <% @product.images.each do |image| %>
-        <%= image_tag image, size: "100x100" %>
-        <% end %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <%= f.input :price, label: "Precio (USD)" %>
+      <%= f.input :stock, label: "Stock" %>
+      <%= f.input :active, as: :boolean, label: "Activo" %>
+    </div>
+
+    <%= f.input :description, as: :rich_text_area, label: "Descripción" %>
+
+    <%= f.input :images, as: :file, input_html: { multiple: true }, label: "Imágenes", hint: "Podés seleccionar múltiples imágenes" %>
+
+    <% if @product.images.attached? %>
+      <div>
+        <p class="text-sm font-medium text-gray-700 mb-2">Imágenes actuales:</p>
+        <div class="flex flex-wrap gap-2">
+          <% @product.images.each do |image| %>
+            <%= image_tag image, class: "w-20 h-20 object-cover rounded-lg" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="flex justify-end space-x-4">
+      <a href="<%= admin_products_path %>" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+        Cancelar
+      </a>
+      <%= f.button :submit, class: "px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 cursor-pointer" %>
     </div>
   <% end %>
-
-  <%= f.button :submit %>
-<% end %>
+</div>

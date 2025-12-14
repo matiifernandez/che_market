@@ -1,0 +1,38 @@
+<aside class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white">
+  <!-- Logo -->
+  <div class="h-16 flex items-center px-6 bg-gray-800">
+    <a href="<%= admin_root_path %>" class="flex items-center space-x-2">
+      <span class="text-2xl">🧉</span>
+      <span class="font-bold text-lg">Che Market</span>
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="mt-6">
+    <div class="px-4 space-y-1">
+      <%= admin_nav_link "Dashboard", admin_root_path, "dashboard" %>
+      <%= admin_nav_link "Productos", admin_products_path, "products" %>
+      <%= admin_nav_link "Categorías", admin_categories_path, "categories" %>
+      <%= admin_nav_link "Órdenes", admin_orders_path, "orders" %>
+    </div>
+  </nav>
+
+  <!-- User info at bottom -->
+  <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-800">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center">
+        <span class="text-white font-medium">
+          <%= current_user.first_name&.first&.upcase || current_user.email.first.upcase %>
+        </span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-white truncate">
+          <%= current_user.first_name || "Admin" %>
+        </p>
+        <p class="text-xs text-gray-400 truncate">
+          <%= current_user.email %>
+        </p>
+      </div>
+    </div>
+  </div>
+</aside>

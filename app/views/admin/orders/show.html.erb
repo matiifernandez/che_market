@@ -8,7 +8,7 @@
       <div class="space-y-2 text-sm">
         <p><span class="font-medium text-gray-700">Email:</span> <%= @order.email %></p>
         <p><span class="font-medium text-gray-700">Usuario:</span> <%= @order.user&.email || "Guest" %></p>
-        <p><span class="font-medium text-gray-700">Fecha:</span> <%= @order.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+        <p><span class="font-medium text-gray-700">Fecha:</span> <%= @order.created_at.strftime("%d/%m/%Y") %></p>
       </div>
     </div>
 

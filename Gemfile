@@ -56,7 +56,7 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-
+  gem 'letter_opener_web' # Email preview in development
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
@@ -77,3 +77,5 @@ gem 'money-rails'      # Pricing and currency handling
 gem 'simple_form'    # Form handling
 gem "cloudinary"      # Cloud-based image and video management
 gem 'stripe'          # Payment processing
+# gem letter_opener_web' Email preview in development was added in development do.
+# dotenv-rails  was added in development, test do.

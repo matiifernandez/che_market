@@ -39,6 +39,9 @@ class CheckoutsController < ApplicationController
           email: @session.customer_details.email
         )
 
+        # Enviar correo de confirmación
+        OrderMailer.confirmation(@order).deliver_now
+
         # Limpiar el carrito
         current_cart.cart_items.destroy_all
         session.delete(:cart_secret_id)

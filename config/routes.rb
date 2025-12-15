@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  # Email preview (development only)
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   devise_for :users
 
   root "pages#home"

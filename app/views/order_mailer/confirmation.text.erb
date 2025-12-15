@@ -1,0 +1,22 @@
+Che Market - Confirmación de tu pedido
+======================================
+
+¡Gracias por tu compra!
+
+Tu pedido ha sido confirmado y está siendo procesado.
+
+Detalles del pedido #<%= @order.id %>
+-------------------------------------
+Fecha: <%= @order.created_at.strftime("%d/%m/%Y") %>
+Email: <%= @order.email %>
+Total: <%= humanized_money_with_symbol(@order.total) %>
+
+Te enviaremos otro email cuando tu pedido sea despachado con la información de seguimiento.
+
+Si tenés alguna pregunta, no dudes en contactarnos respondiendo a este email o a nuestro instagram.
+
+¡Gracias por elegirnos!
+El equipo de Che Market
+
+--
+Che Market - Productos argentinos para el mundo

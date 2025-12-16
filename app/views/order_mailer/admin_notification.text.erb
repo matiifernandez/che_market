@@ -1,0 +1,16 @@
+NUEVA ORDEN - Che Market
+========================
+
+Orden #<%= @order.id %>
+Fecha: <%= @order.created_at.strftime("%d/%m/%Y") %>
+Cliente: <%= @order.email %>
+
+Productos:
+<% @order.line_items.includes(:product).each do |item| %>
+- <%= item.product&.name || "Producto eliminado" %>
+  Cantidad: <%= item.quantity %> × <%= humanized_money_with_symbol(item.price) %> = <%= humanized_money_with_symbol(item.subtotal) %>
+<% end %>
+
+Total: <%= humanized_money_with_symbol(@order.total) %>
+
+Ver orden: <%= admin_order_url(@order) %>

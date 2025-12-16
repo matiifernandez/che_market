@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   # Email preview (development only)
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
+  # Webhooks
+  post "/webhooks/stripe", to: "webhooks#stripe"
+
   devise_for :users
 
   root "pages#home"

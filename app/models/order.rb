@@ -1,6 +1,8 @@
 class Order < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :cart, optional: true
+  has_many :line_items, dependent: :destroy
+  has_many :products, through: :line_items
 
   enum status: { pending: 0, paid: 1, shipped: 2, delivered: 3, cancelled: 4 }
 

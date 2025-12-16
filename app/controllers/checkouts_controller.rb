@@ -24,25 +24,22 @@ class CheckoutsController < ApplicationController
 
   def success
     if params[:session_id]
-      @session = Stripe::Checkout::Session.retrieve(params[:session_id])
-
-      # Crear la orden si no existe
       @order = Order.find_by(stripe_session_id: params[:session_id])
 
+    # Si el webhook aún no procesó, esperamos un poco
       if @order.nil?
-        @order = Order.create!(
-          user: current_user,
-          cart: current_cart,
-          status: :paid,
-          total_cents: @session.amount_total,
-          stripe_session_id: @session.id,
-          email: @session.customer_details.email
-        )
+        sleep(2)
+        @order = Order.find_by(stripe_session_id: params[:session_id])
+      end
 
-        # Enviar correo de confirmación
-        OrderMailer.confirmation(@order).deliver_now
+      # Si aún no existe la orden, la creamos aca (backup)
+      if @order.nil?
+        @session = Stripe::Checkout::Session.retrieve(params[:session_id])
+        @order = create_order_from_session(@session)
+      end
 
-        # Limpiar el carrito
+      # Limpiar el carrito si hay orden
+      if @order
         current_cart.cart_items.destroy_all
         session.delete(:cart_secret_id)
       end
@@ -53,6 +50,31 @@ class CheckoutsController < ApplicationController
   end
 
   private
+
+  def create_order_from_session(stripe_session)
+    order = Order.create!(
+      user: current_user,
+      cart: current_cart,
+      status: :paid,
+      total_cents: stripe_session.amount_total,
+      stripe_session_id: stripe_session.id,
+      email: stripe_session.customer_details.email
+    )
+
+    # Guardar line items
+    current_cart.cart_items.includes(:product).each do |cart_item|
+      order.line_items.create!(
+        product: cart_item.product,
+        quantity: cart_item.quantity,
+        price_cents: cart_item.product.price_cents
+      )
+    end
+    # Enviar los emails
+    OrderMailer.confirmation(order).deliver_now
+    OrderMailer.admin_notification(order).deliver_now
+
+    order
+  end
 
   def build_line_items(cart)
     cart.cart_items.includes(:product).map do |item|

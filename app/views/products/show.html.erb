@@ -1,21 +1,30 @@
-<!-- Breadcrumb -->
-<nav class="mb-8">
-  <ol class="flex items-center space-x-2 text-sm">
-    <li>
-      <a href="<%= products_path %>" class="text-gray-500 hover:text-gray-700">Productos</a>
-    </li>
-    <% if @product.category %>
-      <li class="text-gray-400">/</li>
+<!-- Back button and Breadcrumb -->
+<div class="mb-8">
+  <a href="<%= products_path %>" class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium mb-4 transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Volver a productos
+  </a>
+
+  <nav>
+    <ol class="flex items-center space-x-2 text-sm">
       <li>
-        <a href="<%= products_path(category: @product.category.slug) %>" class="text-gray-500 hover:text-gray-700">
-          <%= @product.category.name %>
-        </a>
+        <a href="<%= products_path %>" class="text-gray-500 hover:text-gray-700">Productos</a>
       </li>
-    <% end %>
-    <li class="text-gray-400">/</li>
-    <li class="text-gray-900 font-medium"><%= @product.name %></li>
-  </ol>
-</nav>
+      <% if @product.category %>
+        <li class="text-gray-400">/</li>
+        <li>
+          <a href="<%= products_path(category: @product.category.slug) %>" class="text-gray-500 hover:text-gray-700">
+            <%= @product.category.name %>
+          </a>
+        </li>
+      <% end %>
+      <li class="text-gray-400">/</li>
+      <li class="text-gray-900 font-medium"><%= @product.name %></li>
+    </ol>
+  </nav>
+</div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
   <!-- Imágenes -->

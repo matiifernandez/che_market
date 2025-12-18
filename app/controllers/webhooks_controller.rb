@@ -47,6 +47,8 @@ class WebhooksController < ApplicationController
           quantity: cart_item.quantity,
           price_cents: cart_item.product.price_cents
         )
+        # Decrement product stock
+        cart_item.product.decrement!(:stock, cart_item.quantity)
       end
     end
     # Envia los emails.

@@ -7,6 +7,14 @@ class CheckoutsController < ApplicationController
       return
     end
 
+    # Validate stock availability before proceeding to payment
+    @cart.cart_items.includes(:product).each do |item|
+      if item.quantity > item.product.stock
+        redirect_to cart_path, alert: "No hay suficiente stock de #{item.product.name}. Disponible: #{item.product.stock}"
+        return
+      end
+    end
+
     session = Stripe::Checkout::Session.create(
       payment_method_types: ["card"],
       mode: "payment",
@@ -61,13 +69,15 @@ class CheckoutsController < ApplicationController
       email: stripe_session.customer_details.email
     )
 
-    # Guardar line items
+    # Save line items and decrement stock
     current_cart.cart_items.includes(:product).each do |cart_item|
       order.line_items.create!(
         product: cart_item.product,
         quantity: cart_item.quantity,
         price_cents: cart_item.product.price_cents
       )
+      # Decrement product stock
+      cart_item.product.decrement!(:stock, cart_item.quantity)
     end
     # Enviar los emails
     OrderMailer.confirmation(order).deliver_now

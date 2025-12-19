@@ -2,7 +2,13 @@ class ProductsController < ApplicationController
   def index
     @products = Product.available.includes(:category)
 
-    #Filter by category if category param is present
+    # Search by name
+    if params[:q].present?
+      @query = params[:q]
+      @products = @products.where("name ILIKE ?", "%#{@query}%")
+    end
+
+    # Filter by category
     if params[:category].present?
       @category = Category.find_by(slug: params[:category])
       @products = @products.where(category: @category) if @category

@@ -3,6 +3,12 @@ class Admin::ProductsController < Admin::BaseController
 
   def index
     @products = Product.includes(:category).order(created_at: :desc)
+
+    # Search by name
+    if params[:q].present?
+      @query = params[:q]
+      @products = @products.where("name ILIKE ?", "%#{@query}%")
+    end
   end
 
   def show; end

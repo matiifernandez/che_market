@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background-color: #4F46E5; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+      .content { background-color: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; }
+      .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
+      .order-details { background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
+      .total { font-size: 24px; font-weight: bold; color: #4F46E5; }
+      .info-box { background-color: #EEF2FF; border-left: 4px solid #4F46E5; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+      .timeline { margin: 20px 0; }
+      .timeline-step { display: flex; align-items: center; margin: 10px 0; }
+      .timeline-dot { width: 20px; height: 20px; border-radius: 50%; margin-right: 15px; }
+      .timeline-dot.completed { background-color: #10B981; }
+      .timeline-dot.current { background-color: #4F46E5; }
+      .timeline-dot.pending { background-color: #D1D5DB; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📦 ¡Tu pedido está en camino!</h1>
+        <p>Che Market</p>
+      </div>
+
+      <div class="content">
+        <p>¡Hola!</p>
+
+        <p>¡Excelentes noticias! Tu pedido <strong>#<%= @order.id %></strong> ha sido despachado y está en camino hacia vos.</p>
+
+        <div class="order-details">
+          <h3>Resumen del pedido</h3>
+          <p><strong>Número de pedido:</strong> #<%= @order.id %></p>
+          <p><strong>Fecha de compra:</strong> <%= @order.created_at.strftime("%d/%m/%Y") %></p>
+          <p><strong>Email:</strong> <%= @order.email %></p>
+          <p class="total">Total: <%= humanized_money_with_symbol(@order.total) %></p>
+        </div>
+
+        <div class="timeline">
+          <h3>Estado de tu pedido</h3>
+          <div class="timeline-step">
+            <div class="timeline-dot completed"></div>
+            <span>Pedido confirmado</span>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-dot completed"></div>
+            <span>Pago procesado</span>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-dot current"></div>
+            <span><strong>Enviado</strong></span>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-dot pending"></div>
+            <span>En camino</span>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-dot pending"></div>
+            <span>Entregado</span>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h4>Información importante sobre tu envío</h4>
+          <p>Los envíos internacionales suelen demorar entre 7 y 21 días hábiles dependiendo del destino y el servicio de correo local.</p>
+          <p>Te recomendamos estar atento a las notificaciones de tu correo local, ya que pueden contactarte para coordinar la entrega o informarte sobre trámites aduaneros.</p>
+        </div>
+
+        <p>Si tenés alguna pregunta sobre tu pedido, no dudes en contactarnos respondiendo a este email.</p>
+
+        <p>¡Gracias por confiar en Che Market para llevar un pedacito de Argentina a tu hogar!</p>
+
+        <p><strong>El equipo de Che Market</strong></p>
+      </div>
+
+      <div class="footer">
+        <p>Che Market - Productos argentinos para el mundo 🧉</p>
+        <p style="font-size: 12px; color: #9CA3AF;">Si no realizaste esta compra, por favor contactanos inmediatamente.</p>
+      </div>
+    </div>
+  </body>
+</html>

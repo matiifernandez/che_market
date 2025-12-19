@@ -9,7 +9,14 @@ class Admin::OrdersController < Admin::BaseController
 
   def update
     @order = Order.find(params[:id])
+    previous_status = @order.status
+
     if @order.update(order_params)
+      # Send shipped notification email when status changes to shipped
+      if @order.shipped? && previous_status != "shipped"
+        OrderMailer.shipped(@order).deliver_later
+      end
+
       redirect_to admin_order_path(@order), notice: "Pedido actualizado."
     else
       render :show

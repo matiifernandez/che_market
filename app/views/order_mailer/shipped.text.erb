@@ -1,0 +1,37 @@
+¡Tu pedido está en camino!
+==========================
+
+¡Hola!
+
+¡Excelentes noticias! Tu pedido #<%= @order.id %> ha sido despachado y está en camino hacia vos.
+
+RESUMEN DEL PEDIDO
+------------------
+Número de pedido: #<%= @order.id %>
+Fecha de compra: <%= @order.created_at.strftime("%d/%m/%Y") %>
+Email: <%= @order.email %>
+Total: <%= humanized_money_with_symbol(@order.total) %>
+
+ESTADO DE TU PEDIDO
+-------------------
+✓ Pedido confirmado
+✓ Pago procesado
+→ Enviado (actual)
+○ En camino
+○ Entregado
+
+INFORMACIÓN IMPORTANTE
+----------------------
+Los envíos internacionales suelen demorar entre 7 y 21 días hábiles dependiendo del destino y el servicio de correo local.
+
+Te recomendamos estar atento a las notificaciones de tu correo local, ya que pueden contactarte para coordinar la entrega o informarte sobre trámites aduaneros.
+
+Si tenés alguna pregunta sobre tu pedido, no dudes en contactarnos respondiendo a este email.
+
+¡Gracias por confiar en Che Market para llevar un pedacito de Argentina a tu hogar!
+
+El equipo de Che Market
+--
+Che Market - Productos argentinos para el mundo
+
+Si no realizaste esta compra, por favor contactanos inmediatamente.

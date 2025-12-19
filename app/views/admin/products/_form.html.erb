@@ -7,10 +7,16 @@
       <%= f.input :category_id, collection: Category.order(:name), label_method: :name, value_method: :id, include_blank: "Sin categoría", label: "Categoría" %>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <%= f.input :price, label: "Precio (USD)" %>
       <%= f.input :stock, label: "Stock" %>
-      <%= f.input :active, as: :boolean, label: "Activo" %>
+    </div>
+
+    <div>
+      <label class="inline-flex items-center gap-2 cursor-pointer">
+        <%= f.check_box :active, class: "h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer" %>
+        <span class="text-sm text-gray-700">Producto activo</span>
+      </label>
     </div>
 
     <%= f.input :description, as: :rich_text_area, label: "Descripción" %>

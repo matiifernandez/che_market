@@ -1,0 +1,37 @@
+<div class="min-h-[60vh] flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Reenviar confirmación</h2>
+        <p class="text-gray-500 mt-2">Te enviaremos el email de confirmación nuevamente</p>
+      </div>
+
+      <%= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+        <%= f.error_notification message: "Por favor corregí los siguientes errores:" %>
+        <%= f.full_error :confirmation_token %>
+
+        <div class="space-y-5">
+          <%= f.input :email,
+                      required: true,
+                      autofocus: true,
+                      label: "Email",
+                      placeholder: "tu@email.com",
+                      value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+                      input_html: {
+                        autocomplete: "email",
+                        class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      },
+                      label_html: { class: "block text-sm font-medium text-gray-700 mb-1" } %>
+        </div>
+
+        <div class="mt-8">
+          <%= f.button :submit, "Reenviar confirmación", class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+  </div>
+</div>

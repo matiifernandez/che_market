@@ -13,7 +13,7 @@
       <%= admin_nav_link "Dashboard", admin_root_path, "dashboard" %>
       <%= admin_nav_link "Productos", admin_products_path, "products" %>
       <%= admin_nav_link "Categorías", admin_categories_path, "categories" %>
-      <%= admin_nav_link "Órdenes", admin_orders_path, "orders" %>
+      <%= admin_nav_link "Órdenes", admin_orders_path, "orders", badge_count: Order.where(viewed_at: nil).count %>
     </div>
   </nav>
 

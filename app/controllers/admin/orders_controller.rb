@@ -5,6 +5,7 @@ class Admin::OrdersController < Admin::BaseController
 
   def show
     @order = Order.find(params[:id])
+    @order.update_column(:viewed_at, Time.current) if @order.viewed_at.nil?
   end
 
   def update

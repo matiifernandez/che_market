@@ -25,22 +25,19 @@
     </div>
   </div>
 
-  <% if @category %>
-    <p class="text-gray-600 text-center">
-      Categoría: <span class="font-medium"><%= @category.name %></span>
-      <a href="<%= products_path %>" class="text-indigo-600 hover:text-indigo-800 ml-2">← Ver todos</a>
-    </p>
-  <% end %>
 </div>
 
 <!-- Category filters -->
-<div class="mb-8 flex flex-wrap gap-2">
-  <a href="<%= products_path(q: @query) %>" class="<%= 'bg-indigo-600 text-white' unless @category %> <%= 'bg-white text-gray-700 hover:bg-gray-100' if @category %> px-4 py-2 rounded-full font-medium transition duration-200">
+<div class="mb-8 flex flex-wrap justify-center gap-2">
+  <a href="<%= products_path(q: @query) %>" class="<%= @category ? 'bg-white text-gray-700 border border-gray-200 hover:border-gray-400 hover:shadow-sm' : 'bg-indigo-600 text-white shadow-md' %> px-4 py-2 rounded-full font-medium transition-all duration-200">
     Todos
+    <span class="<%= @category ? 'text-gray-400' : 'text-indigo-200' %> text-sm ml-1">(<%= Product.available.count %>)</span>
   </a>
-  <% Category.all.each do |category| %>
-    <a href="<%= products_path(category: category.slug, q: @query) %>" class="<%= 'bg-indigo-600 text-white' if @category == category %> <%= 'bg-white text-gray-700 hover:bg-gray-100' unless @category == category %> px-4 py-2 rounded-full font-medium transition duration-200">
+  <% Category.includes(:products).each do |category| %>
+    <% product_count = category.products.available.count %>
+    <a href="<%= products_path(category: category.slug, q: @query) %>" class="<%= @category == category ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-400 hover:shadow-sm' %> px-4 py-2 rounded-full font-medium transition-all duration-200">
       <%= category.name %>
+      <span class="<%= @category == category ? 'text-indigo-200' : 'text-gray-400' %> text-sm ml-1">(<%= product_count %>)</span>
     </a>
   <% end %>
 </div>

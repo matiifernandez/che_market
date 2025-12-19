@@ -16,7 +16,14 @@
       <% @orders.each do |order| %>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            #<%= order.id %>
+            <span class="flex items-center gap-2">
+              #<%= order.id %>
+              <% if order.viewed_at.nil? %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-800 animate-pulse">
+                  Nueva
+                </span>
+              <% end %>
+            </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             <%= order.email %>

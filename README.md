@@ -8,12 +8,14 @@ E-commerce platform for Argentine products worldwide. Yerba mate, dulce de leche
 
 ## Features
 
-- **Product catalog** with categories and filters
+- **Product catalog** with categories, filters and real-time search
 - **Shopping cart** for registered users and guests
-- **Stripe Checkout** - Secure card payments
+- **Stripe Checkout** with webhook integration for secure payments
 - **International shipping** to 100+ countries
 - **Admin panel** to manage products, categories and orders
-- **Confirmation emails** sent automatically after purchase
+- **Order notifications** - Confirmation, shipped and admin alerts
+- **Email verification** for new user accounts
+- **Cloudinary** for optimized image uploads
 
 ## Tech Stack
 
@@ -23,14 +25,14 @@ E-commerce platform for Argentine products worldwide. Yerba mate, dulce de leche
 | Rails 7.1.6    | Framework      |
 | PostgreSQL     | Database       |
 | Tailwind CSS   | Styling        |
-| Stimulus       | JavaScript     |
+| Hotwire        | Turbo + Stimulus |
 | Devise         | Authentication |
 | Pundit         | Authorization  |
 | Stripe         | Payments       |
+| Cloudinary     | Image CDN      |
 | Money-rails    | Price handling |
 | Simple Form    | Forms          |
 | Action Text    | Rich text      |
-| Active Storage | Image uploads  |
 
 ## Installation
 
@@ -71,6 +73,11 @@ Create a `.env` file with:
 ```
 STRIPE_PUBLISHABLE_KEY=pk_test_xxx
 STRIPE_SECRET_KEY=sk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+CLOUDINARY_CLOUD_NAME=xxx
+CLOUDINARY_API_KEY=xxx
+CLOUDINARY_API_SECRET=xxx
 ```
 
 ## Usage
@@ -94,16 +101,17 @@ After running `rails db:seed`:
 
 ## Roadmap
 
-- [x] Product catalog
+- [x] Product catalog with real-time search
 - [x] Shopping cart
-- [x] Stripe Checkout
-- [x] Admin panel
-- [x] Confirmation emails
-- [ ] Cloudinary image uploads
-- [ ] Stripe webhooks
-- [ ] Heroku deployment
+- [x] Stripe Checkout with webhooks
+- [x] Admin panel with new order indicators
+- [x] Email notifications (confirmation, shipped, admin)
+- [x] Cloudinary image uploads
+- [x] Email verification
+- [ ] Multi-currency support
 - [ ] Shipping cost calculator
-- [ ] Shipping notifications
+- [ ] Promo codes and discounts
+- [ ] Production deployment
 
 ## Author
 
@@ -114,8 +122,3 @@ After running `rails db:seed`:
 ## License
 
 This project is licensed under the MIT License.
-
-```
-
----
-```

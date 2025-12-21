@@ -1,4 +1,4 @@
-<h1 class="text-3xl font-bold text-gray-900 mb-8">Tu Carrito</h1>
+<h1 class="text-3xl font-bold text-gray-900 mb-8"><%= t('cart.title') %></h1>
 
 <% if @cart.cart_items.any? %>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -22,10 +22,10 @@
 <% else %>
   <div class="text-center py-16">
     <span class="text-6xl mb-4 block">🛒</span>
-    <h2 class="text-xl font-semibold text-gray-900 mb-2">Tu carrito está vacío</h2>
-    <p class="text-gray-600 mb-6">Agregá productos para comenzar tu compra</p>
+    <h2 class="text-xl font-semibold text-gray-900 mb-2"><%= t('cart.empty') %></h2>
+    <p class="text-gray-600 mb-6"><%= t('cart.empty_description') %></p>
     <a href="<%= products_path %>" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200">
-      Ver productos
+      <%= t('cart.view_products') %>
     </a>
   </div>
 <% end %>

@@ -5,16 +5,16 @@
       <!-- Logo -->
       <a href="<%= root_path %>" class="flex items-center space-x-2">
         <span class="text-2xl">🧉</span>
-        <span class="font-bold text-xl text-gray-900">Che Market</span>
+        <span class="font-bold text-xl text-gray-900"><%= t('site_name') %></span>
       </a>
 
       <!-- Navigation Links -->
       <div class="flex items-center space-x-4">
         <a href="<%= products_path %>" class="text-gray-600 hover:text-gray-900">
-          Productos
+          <%= t('nav.products') %>
         </a>
 
-        <!-- Carrito -->
+        <!-- Cart -->
         <a href="<%= cart_path %>" class="relative text-gray-600 hover:text-gray-900" id="cart-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -26,22 +26,35 @@
           <% end %>
         </a>
 
+        <!-- Language Switcher -->
+        <div class="flex items-center space-x-1 text-sm">
+          <% if I18n.locale == :es %>
+            <span class="font-semibold text-gray-900">ES</span>
+            <span class="text-gray-400">|</span>
+            <a href="<%= url_for(locale: :en) %>" class="text-gray-500 hover:text-gray-900">EN</a>
+          <% else %>
+            <a href="<%= url_for(locale: :es) %>" class="text-gray-500 hover:text-gray-900">ES</a>
+            <span class="text-gray-400">|</span>
+            <span class="font-semibold text-gray-900">EN</span>
+          <% end %>
+        </div>
+
         <% if user_signed_in? %>
           <span class="text-gray-600 text-sm"><%= current_user.email %></span>
 
           <% if current_user.admin? %>
             <a href="<%= admin_root_path %>" class="text-indigo-600 hover:text-indigo-800 font-medium">
-              Admin
+              <%= t('nav.admin') %>
             </a>
           <% end %>
 
-          <%= button_to "Salir", destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+          <%= button_to t('nav.logout'), destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
         <% else %>
           <a href="<%= new_user_session_path %>" class="text-gray-600 hover:text-gray-900">
-            Ingresar
+            <%= t('nav.login') %>
           </a>
           <a href="<%= new_user_registration_path %>" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
-            Registrarse
+            <%= t('nav.register') %>
           </a>
         <% end %>
       </div>

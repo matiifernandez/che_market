@@ -9,11 +9,11 @@ class CartsController < ApplicationController
 
     if @cart.add_product(@product, 1)
       respond_to do |format|
-        format.html { redirect_to cart_path, notice: "#{@product.name} agregado al carrito" }
+        format.html { redirect_to cart_path, notice: t("flash.product_added") }
         format.turbo_stream
       end
     else
-      redirect_to product_path(@product), alert: "No se pudo agregar el producto al carrito"
+      redirect_to product_path(@product), alert: t("flash.stock_error", product: @product.name, stock: @product.stock)
     end
   end
 
@@ -23,7 +23,7 @@ class CartsController < ApplicationController
     @cart.remove_product(@product)
 
     respond_to do |format|
-      format.html { redirect_to cart_path, notice: "#{@product.name} eliminado del carrito" }
+      format.html { redirect_to cart_path, notice: t("flash.product_removed") }
       format.turbo_stream
     end
   end

@@ -40,18 +40,18 @@ class Cart < ApplicationRecord
     coupon = Coupon.find_by("UPPER(code) = ?", code.to_s.upcase.strip)
 
     if coupon.nil?
-      errors.add(:coupon, "El código ingresado no existe")
+      errors.add(:coupon, I18n.t("coupons.not_found"))
       return false
     end
 
     unless coupon.valid_for_cart?(self)
       if coupon.minimum_purchase_cents.present? && subtotal_cents < coupon.minimum_purchase_cents
         min = ActionController::Base.helpers.humanized_money_with_symbol(coupon.minimum_purchase)
-        errors.add(:coupon, "Compra mínima de #{min} requerida")
+        errors.add(:coupon, I18n.t("coupons.minimum_required", amount: min))
       elsif !coupon.active?
-        errors.add(:coupon, "Este cupón no está activo")
+        errors.add(:coupon, I18n.t("coupons.not_active"))
       else
-        errors.add(:coupon, "Este cupón no es válido")
+        errors.add(:coupon, I18n.t("coupons.invalid"))
       end
       return false
     end

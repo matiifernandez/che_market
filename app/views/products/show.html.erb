@@ -4,13 +4,13 @@
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
     </svg>
-    Volver a productos
+    <%= t('products.back_to_products') %>
   </a>
 
   <nav>
     <ol class="flex items-center space-x-2 text-sm">
       <li>
-        <a href="<%= products_path %>" class="text-gray-500 hover:text-gray-700">Productos</a>
+        <a href="<%= products_path %>" class="text-gray-500 hover:text-gray-700"><%= t('products.title') %></a>
       </li>
       <% if @product.category %>
         <li class="text-gray-400">/</li>
@@ -57,18 +57,18 @@
     <div class="mb-6">
       <% if @product.stock > 0 %>
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-          Disponible
+          <%= t('products.available') %>
         </span>
       <% else %>
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-          Sin stock
+          <%= t('products.out_of_stock') %>
         </span>
       <% end %>
     </div>
 
     <% if @product.category %>
       <p class="text-gray-600 mb-6">
-        Categoría:
+        <%= t('activerecord.attributes.product.category') %>:
         <a href="<%= products_path(category: @product.category.slug) %>" class="text-indigo-600 hover:text-indigo-800">
           <%= @product.category.name %>
         </a>
@@ -77,7 +77,7 @@
 
     <% if @product.description.present? %>
       <div class="prose prose-indigo mb-8 overflow-hidden">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2"><%= t('activerecord.attributes.product.description') %></h3>
         <div class="text-gray-600">
           <%= @product.description %>
         </div>
@@ -88,11 +88,11 @@
     <div class="space-y-4">
       <% if @product.stock > 0 %>
         <%= button_to add_item_cart_path(@product), method: :post, data: {turbo: false} , class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 px-6 rounded-lg text-lg transition duration-200 cursor-pointer" do %>
-          Agregar al carrito
+          <%= t('products.add_to_cart') %>
         <% end %>
       <% else %>
         <button disabled class="w-full bg-gray-400 text-white font-semibold py-4 px-6 rounded-lg text-lg cursor-not-allowed">
-          Sin stock
+          <%= t('products.out_of_stock') %>
         </button>
       <% end %>
     </div>

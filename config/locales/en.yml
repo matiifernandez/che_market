@@ -1,31 +1,165 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  # General
+  site_name: "Che Market"
+
+  # Navigation
+  nav:
+    products: "Products"
+    cart: "Cart"
+    login: "Login"
+    register: "Sign Up"
+    logout: "Logout"
+    admin: "Admin"
+
+  # Products
+  products:
+    title: "Products"
+    search_placeholder: "Search products..."
+    all_categories: "All"
+    results_for: "%{count} result(s) for"
+    no_products: "No products found"
+    try_another_search: "Try a different search term"
+    available: "Available"
+    out_of_stock: "Out of stock"
+    add_to_cart: "Add to cart"
+    back_to_products: "Back to products"
+
+  # Cart
+  cart:
+    title: "Your Cart"
+    empty: "Your cart is empty"
+    empty_description: "Add products to start shopping"
+    view_products: "View products"
+    summary: "Summary"
+    subtotal: "Subtotal"
+    products_count: "%{count} products"
+    discount: "Discount"
+    shipping: "Shipping"
+    shipping_calculated: "Calculated at checkout"
+    total: "Total"
+    checkout: "Proceed to checkout"
+    continue_shopping: "Continue shopping"
+    coupon_placeholder: "Coupon code"
+    apply_coupon: "Apply"
+    remove: "Remove"
+
+  # Checkout
+  checkout:
+    success_title: "Thank you for your purchase!"
+    success_message: "Your order has been processed successfully."
+    order_details: "Order details"
+    order_number: "Order number"
+    confirmation_sent: "We sent a confirmation email to %{email}"
+    cancel_title: "Payment cancelled"
+    cancel_message: "Your payment was cancelled. Don't worry, your cart is still intact."
+    back_to_cart: "Back to cart"
+
+  # Coupons
+  coupons:
+    applied: "Coupon applied"
+    removed: "Coupon removed"
+    invalid: "Invalid coupon code"
+    not_found: "Coupon code not found"
+    not_active: "This coupon is not active"
+    expired: "This coupon has expired"
+    minimum_required: "Minimum purchase of %{amount} required"
+    discount_off: "%{discount} off"
+
+  # Orders
+  orders:
+    title: "My Orders"
+    order: "Order"
+    date: "Date"
+    status: "Status"
+    total: "Total"
+    details: "View details"
+    statuses:
+      pending: "Pending"
+      paid: "Paid"
+      shipped: "Shipped"
+      delivered: "Delivered"
+      cancelled: "Cancelled"
+
+  # Flash messages
+  flash:
+    product_added: "Product added to cart"
+    product_removed: "Product removed from cart"
+    cart_updated: "Cart updated"
+    cart_empty: "Your cart is empty"
+    stock_error: "Not enough stock for %{product}. Available: %{stock}"
+    login_required: "You must log in to continue"
+
+  # Auth
+  auth:
+    login_title: "Log in"
+    login_subtitle: "Welcome back"
+    register_title: "Create account"
+    register_subtitle: "Join Che Market"
+    email: "Email"
+    email_placeholder: "your@email.com"
+    password: "Password"
+    password_placeholder: "Your password"
+    password_confirmation: "Confirm password"
+    password_confirmation_placeholder: "Repeat your password"
+    password_minimum: "Minimum %{count} characters"
+    remember_me: "Remember me"
+    login_button: "Log in"
+    register_button: "Create account"
+    error_notification: "Please correct the following errors:"
+    forgot_password: "Forgot your password?"
+    no_confirmation_email: "Didn't receive confirmation email?"
+    no_unlock_instructions: "Didn't receive unlock instructions?"
+
+  # Common
+  common:
+    save: "Save"
+    cancel: "Cancel"
+    delete: "Delete"
+    edit: "Edit"
+    view: "View"
+    back: "Back"
+    loading: "Loading..."
+    confirm_delete: "Are you sure?"
+    new: "New"
+
+  # Helpers
+  helpers:
+    submit:
+      create: "Create"
+      update: "Update"
+      submit: "Save"
+
+  # ActiveRecord
+  activerecord:
+    models:
+      product: "Product"
+      category: "Category"
+      order: "Order"
+      coupon: "Coupon"
+      user: "User"
+    attributes:
+      product:
+        name: "Name"
+        description: "Description"
+        price: "Price"
+        stock: "Stock"
+        category: "Category"
+        active: "Active"
+        images: "Images"
+      category:
+        name: "Name"
+      coupon:
+        code: "Code"
+        discount_type: "Discount type"
+        discount_percentage: "Percentage"
+        discount_amount: "Amount"
+        minimum_purchase: "Minimum purchase"
+        max_uses: "Max uses"
+        starts_at: "Valid from"
+        expires_at: "Valid until"
+        active: "Active"
+      user:
+        email: "Email"
+        password: "Password"
+        first_name: "First name"
+        last_name: "Last name"

@@ -2,8 +2,8 @@
   <div class="w-full max-w-md">
     <div class="bg-white rounded-2xl shadow-xl p-8">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900">Iniciar sesión</h2>
-        <p class="text-gray-500 mt-2">Bienvenido de nuevo</p>
+        <h2 class="text-3xl font-bold text-gray-900"><%= t('auth.login_title') %></h2>
+        <p class="text-gray-500 mt-2"><%= t('auth.login_subtitle') %></p>
       </div>
 
       <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
@@ -11,8 +11,8 @@
           <%= f.input :email,
                       required: false,
                       autofocus: true,
-                      label: "Email",
-                      placeholder: "tu@email.com",
+                      label: t('auth.email'),
+                      placeholder: t('auth.email_placeholder'),
                       input_html: {
                         autocomplete: "email",
                         class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
@@ -21,8 +21,8 @@
 
           <%= f.input :password,
                       required: false,
-                      label: "Contraseña",
-                      placeholder: "Tu contraseña",
+                      label: t('auth.password'),
+                      placeholder: t('auth.password_placeholder'),
                       input_html: {
                         autocomplete: "current-password",
                         class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
@@ -32,13 +32,13 @@
           <% if devise_mapping.rememberable? %>
             <label class="flex items-center gap-2 cursor-pointer">
               <%= f.check_box :remember_me, class: "h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer" %>
-              <span class="text-sm text-gray-600">Recordarme</span>
+              <span class="text-sm text-gray-600"><%= t('auth.remember_me') %></span>
             </label>
           <% end %>
         </div>
 
         <div class="mt-8">
-          <%= f.button :submit, "Iniciar sesión", class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200" %>
+          <%= f.button :submit, t('auth.login_button'), class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200" %>
         </div>
       <% end %>
 

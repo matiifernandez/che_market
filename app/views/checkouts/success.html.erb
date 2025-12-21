@@ -1,23 +1,23 @@
 <div class="max-w-2xl mx-auto text-center py-16">
   <div class="text-6xl mb-6">🎉</div>
 
-  <h1 class="text-3xl font-bold text-gray-900 mb-4">¡Gracias por tu compra!</h1>
+  <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= t('checkout.success_title') %></h1>
 
   <p class="text-xl text-gray-600 mb-8">
-    Tu pedido ha sido procesado exitosamente.
+    <%= t('checkout.success_message') %>
   </p>
 
   <% if @order %>
     <div class="bg-white rounded-lg shadow p-6 mb-8 text-left">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">Detalles del pedido</h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4"><%= t('checkout.order_details') %></h2>
 
       <div class="space-y-2 text-gray-600">
-        <p><span class="font-medium">Número de orden:</span> #<%= @order.id %></p>
-        <p><span class="font-medium">Email:</span> <%= @order.email %></p>
-        <p><span class="font-medium">Total:</span> <%= humanized_money_with_symbol(@order.total) %></p>
-        <p><span class="font-medium">Estado:</span>
+        <p><span class="font-medium"><%= t('checkout.order_number') %>:</span> #<%= @order.id %></p>
+        <p><span class="font-medium"><%= t('activerecord.attributes.user.email') %>:</span> <%= @order.email %></p>
+        <p><span class="font-medium"><%= t('cart.total') %>:</span> <%= humanized_money_with_symbol(@order.total) %></p>
+        <p><span class="font-medium"><%= t('orders.status') %>:</span>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            Pagado
+            <%= t('orders.statuses.paid') %>
           </span>
         </p>
       </div>
@@ -25,10 +25,10 @@
   <% end %>
 
   <p class="text-gray-600 mb-8">
-    Te enviamos un email de confirmación a <strong><%= @order&.email %></strong>
+    <%= t('checkout.confirmation_sent', email: @order&.email) %>
   </p>
 
   <a href="<%= products_path %>" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200 cursor-pointer">
-    Seguir comprando
+    <%= t('cart.continue_shopping') %>
   </a>
 </div>

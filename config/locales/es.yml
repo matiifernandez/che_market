@@ -1,0 +1,165 @@
+es:
+  # General
+  site_name: "Che Market"
+
+  # Navigation
+  nav:
+    products: "Productos"
+    cart: "Carrito"
+    login: "Ingresar"
+    register: "Registrarse"
+    logout: "Salir"
+    admin: "Admin"
+
+  # Products
+  products:
+    title: "Productos"
+    search_placeholder: "Buscar productos..."
+    all_categories: "Todos"
+    results_for: "%{count} resultado(s) para"
+    no_products: "No se encontraron productos"
+    try_another_search: "Proba con otro termino de busqueda"
+    available: "Disponible"
+    out_of_stock: "Sin stock"
+    add_to_cart: "Agregar al carrito"
+    back_to_products: "Volver a productos"
+
+  # Cart
+  cart:
+    title: "Tu Carrito"
+    empty: "Tu carrito esta vacio"
+    empty_description: "Agrega productos para comenzar tu compra"
+    view_products: "Ver productos"
+    summary: "Resumen"
+    subtotal: "Subtotal"
+    products_count: "%{count} productos"
+    discount: "Descuento"
+    shipping: "Envio"
+    shipping_calculated: "Calculado en checkout"
+    total: "Total"
+    checkout: "Proceder al checkout"
+    continue_shopping: "Seguir comprando"
+    coupon_placeholder: "Codigo de cupon"
+    apply_coupon: "Aplicar"
+    remove: "Eliminar"
+
+  # Checkout
+  checkout:
+    success_title: "Gracias por tu compra!"
+    success_message: "Tu pedido ha sido procesado exitosamente."
+    order_details: "Detalles del pedido"
+    order_number: "Numero de orden"
+    confirmation_sent: "Te enviamos un email de confirmacion a %{email}"
+    cancel_title: "Pago cancelado"
+    cancel_message: "Tu pago fue cancelado. No te preocupes, tu carrito sigue intacto."
+    back_to_cart: "Volver al carrito"
+
+  # Coupons
+  coupons:
+    applied: "Cupon aplicado"
+    removed: "Cupon removido"
+    invalid: "Codigo de cupon invalido"
+    not_found: "El codigo ingresado no existe"
+    not_active: "Este cupon no esta activo"
+    expired: "Este cupon ha expirado"
+    minimum_required: "Compra minima de %{amount} requerida"
+    discount_off: "%{discount} de descuento"
+
+  # Orders
+  orders:
+    title: "Mis Pedidos"
+    order: "Pedido"
+    date: "Fecha"
+    status: "Estado"
+    total: "Total"
+    details: "Ver detalle"
+    statuses:
+      pending: "Pendiente"
+      paid: "Pagado"
+      shipped: "Enviado"
+      delivered: "Entregado"
+      cancelled: "Cancelado"
+
+  # Flash messages
+  flash:
+    product_added: "Producto agregado al carrito"
+    product_removed: "Producto eliminado del carrito"
+    cart_updated: "Carrito actualizado"
+    cart_empty: "Tu carrito esta vacio"
+    stock_error: "No hay suficiente stock de %{product}. Disponible: %{stock}"
+    login_required: "Debes iniciar sesion para continuar"
+
+  # Auth
+  auth:
+    login_title: "Iniciar sesion"
+    login_subtitle: "Bienvenido de nuevo"
+    register_title: "Crear cuenta"
+    register_subtitle: "Unite a Che Market"
+    email: "Email"
+    email_placeholder: "tu@email.com"
+    password: "Contrasena"
+    password_placeholder: "Tu contrasena"
+    password_confirmation: "Confirmar contrasena"
+    password_confirmation_placeholder: "Repeti tu contrasena"
+    password_minimum: "Minimo %{count} caracteres"
+    remember_me: "Recordarme"
+    login_button: "Iniciar sesion"
+    register_button: "Crear cuenta"
+    error_notification: "Por favor corregi los siguientes errores:"
+    forgot_password: "Olvidaste tu contrasena?"
+    no_confirmation_email: "No recibiste el email de confirmacion?"
+    no_unlock_instructions: "No recibiste instrucciones de desbloqueo?"
+
+  # Common
+  common:
+    save: "Guardar"
+    cancel: "Cancelar"
+    delete: "Eliminar"
+    edit: "Editar"
+    view: "Ver"
+    back: "Volver"
+    loading: "Cargando..."
+    confirm_delete: "Estas seguro?"
+    new: "Nueva"
+
+  # Helpers
+  helpers:
+    submit:
+      create: "Crear"
+      update: "Actualizar"
+      submit: "Guardar"
+
+  # ActiveRecord
+  activerecord:
+    models:
+      product: "Producto"
+      category: "Categoria"
+      order: "Pedido"
+      coupon: "Cupon"
+      user: "Usuario"
+    attributes:
+      product:
+        name: "Nombre"
+        description: "Descripcion"
+        price: "Precio"
+        stock: "Stock"
+        category: "Categoria"
+        active: "Activo"
+        images: "Imagenes"
+      category:
+        name: "Nombre"
+      coupon:
+        code: "Codigo"
+        discount_type: "Tipo de descuento"
+        discount_percentage: "Porcentaje"
+        discount_amount: "Monto"
+        minimum_purchase: "Compra minima"
+        max_uses: "Maximo de usos"
+        starts_at: "Valido desde"
+        expires_at: "Valido hasta"
+        active: "Activo"
+      user:
+        email: "Email"
+        password: "Contrasena"
+        first_name: "Nombre"
+        last_name: "Apellido"

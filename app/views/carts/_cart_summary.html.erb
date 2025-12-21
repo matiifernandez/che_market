@@ -2,14 +2,41 @@
 
 <div class="space-y-3 mb-6">
   <div class="flex justify-between text-gray-600">
-    <span>Productos (<%= cart.items_count %>)</span>
-    <span><%= humanized_money_with_symbol(cart.total) %></span>
+    <span>Subtotal (<%= cart.items_count %> productos)</span>
+    <span><%= humanized_money_with_symbol(cart.subtotal) %></span>
   </div>
+
+  <% if cart.coupon.present? %>
+    <div class="flex justify-between text-green-600">
+      <span class="flex items-center gap-2">
+        Descuento (<%= cart.coupon.code %>)
+        <%= button_to remove_coupon_cart_path, method: :delete, class: "text-red-500 hover:text-red-700", data: { turbo: false } do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        <% end %>
+      </span>
+      <span>-<%= humanized_money_with_symbol(cart.discount) %></span>
+    </div>
+  <% end %>
+
   <div class="flex justify-between text-gray-600">
     <span>Envío</span>
     <span class="text-sm">Calculado en checkout</span>
   </div>
 </div>
+
+<!-- Coupon input -->
+<% unless cart.coupon.present? %>
+  <div class="mb-6">
+    <%= form_with url: apply_coupon_cart_path, method: :post, local: true, class: "flex gap-2" do |f| %>
+      <input type="text" name="coupon_code" placeholder="Código de cupón" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-gray-400 focus:ring-0 focus:outline-none">
+      <button type="submit" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-sm transition duration-200 cursor-pointer">
+        Aplicar
+      </button>
+    <% end %>
+  </div>
+<% end %>
 
 <div class="border-t pt-4 mb-6">
   <div class="flex justify-between text-lg font-bold text-gray-900">

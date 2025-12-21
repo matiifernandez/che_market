@@ -32,13 +32,23 @@ class WebhooksController < ApplicationController
     # Buscar el carrito por email o session
     cart = find_cart_for_session(session)
 
+    # Get coupon from metadata if present
+    coupon_id = session.metadata&.coupon_id
+    coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
+    discount_cents = session.total_details&.amount_discount || 0
+
     order = Order.create!(
       status: :paid,
       total_cents: session.amount_total,
+      discount_cents: discount_cents,
+      coupon: coupon,
       stripe_session_id: session.id,
       email: session.customer_details.email,
       cart: cart
     )
+
+    # Increment coupon usage if present
+    coupon&.increment_usage!
 
     if cart
       cart.cart_items.includes(:product).each do |cart_item|
@@ -50,9 +60,12 @@ class WebhooksController < ApplicationController
         # Decrement product stock
         cart_item.product.decrement!(:stock, cart_item.quantity)
       end
-    end
-    # Envia los emails.
 
+      # Clear coupon from cart
+      cart.remove_coupon
+    end
+
+    # Send emails
     OrderMailer.confirmation(order).deliver_now
     OrderMailer.admin_notification(order).deliver_now
   end

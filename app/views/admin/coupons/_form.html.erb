@@ -1,0 +1,40 @@
+<div class="bg-white rounded-lg shadow p-6">
+  <%= simple_form_for [:admin, @coupon], html: { class: "space-y-6" } do |f| %>
+    <%= f.error_notification %>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :code, label: "Código", hint: "Ej: VERANO20, BIENVENIDO10", input_html: { class: "uppercase" } %>
+
+      <%= f.input :discount_type, collection: [["Porcentaje (%)", :percentage], ["Monto fijo ($)", :fixed_amount]], label: "Tipo de descuento" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :discount_percentage, label: "Porcentaje de descuento", hint: "Ej: 10 para 10%", input_html: { min: 1, max: 100 } %>
+      <%= f.input :discount_amount, label: "Monto de descuento (USD)", hint: "Ej: 5.00 para $5 de descuento" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :minimum_purchase, label: "Compra mínima (USD)", hint: "Dejar vacío si no hay mínimo" %>
+      <%= f.input :max_uses, label: "Máximo de usos", hint: "Dejar vacío para ilimitado" %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%= f.input :starts_at, as: :string, input_html: { type: "datetime-local" }, label: "Válido desde", hint: "Dejar vacío para empezar inmediatamente" %>
+      <%= f.input :expires_at, as: :string, input_html: { type: "datetime-local" }, label: "Válido hasta", hint: "Dejar vacío si no expira" %>
+    </div>
+
+    <div>
+      <label class="inline-flex items-center gap-2 cursor-pointer">
+        <%= f.check_box :active, class: "h-4 w-4 text-indigo-600 border-gray-300 rounded cursor-pointer" %>
+        <span class="text-sm text-gray-700">Cupón activo</span>
+      </label>
+    </div>
+
+    <div class="flex justify-end space-x-4">
+      <a href="<%= admin_coupons_path %>" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+        Cancelar
+      </a>
+      <%= f.button :submit, @coupon.persisted? ? "Actualizar cupón" : "Crear cupón", class: "px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

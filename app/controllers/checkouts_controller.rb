@@ -15,8 +15,7 @@ class CheckoutsController < ApplicationController
       end
     end
 
-    session = Stripe::Checkout::Session.create(
-      payment_method_types: ["card"],
+    session_params = {
       mode: "payment",
       customer_email: current_user&.email,
       line_items: build_line_items(@cart),
@@ -24,8 +23,20 @@ class CheckoutsController < ApplicationController
         allowed_countries: shipping_countries
       },
       success_url: success_checkout_url + "?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: cancel_checkout_url
-    )
+      cancel_url: cancel_checkout_url,
+      metadata: {
+        cart_id: @cart.id,
+        coupon_id: @cart.coupon_id
+      }
+    }
+
+    # Apply discount if coupon is present
+    if @cart.coupon.present? && @cart.discount_cents > 0
+      stripe_coupon = create_stripe_coupon(@cart)
+      session_params[:discounts] = [{ coupon: stripe_coupon.id }]
+    end
+
+    session = Stripe::Checkout::Session.create(session_params)
 
     redirect_to session.url, allow_other_host: true
   end
@@ -60,14 +71,24 @@ class CheckoutsController < ApplicationController
   private
 
   def create_order_from_session(stripe_session)
+    # Get coupon from metadata if present
+    coupon_id = stripe_session.metadata&.coupon_id
+    coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
+    discount_cents = stripe_session.total_details&.amount_discount || 0
+
     order = Order.create!(
       user: current_user,
       cart: current_cart,
       status: :paid,
       total_cents: stripe_session.amount_total,
+      discount_cents: discount_cents,
+      coupon: coupon,
       stripe_session_id: stripe_session.id,
       email: stripe_session.customer_details.email
     )
+
+    # Increment coupon usage if present
+    coupon&.increment_usage!
 
     # Save line items and decrement stock
     current_cart.cart_items.includes(:product).each do |cart_item|
@@ -79,7 +100,11 @@ class CheckoutsController < ApplicationController
       # Decrement product stock
       cart_item.product.decrement!(:stock, cart_item.quantity)
     end
-    # Enviar los emails
+
+    # Clear coupon from cart
+    current_cart.remove_coupon
+
+    # Send emails
     OrderMailer.confirmation(order).deliver_now
     OrderMailer.admin_notification(order).deliver_now
 
@@ -100,6 +125,25 @@ class CheckoutsController < ApplicationController
         quantity: item.quantity
       }
     end
+  end
+
+  def create_stripe_coupon(cart)
+    coupon = cart.coupon
+
+    coupon_params = {
+      id: "#{coupon.code}_#{Time.current.to_i}",
+      name: "#{coupon.code} - #{coupon.formatted_discount}",
+      duration: "once"
+    }
+
+    if coupon.percentage?
+      coupon_params[:percent_off] = coupon.discount_percentage
+    else
+      coupon_params[:amount_off] = cart.discount_cents
+      coupon_params[:currency] = "usd"
+    end
+
+    Stripe::Coupon.create(coupon_params)
   end
 
   def shipping_countries

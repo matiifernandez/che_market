@@ -11,11 +11,14 @@
 # frozen_string_literal: true
 
 puts "Limpiando base de datos..."
+LineItem.destroy_all if defined?(LineItem)
+Order.destroy_all if defined?(Order)
 CartItem.destroy_all if defined?(CartItem)
 Cart.destroy_all if defined?(Cart)
 Product.destroy_all
 Category.destroy_all
 User.destroy_all
+Coupon.destroy_all if defined?(Coupon)
 
 puts "Creando usuario admin..."
 User.create!(
@@ -215,9 +218,39 @@ Product.create!(
   active: true
 )
 
-puts "✅ Seeds completados!"
-puts "   - #{Category.count} categorías"
+puts "Creando cupones de ejemplo..."
+
+Coupon.create!(
+  code: "BIENVENIDO10",
+  discount_type: :percentage,
+  discount_percentage: 10,
+  active: true
+)
+
+Coupon.create!(
+  code: "VERANO20",
+  discount_type: :percentage,
+  discount_percentage: 20,
+  minimum_purchase_cents: 5000,
+  active: true
+)
+
+Coupon.create!(
+  code: "ENVIOGRATIS",
+  discount_type: :fixed_amount,
+  discount_amount_cents: 1000,
+  active: true
+)
+
+puts "Seeds completados!"
+puts "   - #{Category.count} categorias"
 puts "   - #{Product.count} productos"
 puts "   - #{User.count} usuarios"
+puts "   - #{Coupon.count} cupones"
 puts ""
-puts "🧉 Admin: admin@chemarket.com / password123"
+puts "Admin: admin@chemarket.com / password123"
+puts ""
+puts "Cupones de prueba:"
+puts "   - BIENVENIDO10 (10% off)"
+puts "   - VERANO20 (20% off, min $50)"
+puts "   - ENVIOGRATIS ($10 off)"

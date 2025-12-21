@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_19_080453) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_080453) do
     t.string "secret_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "coupon_id"
+    t.index ["coupon_id"], name: "index_carts_on_coupon_id"
     t.index ["secret_id"], name: "index_carts_on_secret_id", unique: true
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
@@ -78,6 +80,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_080453) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_categories_on_slug", unique: true
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.string "code", null: false
+    t.integer "discount_type", default: 0, null: false
+    t.integer "discount_percentage", default: 0
+    t.integer "discount_amount_cents", default: 0
+    t.integer "minimum_purchase_cents"
+    t.integer "max_uses"
+    t.integer "uses_count", default: 0, null: false
+    t.datetime "starts_at"
+    t.datetime "expires_at"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_coupons_on_code", unique: true
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -101,7 +119,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_080453) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "viewed_at"
+    t.bigint "coupon_id"
+    t.integer "discount_cents", default: 0
     t.index ["cart_id"], name: "index_orders_on_cart_id"
+    t.index ["coupon_id"], name: "index_orders_on_coupon_id"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["stripe_session_id"], name: "index_orders_on_stripe_session_id", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -143,10 +164,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_080453) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "carts", "coupons"
   add_foreign_key "carts", "users"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
   add_foreign_key "orders", "carts"
+  add_foreign_key "orders", "coupons"
   add_foreign_key "orders", "users"
   add_foreign_key "products", "categories"
 end

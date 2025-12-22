@@ -11,28 +11,39 @@
   </head>
 
   <body class="bg-gray-100 min-h-screen">
-    <div class="flex">
+    <div class="flex" data-controller="admin-sidebar">
+      <!-- Overlay for mobile -->
+      <div class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden" data-admin-sidebar-target="overlay" data-action="click->admin-sidebar#close"></div>
+
       <!-- Sidebar -->
       <%= render "layouts/admin_sidebar" %>
 
       <!-- Main content -->
-      <div class="flex-1 ml-64">
+      <div class="flex-1 lg:ml-64">
         <!-- Top bar -->
-        <header class="bg-white shadow h-16 flex items-center justify-between px-6">
-          <h1 class="text-xl font-semibold text-gray-800">
-            <%= yield :page_title %>
-          </h1>
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-600 text-sm"><%= current_user.email %></span>
-            <a href="<%= root_path %>" class="text-indigo-600 hover:text-indigo-800 text-sm">
-              ← Volver a la tienda
+        <header class="bg-white shadow h-16 flex items-center justify-between px-4 lg:px-6">
+          <div class="flex items-center">
+            <!-- Mobile menu button -->
+            <button type="button" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-2" data-action="admin-sidebar#toggle">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h1 class="text-xl font-semibold text-gray-800">
+              <%= yield :page_title %>
+            </h1>
+          </div>
+          <div class="flex items-center space-x-2 lg:space-x-4">
+            <span class="text-gray-600 text-sm hidden lg:inline"><%= current_user.email %></span>
+            <a href="<%= root_path %>" class="text-indigo-600 hover:text-indigo-800 text-sm whitespace-nowrap">
+              <span class="hidden sm:inline">←</span> Tienda
             </a>
           </div>
         </header>
 
         <!-- Flash messages -->
         <% if notice %>
-          <div class="mx-6 mt-4" data-controller="alert" data-alert-dismiss-after-value="2000">
+          <div class="mx-4 lg:mx-6 mt-4" data-controller="alert" data-alert-dismiss-after-value="2000">
             <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg shadow-lg flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -50,7 +61,7 @@
         <% end %>
 
         <% if alert %>
-          <div class="mx-6 mt-4" data-controller="alert" data-alert-dismiss-after-value="4000">
+          <div class="mx-4 lg:mx-6 mt-4" data-controller="alert" data-alert-dismiss-after-value="4000">
             <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg shadow-lg flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -68,7 +79,7 @@
         <% end %>
 
         <!-- Page content -->
-        <main class="p-6">
+        <main class="p-4 lg:p-6">
           <%= yield %>
         </main>
       </div>

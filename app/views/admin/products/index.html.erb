@@ -37,23 +37,23 @@
     </p>
   <% end %>
 
-  <div class="bg-white rounded-lg shadow overflow-hidden">
+  <div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Categoría</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Stock</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+          <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <% if @products.any? %>
           <% @products.each do |product| %>
             <tr>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="w-10 h-10 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                     <% if product.images.attached? %>
@@ -69,16 +69,16 @@
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
                 <%= product.category&.name || "-" %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                 <%= humanized_money_with_symbol(product.price) %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
                 <%= product.stock %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
                 <% if product.active? %>
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     Activo
@@ -89,10 +89,10 @@
                   </span>
                 <% end %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm space-x-1 lg:space-x-2">
                 <a href="<%= admin_product_path(product) %>" class="text-indigo-600 hover:text-indigo-800" data-turbo-frame="_top">Ver</a>
-                <a href="<%= edit_admin_product_path(product) %>" class="text-indigo-600 hover:text-indigo-800" data-turbo-frame="_top">Editar</a>
-                <%= button_to "Eliminar", admin_product_path(product), method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:text-red-800 cursor-pointer" %>
+                <a href="<%= edit_admin_product_path(product) %>" class="text-indigo-600 hover:text-indigo-800 hidden sm:inline" data-turbo-frame="_top">Editar</a>
+                <%= button_to "Eliminar", admin_product_path(product), method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:text-red-800 cursor-pointer hidden sm:inline" %>
               </td>
             </tr>
           <% end %>

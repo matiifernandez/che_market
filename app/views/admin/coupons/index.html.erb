@@ -7,35 +7,35 @@
   </a>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
+<div class="bg-white rounded-lg shadow overflow-x-auto">
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descuento</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usos</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Validez</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descuento</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Usos</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Validez</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
       <% if @coupons.any? %>
         <% @coupons.each do |coupon| %>
           <tr>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
               <span class="font-mono font-semibold text-gray-900"><%= coupon.code %></span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <%= coupon.formatted_discount %>
               <% if coupon.minimum_purchase_cents.present? && coupon.minimum_purchase_cents > 0 %>
                 <span class="text-gray-500 text-xs block">Min: <%= humanized_money_with_symbol(coupon.minimum_purchase) %></span>
               <% end %>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
               <%= coupon.uses_count %><%= coupon.max_uses.present? ? " / #{coupon.max_uses}" : "" %>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
               <% if coupon.starts_at.present? || coupon.expires_at.present? %>
                 <% if coupon.starts_at.present? %>
                   <span>Desde: <%= coupon.starts_at.strftime("%d/%m/%Y") %></span><br>
@@ -47,7 +47,7 @@
                 Sin límite
               <% end %>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
               <% if coupon.active? %>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Activo
@@ -58,15 +58,15 @@
                 </span>
               <% end %>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+            <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm space-x-1 lg:space-x-2">
               <a href="<%= edit_admin_coupon_path(coupon) %>" class="text-indigo-600 hover:text-indigo-800">Editar</a>
-              <%= button_to "Eliminar", admin_coupon_path(coupon), method: :delete, data: { turbo_confirm: "¿Estás seguro?" }, class: "text-red-600 hover:text-red-800 cursor-pointer" %>
+              <%= button_to "Eliminar", admin_coupon_path(coupon), method: :delete, data: { turbo_confirm: "¿Estás seguro?" }, class: "text-red-600 hover:text-red-800 cursor-pointer hidden sm:inline" %>
             </td>
           </tr>
         <% end %>
       <% else %>
         <tr>
-          <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+          <td colspan="6" class="px-4 lg:px-6 py-12 text-center text-gray-500">
             No hay cupones creados
           </td>
         </tr>

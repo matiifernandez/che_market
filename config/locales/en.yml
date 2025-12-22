@@ -2,6 +2,25 @@ en:
   # General
   site_name: "Che Market"
 
+  # SEO
+  seo:
+    default_description: "Authentic Argentine products - yerba mate, dulce de leche, alfajores and more. International shipping available."
+    home_title: "Argentine Products Store"
+    home_description: "Discover the best Argentine products - yerba mate, dulce de leche, alfajores, and more. Fast international shipping."
+    products_title: "Products"
+    products_description: "Browse our selection of authentic Argentine products."
+    cart_title: "Shopping Cart"
+
+  # Home page
+  home:
+    hero_title_1: "Argentine Products"
+    hero_title_2: "for the World"
+    hero_subtitle: "Missing the flavors of home? Yerba mate, dulce de leche, alfajores and more. From Argentina to your door."
+    view_products: "View Products"
+    categories_title: "Categories"
+    featured_title: "Featured Products"
+    view_all: "View all products"
+
   # Navigation
   nav:
     products: "Products"

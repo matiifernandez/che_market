@@ -2,8 +2,8 @@
 
 one:
   user: one
-  secret_id: MyString
+  secret_id: cart_secret_1
 
 two:
   user: two
-  secret_id: MyString
+  secret_id: cart_secret_2

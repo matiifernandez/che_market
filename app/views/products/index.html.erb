@@ -1,3 +1,10 @@
+<% content_for :meta_tags do %>
+  <%= meta_tags(
+    title: @category ? @category.name : t('seo.products_title'),
+    description: @category ? "#{@category.name} - #{t('seo.products_description')}" : t('seo.products_description')
+  ) %>
+<% end %>
+
 <div class="mb-8">
   <h1 class="text-3xl font-bold text-gray-900 text-center mb-6"><%= t('products.title') %></h1>
 

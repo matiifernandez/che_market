@@ -1,3 +1,12 @@
+<% content_for :meta_tags do %>
+  <%= meta_tags(
+    title: @product.name,
+    description: truncate(strip_tags(@product.description.to_s), length: 160) || "#{@product.name} - #{@product.category&.name}",
+    image: @product.images.attached? ? url_for(@product.images.first) : nil,
+    type: "product"
+  ) %>
+<% end %>
+
 <!-- Back button and Breadcrumb -->
 <div class="mb-8">
   <a href="<%= products_path %>" class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium mb-4 transition-colors">

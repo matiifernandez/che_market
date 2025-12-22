@@ -2,6 +2,25 @@ es:
   # General
   site_name: "Che Market"
 
+  # SEO
+  seo:
+    default_description: "Productos argentinos autenticos - yerba mate, dulce de leche, alfajores y mas. Envios internacionales disponibles."
+    home_title: "Tienda de Productos Argentinos"
+    home_description: "Descubri los mejores productos argentinos - yerba mate, dulce de leche, alfajores y mas. Envios internacionales rapidos."
+    products_title: "Productos"
+    products_description: "Explora nuestra seleccion de productos argentinos autenticos."
+    cart_title: "Carrito de Compras"
+
+  # Home page
+  home:
+    hero_title_1: "Productos Argentinos"
+    hero_title_2: "para el Mundo"
+    hero_subtitle: "Extranas los sabores de casa? Yerba mate, dulce de leche, alfajores y mas. Directo de Argentina a tu puerta."
+    view_products: "Ver Productos"
+    categories_title: "Categorias"
+    featured_title: "Productos Destacados"
+    view_all: "Ver todos los productos"
+
   # Navigation
   nav:
     products: "Productos"

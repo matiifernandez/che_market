@@ -4,14 +4,14 @@ one:
   user: one
   cart: one
   status: 1
-  total_cents: 1
-  stripe_session_id: MyString
-  email: MyString
+  total_cents: 2500
+  stripe_session_id: cs_test_session_1
+  email: user1@example.com
 
 two:
   user: two
   cart: two
   status: 1
-  total_cents: 1
-  stripe_session_id: MyString
-  email: MyString
+  total_cents: 1850
+  stripe_session_id: cs_test_session_2
+  email: user2@example.com

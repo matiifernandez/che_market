@@ -1,20 +1,26 @@
+<% content_for :meta_tags do %>
+  <%= meta_tags(
+    title: t('seo.home_title'),
+    description: t('seo.home_description')
+  ) %>
+<% end %>
+
 <!-- Hero Section -->
 <div class="text-center py-16">
   <h1 class="text-5xl font-bold text-gray-900 mb-4">
-    Productos Argentinos <span class="text-indigo-600">para el Mundo</span> 🧉
+    <%= t('home.hero_title_1') %> <span class="text-indigo-600"><%= t('home.hero_title_2') %></span> 🧉
   </h1>
   <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-    Extrañás los sabores de casa? Yerba mate, dulce de leche, alfajores y más.
-    Directo de Argentina a tu puerta.
+    <%= t('home.hero_subtitle') %>
   </p>
   <a href="<%= products_path %>" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-4 rounded-lg text-lg transition duration-200">
-    Ver Productos
+    <%= t('home.view_products') %>
   </a>
 </div>
 
 <!-- Categorías destacadas -->
 <div class="py-12">
-  <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Categorías</h2>
+  <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center"><%= t('home.categories_title') %></h2>
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
     <% Category.all.each do |category| %>
@@ -30,7 +36,7 @@
 
 <!-- Productos destacados -->
 <div class="py-12">
-  <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Productos Destacados</h2>
+  <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center"><%= t('home.featured_title') %></h2>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <% Product.available.limit(4).each do |product| %>
@@ -53,7 +59,7 @@
 
   <div class="text-center mt-8">
     <a href="<%= products_path %>" class="text-indigo-600 hover:text-indigo-800 font-medium">
-      Ver todos los productos →
+      <%= t('home.view_all') %> →
     </a>
   </div>
 </div>

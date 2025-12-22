@@ -1,23 +1,23 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  code: MyString
-  discount_type: 1
-  discount_percentage: 1
-  minimum_purchase_cents: 1
-  max_uses: 1
-  uses_count: 1
-  starts_at: 2025-12-21 15:33:12
-  expires_at: 2025-12-21 15:33:12
-  active: false
+  code: DISCOUNT10
+  discount_type: 0
+  discount_percentage: 10
+  minimum_purchase_cents:
+  max_uses: 100
+  uses_count: 0
+  starts_at: 2025-01-01 00:00:00
+  expires_at: 2025-12-31 23:59:59
+  active: true
 
 two:
-  code: MyString
-  discount_type: 1
-  discount_percentage: 1
-  minimum_purchase_cents: 1
-  max_uses: 1
-  uses_count: 1
-  starts_at: 2025-12-21 15:33:12
-  expires_at: 2025-12-21 15:33:12
-  active: false
+  code: SAVE20
+  discount_type: 0
+  discount_percentage: 20
+  minimum_purchase_cents: 5000
+  max_uses: 50
+  uses_count: 5
+  starts_at: 2025-01-01 00:00:00
+  expires_at: 2025-12-31 23:59:59
+  active: true

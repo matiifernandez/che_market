@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Home page -->
+  <url>
+    <loc><%= root_url %></loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Products index -->
+  <url>
+    <loc><%= products_url %></loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Categories -->
+  <% @categories.each do |category| %>
+  <url>
+    <loc><%= products_url(category: category.slug) %></loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <% end %>
+
+  <!-- Individual products -->
+  <% @products.each do |product| %>
+  <url>
+    <loc><%= product_url(product) %></loc>
+    <lastmod><%= product.updated_at.strftime('%Y-%m-%d') %></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <% end %>
+</urlset>

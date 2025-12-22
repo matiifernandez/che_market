@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # Webhooks
   post "/webhooks/stripe", to: "webhooks#stripe"
 
+  # Sitemap
+  get "sitemap", to: "sitemaps#index", as: :sitemap, defaults: { format: :xml }
+
   devise_for :users
 
   root "pages#home"

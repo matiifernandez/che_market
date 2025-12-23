@@ -56,7 +56,7 @@
             </a>
           <% end %>
 
-          <%= button_to t('nav.logout'), destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+          <%= button_to t('nav.logout'), destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900 cursor-pointer" %>
         <% else %>
           <a href="<%= new_user_session_path %>" class="text-gray-600 hover:text-gray-900">
             <%= t('nav.login') %>
@@ -135,7 +135,7 @@
           </a>
         <% end %>
 
-        <%= button_to t('nav.logout'), destroy_user_session_path, method: :delete, class: "block w-full text-left text-gray-600 hover:text-gray-900" %>
+        <%= button_to t('nav.logout'), destroy_user_session_path, method: :delete, class: "block w-full text-left text-gray-600 hover:text-gray-900 cursor-pointer" %>
       <% else %>
         <a href="<%= new_user_session_path %>" class="block text-gray-600 hover:text-gray-900">
           <%= t('nav.login') %>

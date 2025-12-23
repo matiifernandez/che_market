@@ -30,7 +30,7 @@
         <span class="text-3xl font-bold text-indigo-600"><%= current_user.orders.count %></span>
       </div>
       <p class="text-sm text-gray-500 mb-4"><%= t('account.orders_total', total: humanized_money_with_symbol(Money.new(current_user.orders.sum(:total_cents), 'USD'))) %></p>
-      <%= link_to t('account.view_all_orders'), account_orders_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+      <%= link_to t('account.view_all_orders'), orders_account_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
     </div>
 
     <!-- Gift Cards -->
@@ -52,7 +52,7 @@
   <div class="bg-white rounded-xl shadow-sm overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
       <h2 class="text-lg font-semibold text-gray-900"><%= t('account.recent_orders') %></h2>
-      <%= link_to t('account.view_all'), account_orders_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+      <%= link_to t('account.view_all'), orders_account_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
     </div>
 
     <% if @recent_orders.any? %>
@@ -78,7 +78,7 @@
                 </span>
               </div>
               <div>
-                <%= link_to t('account.view_order'), account_order_path(order), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+                <%= link_to t('account.view_order'), order_account_path(order), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
               </div>
             </div>
           </div>

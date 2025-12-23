@@ -32,7 +32,7 @@
             </div>
             <div class="flex items-center gap-4">
               <span class="text-lg font-bold text-gray-900"><%= humanized_money_with_symbol(order.total) %></span>
-              <%= link_to t('account.view_details'), account_order_path(order), class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition" %>
+              <%= link_to t('account.view_details'), order_account_path(order), class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition" %>
             </div>
           </div>
 

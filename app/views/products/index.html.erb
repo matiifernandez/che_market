@@ -61,9 +61,9 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <% @products.each do |product| %>
         <a href="<%= product_path(product) %>" class="block bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition duration-200 group" data-turbo-frame="_top">
-          <div class="h-48 bg-gray-200 flex items-center justify-center overflow-hidden">
+          <div class="aspect-square bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center">
             <% if product.images.attached? %>
-              <%= image_tag product.images.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-300" %>
+              <%= image_tag product.images.first, class: "w-full h-full object-contain group-hover:scale-105 transition duration-300" %>
             <% else %>
               <span class="text-6xl">📦</span>
             <% end %>

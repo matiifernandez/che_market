@@ -347,6 +347,10 @@ es:
       cancelled_success: "Gift card cancelada exitosamente"
       cannot_resend: "No se puede reenviar el email para esta gift card"
       email_resent: "Email reenviado al destinatario"
+    reviews:
+      approved: "Review aprobada"
+      rejected: "Review rechazada"
+      deleted: "Review eliminada"
 
   gift_card_mailer:
     delivery:
@@ -421,6 +425,37 @@ es:
       rights_item_4: "Darte de baja de las comunicaciones de marketing en cualquier momento"
       changes_title: "Cambios en esta Politica"
       changes_text: "Podemos actualizar esta politica de privacidad de vez en cuando. Te notificaremos sobre cambios significativos por email o mediante un aviso en nuestro sitio web."
+
+  # Reviews
+  reviews:
+    title: "Opiniones de Clientes"
+    count:
+      one: "%{count} opinion"
+      other: "%{count} opiniones"
+    see_all: "Ver todas las opiniones"
+    based_on:
+      one: "Basado en %{count} opinion"
+      other: "Basado en %{count} opiniones"
+    write_review: "Escribir Opinion"
+    your_rating: "Tu Puntuacion"
+    review_title: "Titulo (opcional)"
+    title_placeholder: "Resume tu experiencia"
+    your_review: "Tu Opinion"
+    body_placeholder: "Comparte tus pensamientos sobre este producto..."
+    body_hint: "Minimo 10 caracteres"
+    submit: "Enviar Opinion"
+    no_reviews: "Sin opiniones todavia"
+    be_first: "Se el primero en opinar sobre este producto!"
+    login_to_review: "Inicia sesion para escribir una opinion"
+    already_reviewed: "Ya dejaste una opinion sobre este producto"
+    verified_purchase: "Compra Verificada"
+    helpful: "Util"
+    helpful_count:
+      one: "%{count} persona encontro esto util"
+      other: "%{count} personas encontraron esto util"
+    created: "Gracias! Tu opinion fue enviada y esta pendiente de aprobacion."
+    already_marked_helpful: "Ya marcaste esta opinion como util"
+    marked_helpful: "Gracias por tu feedback!"
 
   # Contact
   contact:

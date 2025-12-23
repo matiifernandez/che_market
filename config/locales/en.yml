@@ -347,6 +347,10 @@ en:
       cancelled_success: "Gift card has been cancelled"
       cannot_resend: "Cannot resend email for this gift card"
       email_resent: "Email has been resent to the recipient"
+    reviews:
+      approved: "Review has been approved"
+      rejected: "Review has been rejected"
+      deleted: "Review has been deleted"
 
   gift_card_mailer:
     delivery:
@@ -421,6 +425,37 @@ en:
       rights_item_4: "Opt-out of marketing communications at any time"
       changes_title: "Changes to This Policy"
       changes_text: "We may update this privacy policy from time to time. We will notify you of significant changes by email or through a notice on our website."
+
+  # Reviews
+  reviews:
+    title: "Customer Reviews"
+    count:
+      one: "%{count} review"
+      other: "%{count} reviews"
+    see_all: "See all reviews"
+    based_on:
+      one: "Based on %{count} review"
+      other: "Based on %{count} reviews"
+    write_review: "Write a Review"
+    your_rating: "Your Rating"
+    review_title: "Title (optional)"
+    title_placeholder: "Summarize your experience"
+    your_review: "Your Review"
+    body_placeholder: "Share your thoughts about this product..."
+    body_hint: "Minimum 10 characters"
+    submit: "Submit Review"
+    no_reviews: "No reviews yet"
+    be_first: "Be the first to review this product!"
+    login_to_review: "Log in to write a review"
+    already_reviewed: "You have already reviewed this product"
+    verified_purchase: "Verified Purchase"
+    helpful: "Helpful"
+    helpful_count:
+      one: "%{count} person found this helpful"
+      other: "%{count} people found this helpful"
+    created: "Thank you! Your review has been submitted and is pending approval."
+    already_marked_helpful: "You already marked this review as helpful"
+    marked_helpful: "Thanks for your feedback!"
 
   # Contact
   contact:

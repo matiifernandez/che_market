@@ -16,6 +16,7 @@
       <%= admin_nav_link "Órdenes", admin_orders_path, "orders", badge_count: Order.where(viewed_at: nil).count %>
       <%= admin_nav_link "Cupones", admin_coupons_path, "coupons" %>
       <%= admin_nav_link "Gift Cards", admin_gift_cards_path, "gift_cards" %>
+      <%= admin_nav_link "Reviews", admin_reviews_path, "reviews", badge_count: Review.pending.count %>
     </div>
   </nav>
 

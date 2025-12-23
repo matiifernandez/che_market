@@ -52,7 +52,11 @@ Rails.application.routes.draw do
   end
 
   # Public products
-  resources :products, only: [:index, :show]
+  resources :products, only: [:index, :show] do
+    resources :reviews, only: [:create] do
+      post :helpful, on: :member
+    end
+  end
 
   # Admin
   namespace :admin do
@@ -65,6 +69,12 @@ Rails.application.routes.draw do
       member do
         post :cancel
         post :resend_email
+      end
+    end
+    resources :reviews, only: [:index, :show, :destroy] do
+      member do
+        post :approve
+        post :reject
       end
     end
   end

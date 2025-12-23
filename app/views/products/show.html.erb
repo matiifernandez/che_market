@@ -57,7 +57,23 @@
 
   <!-- Info del producto -->
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @product.name %></h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @product.name %></h1>
+
+    <% if @product.reviews_count > 0 %>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="flex items-center">
+          <% 5.times do |i| %>
+            <svg class="w-5 h-5 <%= i < @product.average_rating.round ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+          <% end %>
+        </div>
+        <span class="text-gray-600 text-sm">
+          <%= @product.average_rating %> (<%= t('reviews.count', count: @product.reviews_count) %>)
+        </span>
+        <a href="#reviews" class="text-indigo-600 hover:text-indigo-800 text-sm"><%= t('reviews.see_all') %></a>
+      </div>
+    <% end %>
 
     <p class="text-3xl font-bold text-indigo-600 mb-6">
       <%= humanized_money_with_symbol(@product.price) %>
@@ -103,6 +119,171 @@
         <button disabled class="w-full bg-gray-400 text-white font-semibold py-4 px-6 rounded-lg text-lg cursor-not-allowed">
           <%= t('products.out_of_stock') %>
         </button>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews Section -->
+<div id="reviews" class="mt-16">
+  <h2 class="text-2xl font-bold text-gray-900 mb-8"><%= t('reviews.title') %></h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Rating Summary -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <div class="text-center mb-6">
+          <div class="text-5xl font-bold text-gray-900 mb-2">
+            <%= @product.average_rating > 0 ? @product.average_rating : '-' %>
+          </div>
+          <div class="flex justify-center mb-2">
+            <% 5.times do |i| %>
+              <svg class="w-6 h-6 <%= i < @product.average_rating.round ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            <% end %>
+          </div>
+          <p class="text-gray-500 text-sm"><%= t('reviews.based_on', count: @product.reviews_count) %></p>
+        </div>
+
+        <!-- Rating Distribution -->
+        <div class="space-y-2">
+          <% distribution = @product.rating_distribution %>
+          <% total = @product.reviews_count %>
+          <% (5).downto(1) do |rating| %>
+            <% count = distribution[rating] || 0 %>
+            <% percentage = total > 0 ? (count.to_f / total * 100).round : 0 %>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 w-8"><%= rating %></span>
+              <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div class="h-full bg-yellow-400 rounded-full" style="width: <%= percentage %>%"></div>
+              </div>
+              <span class="text-sm text-gray-500 w-8"><%= count %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Write Review Button/Form -->
+      <div class="mt-6">
+        <% if user_signed_in? %>
+          <% existing_review = @product.reviews.find_by(user: current_user) %>
+          <% if existing_review %>
+            <div class="bg-indigo-50 rounded-xl p-4 text-center">
+              <p class="text-indigo-800 text-sm"><%= t('reviews.already_reviewed') %></p>
+            </div>
+          <% else %>
+            <button type="button"
+                    onclick="document.getElementById('review-form').classList.toggle('hidden')"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer">
+              <%= t('reviews.write_review') %>
+            </button>
+
+            <div id="review-form" class="hidden mt-4 bg-white rounded-xl shadow-sm p-6">
+              <%= form_with model: Review.new, url: product_reviews_path(@product), local: true, class: "space-y-4" do |f| %>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"><%= t('reviews.your_rating') %> <span class="text-red-500">*</span></label>
+                  <div class="flex gap-1" data-controller="rating">
+                    <% 5.times do |i| %>
+                      <label class="cursor-pointer">
+                        <%= f.radio_button :rating, i + 1, class: "sr-only", data: { rating_target: "input" } %>
+                        <svg class="w-8 h-8 text-gray-300 hover:text-yellow-400 transition" data-rating-target="star" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                      </label>
+                    <% end %>
+                  </div>
+                </div>
+
+                <div>
+                  <%= f.label :title, t('reviews.review_title'), class: "block text-sm font-medium text-gray-700 mb-1" %>
+                  <%= f.text_field :title, placeholder: t('reviews.title_placeholder'), class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" %>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1"><%= t('reviews.your_review') %> <span class="text-red-500">*</span></label>
+                  <%= f.text_area :body, placeholder: t('reviews.body_placeholder'), rows: 4, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition resize-none" %>
+                  <p class="text-sm text-gray-500 mt-1"><%= t('reviews.body_hint') %></p>
+                </div>
+
+                <%= f.submit t('reviews.submit'), class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer" %>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <p class="text-gray-600 text-sm mb-2"><%= t('reviews.login_to_review') %></p>
+            <%= link_to t('nav.login'), new_user_session_path, class: "text-indigo-600 hover:text-indigo-800 font-medium" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Reviews List -->
+    <div class="lg:col-span-2">
+      <% if @product.visible_reviews.any? %>
+        <div class="space-y-6">
+          <% @product.visible_reviews.each do |review| %>
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <span class="text-sm font-bold text-indigo-600">
+                      <%= review.user.first_name&.first&.upcase || review.user.email.first.upcase %>
+                    </span>
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-900">
+                      <%= review.user.full_name || review.user.email.split('@').first %>
+                      <% if review.verified_purchase %>
+                        <span class="inline-flex items-center ml-2 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                          <%= t('reviews.verified_purchase') %>
+                        </span>
+                      <% end %>
+                    </p>
+                    <p class="text-gray-500 text-sm"><%= review.created_at.strftime("%d/%m/%Y") %></p>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <% 5.times do |i| %>
+                    <svg class="w-5 h-5 <%= i < review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  <% end %>
+                </div>
+              </div>
+
+              <% if review.title.present? %>
+                <h4 class="font-semibold text-gray-900 mb-2"><%= review.title %></h4>
+              <% end %>
+
+              <p class="text-gray-600 leading-relaxed"><%= review.body %></p>
+
+              <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <%= button_to helpful_product_review_path(@product, review), method: :post, class: "flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition text-sm" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+                    </svg>
+                    <%= t('reviews.helpful') %>
+                  <% end %>
+                  <% if review.helpful_count > 0 %>
+                    <span class="text-gray-400 text-sm"><%= t('reviews.helpful_count', count: review.helpful_count) %></span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-white rounded-xl shadow-sm p-12 text-center">
+          <div class="text-5xl mb-4">⭐</div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2"><%= t('reviews.no_reviews') %></h3>
+          <p class="text-gray-500"><%= t('reviews.be_first') %></p>
+        </div>
       <% end %>
     </div>
   </div>

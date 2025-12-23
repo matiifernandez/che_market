@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_23_034619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,7 +69,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "coupon_id"
+    t.bigint "gift_card_id"
+    t.integer "gift_card_amount_cents", default: 0
     t.index ["coupon_id"], name: "index_carts_on_coupon_id"
+    t.index ["gift_card_id"], name: "index_carts_on_gift_card_id"
     t.index ["secret_id"], name: "index_carts_on_secret_id", unique: true
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
@@ -98,6 +101,44 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
     t.index ["code"], name: "index_coupons_on_code", unique: true
   end
 
+  create_table "gift_card_transactions", force: :cascade do |t|
+    t.bigint "gift_card_id", null: false
+    t.bigint "order_id"
+    t.integer "amount_cents", null: false
+    t.integer "balance_before_cents", null: false
+    t.integer "balance_after_cents", null: false
+    t.integer "transaction_type", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gift_card_id"], name: "index_gift_card_transactions_on_gift_card_id"
+    t.index ["order_id"], name: "index_gift_card_transactions_on_order_id"
+  end
+
+  create_table "gift_cards", force: :cascade do |t|
+    t.string "code", null: false
+    t.integer "initial_amount_cents", null: false
+    t.integer "balance_cents", null: false
+    t.bigint "purchaser_id"
+    t.string "purchaser_email", null: false
+    t.string "recipient_email", null: false
+    t.string "recipient_name"
+    t.text "message"
+    t.integer "status", default: 0, null: false
+    t.datetime "purchased_at"
+    t.datetime "delivered_at"
+    t.datetime "expires_at"
+    t.datetime "first_used_at"
+    t.string "stripe_session_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_gift_cards_on_code", unique: true
+    t.index ["purchaser_email"], name: "index_gift_cards_on_purchaser_email"
+    t.index ["purchaser_id"], name: "index_gift_cards_on_purchaser_id"
+    t.index ["recipient_email"], name: "index_gift_cards_on_recipient_email"
+    t.index ["status"], name: "index_gift_cards_on_status"
+  end
+
   create_table "line_items", force: :cascade do |t|
     t.bigint "order_id", null: false
     t.bigint "product_id", null: false
@@ -121,8 +162,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
     t.datetime "viewed_at"
     t.bigint "coupon_id"
     t.integer "discount_cents", default: 0
+    t.bigint "gift_card_id"
+    t.integer "gift_card_amount_cents", default: 0
     t.index ["cart_id"], name: "index_orders_on_cart_id"
     t.index ["coupon_id"], name: "index_orders_on_coupon_id"
+    t.index ["gift_card_id"], name: "index_orders_on_gift_card_id"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["stripe_session_id"], name: "index_orders_on_stripe_session_id", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -165,11 +209,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_21_063335) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "coupons"
+  add_foreign_key "carts", "gift_cards"
   add_foreign_key "carts", "users"
+  add_foreign_key "gift_card_transactions", "gift_cards"
+  add_foreign_key "gift_card_transactions", "orders"
+  add_foreign_key "gift_cards", "users", column: "purchaser_id"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
   add_foreign_key "orders", "carts"
   add_foreign_key "orders", "coupons"
+  add_foreign_key "orders", "gift_cards"
   add_foreign_key "orders", "users"
   add_foreign_key "products", "categories"
 end

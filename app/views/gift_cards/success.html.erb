@@ -1,0 +1,35 @@
+<div class="max-w-lg mx-auto text-center">
+  <div class="mb-8">
+    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= t('gift_cards.success_title') %></h1>
+    <% if @gift_card %>
+      <p class="text-lg text-gray-600">
+        <%= t('gift_cards.success_message', email: @gift_card.recipient_email) %>
+      </p>
+    <% end %>
+  </div>
+
+  <% if @gift_card %>
+    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-8 text-white mb-8">
+      <p class="text-indigo-100 mb-2"><%= t('gift_cards.gift_card') %></p>
+      <div class="text-4xl font-bold mb-4"><%= @gift_card.formatted_initial_amount %></div>
+      <div class="bg-white/20 rounded-lg px-6 py-3 inline-block">
+        <span class="font-mono text-xl tracking-wider"><%= @gift_card.code %></span>
+      </div>
+      <p class="text-indigo-100 mt-4 text-sm">
+        <%= t('gift_cards.sent_to', email: @gift_card.recipient_email) %>
+      </p>
+    </div>
+  <% end %>
+
+  <div class="space-y-4">
+    <%= link_to t('gift_cards.buy_another'), gift_cards_path,
+        class: "block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200" %>
+    <%= link_to t('gift_cards.continue_shopping'), products_path,
+        class: "block w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg transition duration-200" %>
+  </div>
+</div>

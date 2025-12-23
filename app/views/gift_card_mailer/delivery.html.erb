@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f3f4f6;
+        margin: 0;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .greeting {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .greeting h1 {
+        color: #1f2937;
+        font-size: 24px;
+        margin: 0 0 10px 0;
+      }
+      .greeting p {
+        color: #6b7280;
+        margin: 0;
+      }
+
+      /* Gift Card Design */
+      .gift-card {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #9333EA 100%);
+        border-radius: 20px;
+        padding: 40px 30px;
+        color: white;
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.4);
+        overflow: hidden;
+      }
+      .gift-card-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+      .gift-card-content {
+        position: relative;
+        z-index: 1;
+      }
+      .gift-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+      }
+      .brand-logo {
+        font-size: 32px;
+        margin-right: 10px;
+      }
+      .brand-name {
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .gift-label {
+        background-color: rgba(255,255,255,0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .amount-section {
+        text-align: center;
+        margin: 30px 0;
+      }
+      .amount-label {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .amount {
+        font-size: 56px;
+        font-weight: bold;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      }
+      .code-section {
+        background-color: rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+      }
+      .code-label {
+        font-size: 11px;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .code {
+        font-family: 'Courier New', monospace;
+        font-size: 22px;
+        font-weight: bold;
+        letter-spacing: 3px;
+      }
+      .gift-card-footer {
+        margin-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        opacity: 0.8;
+      }
+
+      /* From section */
+      .from-section {
+        text-align: center;
+        margin: 30px 0;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .from-label {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .from-name {
+        color: #1f2937;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Message */
+      .message-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .message-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      .message-text {
+        font-style: italic;
+        color: #4b5563;
+        font-size: 16px;
+        line-height: 1.8;
+      }
+
+      /* Instructions */
+      .instructions {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .instructions h3 {
+        margin: 0 0 20px 0;
+        color: #1f2937;
+        font-size: 16px;
+      }
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+      .step:last-child {
+        margin-bottom: 0;
+      }
+      .step-number {
+        background: linear-gradient(135deg, #4F46E5, #7C3AED);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+      .step-text {
+        color: #4b5563;
+        padding-top: 4px;
+      }
+
+      /* CTA Button */
+      .cta-section {
+        text-align: center;
+        margin: 30px 0;
+      }
+      .cta {
+        display: inline-block;
+        background: linear-gradient(135deg, #4F46E5, #7C3AED);
+        color: white;
+        padding: 16px 40px;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 16px;
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 13px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .footer p {
+        margin: 5px 0;
+      }
+      .expiry {
+        color: #ef4444;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="greeting">
+        <h1><%= t('gift_card_mailer.delivery.you_received') %></h1>
+        <p><%= t('gift_card_mailer.delivery.from', sender: @gift_card.purchaser_name_or_email) %></p>
+      </div>
+
+      <!-- Gift Card -->
+      <div class="gift-card">
+        <div class="gift-card-pattern"></div>
+        <div class="gift-card-content">
+          <div class="gift-card-header">
+            <div class="brand">
+              <span class="brand-logo">🧉</span>
+              <span class="brand-name">Che Market</span>
+            </div>
+            <span class="gift-label">Gift Card</span>
+          </div>
+
+          <div class="amount-section">
+            <div class="amount-label">Balance</div>
+            <div class="amount"><%= @gift_card.formatted_initial_amount %></div>
+          </div>
+
+          <div class="code-section">
+            <div class="code-label">Tu codigo</div>
+            <div class="code"><%= @gift_card.code %></div>
+          </div>
+
+          <div class="gift-card-footer">
+            <span>chemarket.com</span>
+            <span>♦ ♦ ♦ ♦</span>
+          </div>
+        </div>
+      </div>
+
+      <% if @gift_card.message.present? %>
+        <div class="message-section">
+          <div class="message-icon">💌</div>
+          <div class="message-text">"<%= @gift_card.message %>"</div>
+        </div>
+      <% end %>
+
+      <div class="instructions">
+        <h3><%= t('gift_card_mailer.delivery.how_to_use') %></h3>
+        <div class="step">
+          <span class="step-number">1</span>
+          <span class="step-text"><%= t('gift_card_mailer.delivery.step_1') %></span>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <span class="step-text"><%= t('gift_card_mailer.delivery.step_2') %></span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="step-text"><%= t('gift_card_mailer.delivery.step_3') %></span>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <a href="<%= products_url %>" class="cta"><%= t('gift_card_mailer.delivery.shop_now') %> →</a>
+      </div>
+
+      <div class="footer">
+        <p><strong>Che Market</strong> - <%= t('gift_card_mailer.delivery.tagline') %></p>
+        <% if @gift_card.expires_at.present? %>
+          <p class="expiry"><%= t('gift_card_mailer.delivery.expires', date: @gift_card.expires_at.strftime("%d/%m/%Y")) %></p>
+        <% end %>
+      </div>
+    </div>
+  </body>
+</html>

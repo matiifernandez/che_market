@@ -10,6 +10,12 @@ Rails.application.routes.draw do
 
   devise_for :users
 
+  # Account
+  resource :account, only: [:show, :edit, :update], controller: 'account' do
+    get :orders
+    get 'orders/:id', action: :order, as: :order
+  end
+
   root "pages#home"
 
   # Cart
@@ -19,6 +25,17 @@ Rails.application.routes.draw do
     patch "update/:product_id", to: "carts#update_item", as: :update_item
     post "coupon", to: "coupons#apply", as: :apply_coupon
     delete "coupon", to: "coupons#remove", as: :remove_coupon
+    post "gift_card", to: "gift_card_applications#create", as: :apply_gift_card
+    delete "gift_card", to: "gift_card_applications#destroy", as: :remove_gift_card
+  end
+
+  # Gift Cards
+  resources :gift_cards, only: [:index, :new, :create] do
+    collection do
+      get :success
+      get :check_balance
+      post :balance
+    end
   end
 
   # Checkout
@@ -37,5 +54,11 @@ Rails.application.routes.draw do
     resources :categories
     resources :orders, only: [:index, :show, :update]
     resources :coupons
+    resources :gift_cards, only: [:index, :show] do
+      member do
+        post :cancel
+        post :resend_email
+      end
+    end
   end
 end

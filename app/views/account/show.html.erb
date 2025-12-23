@@ -1,0 +1,95 @@
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900"><%= t('account.title') %></h1>
+    <p class="text-gray-600 mt-2"><%= t('account.welcome', name: current_user.first_name.presence || current_user.email.split('@').first) %></p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Profile Card -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center mb-4">
+        <div class="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center">
+          <span class="text-2xl font-bold text-indigo-600">
+            <%= current_user.first_name&.first&.upcase || current_user.email.first.upcase %>
+          </span>
+        </div>
+        <div class="ml-4">
+          <h3 class="font-semibold text-gray-900">
+            <%= current_user.first_name.present? ? "#{current_user.first_name} #{current_user.last_name}" : current_user.email.split('@').first %>
+          </h3>
+          <p class="text-sm text-gray-500"><%= current_user.email %></p>
+        </div>
+      </div>
+      <%= link_to t('account.edit_profile'), edit_account_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+    </div>
+
+    <!-- Orders Stats -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-gray-900"><%= t('account.my_orders') %></h3>
+        <span class="text-3xl font-bold text-indigo-600"><%= current_user.orders.count %></span>
+      </div>
+      <p class="text-sm text-gray-500 mb-4"><%= t('account.orders_total', total: humanized_money_with_symbol(Money.new(current_user.orders.sum(:total_cents), 'USD'))) %></p>
+      <%= link_to t('account.view_all_orders'), account_orders_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+    </div>
+
+    <!-- Gift Cards -->
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-gray-900"><%= t('account.gift_cards') %></h3>
+        <span class="text-2xl">🎁</span>
+      </div>
+      <p class="text-sm text-gray-500 mb-4"><%= t('account.gift_cards_desc') %></p>
+      <div class="flex gap-2">
+        <%= link_to t('account.buy_gift_card'), gift_cards_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+        <span class="text-gray-300">|</span>
+        <%= link_to t('account.check_balance'), check_balance_gift_cards_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-900"><%= t('account.recent_orders') %></h2>
+      <%= link_to t('account.view_all'), account_orders_path, class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+    </div>
+
+    <% if @recent_orders.any? %>
+      <div class="divide-y divide-gray-200">
+        <% @recent_orders.each do |order| %>
+          <div class="px-6 py-4 hover:bg-gray-50">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-gray-900">#<%= order.id %></p>
+                <p class="text-sm text-gray-500"><%= order.created_at.strftime("%d/%m/%Y") %></p>
+              </div>
+              <div class="text-right">
+                <p class="font-semibold text-gray-900"><%= humanized_money_with_symbol(order.total) %></p>
+                <% status_colors = {
+                  'pending' => 'bg-yellow-100 text-yellow-800',
+                  'paid' => 'bg-blue-100 text-blue-800',
+                  'shipped' => 'bg-purple-100 text-purple-800',
+                  'delivered' => 'bg-green-100 text-green-800',
+                  'cancelled' => 'bg-red-100 text-red-800'
+                } %>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <%= status_colors[order.status] %>">
+                  <%= t("orders.statuses.#{order.status}") %>
+                </span>
+              </div>
+              <div>
+                <%= link_to t('account.view_order'), account_order_path(order), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="px-6 py-12 text-center">
+        <div class="text-4xl mb-4">🛍️</div>
+        <p class="text-gray-500 mb-4"><%= t('account.no_orders') %></p>
+        <%= link_to t('account.start_shopping'), products_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition" %>
+      </div>
+    <% end %>
+  </div>
+</div>

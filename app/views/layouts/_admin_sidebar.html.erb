@@ -15,6 +15,7 @@
       <%= admin_nav_link "Categorías", admin_categories_path, "categories" %>
       <%= admin_nav_link "Órdenes", admin_orders_path, "orders", badge_count: Order.where(viewed_at: nil).count %>
       <%= admin_nav_link "Cupones", admin_coupons_path, "coupons" %>
+      <%= admin_nav_link "Gift Cards", admin_gift_cards_path, "gift_cards" %>
     </div>
   </nav>
 

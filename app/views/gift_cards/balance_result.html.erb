@@ -1,0 +1,46 @@
+<div class="max-w-md mx-auto">
+  <div class="text-center mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2"><%= t('gift_cards.balance_title') %></h1>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 text-white text-center">
+      <p class="text-indigo-100 text-sm mb-1"><%= t('gift_cards.current_balance') %></p>
+      <div class="text-4xl font-bold"><%= @gift_card.formatted_balance %></div>
+    </div>
+
+    <div class="p-6 space-y-3">
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500"><%= t('gift_cards.code_label') %></span>
+        <span class="font-mono font-semibold"><%= @gift_card.code %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500"><%= t('gift_cards.initial_amount') %></span>
+        <span><%= @gift_card.formatted_initial_amount %></span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500"><%= t('gift_cards.status') %></span>
+        <span class="<%= @gift_card.active? ? 'text-green-600' : 'text-gray-500' %>">
+          <%= t("gift_cards.statuses.#{@gift_card.status}") %>
+        </span>
+      </div>
+      <% if @gift_card.expires_at.present? %>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-500"><%= t('gift_cards.expires') %></span>
+          <span class="<%= @gift_card.expired? ? 'text-red-600' : '' %>">
+            <%= @gift_card.expires_at.strftime("%d/%m/%Y") %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <% if @gift_card.valid_for_use? %>
+      <%= link_to t('gift_cards.use_now'), products_path,
+          class: "block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 text-center" %>
+    <% end %>
+    <%= link_to t('gift_cards.check_another'), check_balance_gift_cards_path,
+        class: "block w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg transition duration-200 text-center" %>
+  </div>
+</div>

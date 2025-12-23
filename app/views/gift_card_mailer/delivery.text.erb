@@ -1,0 +1,31 @@
+<%= t('gift_card_mailer.delivery.you_received') %>
+
+===============================
+GIFT CARD - <%= @gift_card.formatted_initial_amount %>
+===============================
+
+<%= t('gift_card_mailer.delivery.code_label') %>: <%= @gift_card.code %>
+
+<%= t('gift_card_mailer.delivery.from', sender: @gift_card.purchaser_name_or_email) %>
+
+<% if @gift_card.message.present? %>
+---
+<%= t('gift_card_mailer.delivery.message_label') %>:
+"<%= @gift_card.message %>"
+---
+<% end %>
+
+<%= t('gift_card_mailer.delivery.how_to_use') %>:
+1. <%= t('gift_card_mailer.delivery.step_1') %>
+2. <%= t('gift_card_mailer.delivery.step_2') %>
+3. <%= t('gift_card_mailer.delivery.step_3') %>
+
+<%= t('gift_card_mailer.delivery.shop_now') %>: <%= products_url %>
+
+<% if @gift_card.expires_at.present? %>
+<%= t('gift_card_mailer.delivery.expires', date: @gift_card.expires_at.strftime("%d/%m/%Y")) %>
+<% end %>
+
+--
+Che Market
+<%= t('gift_card_mailer.delivery.tagline') %>

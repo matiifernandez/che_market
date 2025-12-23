@@ -20,6 +20,21 @@
     </div>
   <% end %>
 
+  <% if cart.gift_card.present? %>
+    <div class="flex justify-between text-purple-600">
+      <span class="flex items-center gap-2">
+        <%= t('cart.gift_card_credit') %>
+        <span class="text-xs text-gray-500">(<%= cart.gift_card.code.last(8) %>)</span>
+        <%= button_to remove_gift_card_cart_path, method: :delete, class: "text-red-500 hover:text-red-700", data: { turbo: false } do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        <% end %>
+      </span>
+      <span>-<%= humanized_money_with_symbol(cart.gift_card_credit) %></span>
+    </div>
+  <% end %>
+
   <div class="flex justify-between text-gray-600">
     <span><%= t('cart.shipping') %></span>
     <span class="text-sm"><%= t('cart.shipping_calculated') %></span>
@@ -28,11 +43,23 @@
 
 <!-- Coupon input -->
 <% unless cart.coupon.present? %>
-  <div class="mb-6">
+  <div class="mb-4">
     <%= form_with url: apply_coupon_cart_path, method: :post, local: true, class: "flex gap-2" do |f| %>
       <input type="text" name="coupon_code" placeholder="<%= t('cart.coupon_placeholder') %>" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-gray-400 focus:ring-0 focus:outline-none">
       <button type="submit" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-sm transition duration-200 cursor-pointer">
-        <%= t('cart.apply_coupon') %>
+        <%= t('cart.apply') %>
+      </button>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Gift Card input -->
+<% unless cart.gift_card.present? %>
+  <div class="mb-6">
+    <%= form_with url: apply_gift_card_cart_path, method: :post, local: true, class: "flex gap-2" do |f| %>
+      <input type="text" name="gift_card_code" placeholder="<%= t('cart.gift_card_placeholder') %>" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-purple-400 focus:ring-0 focus:outline-none uppercase">
+      <button type="submit" class="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium rounded-lg text-sm transition duration-200 cursor-pointer">
+        <%= t('cart.apply') %>
       </button>
     <% end %>
   </div>

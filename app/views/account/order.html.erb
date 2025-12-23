@@ -1,0 +1,160 @@
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <%= link_to account_orders_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <%= t('account.back_to_orders') %>
+    <% end %>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= t('account.order_number', number: @order.id) %></h1>
+        <p class="text-gray-500 mt-1"><%= @order.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+      </div>
+      <% status_colors = {
+        'pending' => 'bg-yellow-100 text-yellow-800',
+        'paid' => 'bg-blue-100 text-blue-800',
+        'shipped' => 'bg-purple-100 text-purple-800',
+        'delivered' => 'bg-green-100 text-green-800',
+        'cancelled' => 'bg-red-100 text-red-800'
+      } %>
+      <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full <%= status_colors[@order.status] %>">
+        <%= t("orders.statuses.#{@order.status}") %>
+      </span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Order Items -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900"><%= t('account.order_items') %></h2>
+        </div>
+        <div class="divide-y divide-gray-200">
+          <% @order.line_items.includes(:product).each do |item| %>
+            <div class="px-6 py-4 flex items-center gap-4">
+              <% if item.product&.images&.attached? %>
+                <%= image_tag item.product.images.first, class: "w-20 h-20 object-cover rounded-lg" %>
+              <% else %>
+                <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span class="text-gray-400 text-2xl">📦</span>
+                </div>
+              <% end %>
+              <div class="flex-1">
+                <% if item.product %>
+                  <%= link_to item.product.name, product_path(item.product), class: "font-medium text-gray-900 hover:text-indigo-600" %>
+                <% else %>
+                  <span class="font-medium text-gray-500"><%= t('account.product_deleted') %></span>
+                <% end %>
+                <p class="text-sm text-gray-500"><%= t('account.quantity', count: item.quantity) %> x <%= humanized_money_with_symbol(item.price) %></p>
+              </div>
+              <div class="text-right">
+                <p class="font-semibold text-gray-900"><%= humanized_money_with_symbol(item.subtotal) %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4"><%= t('account.order_summary') %></h2>
+
+        <div class="space-y-3">
+          <div class="flex justify-between text-gray-600">
+            <span><%= t('cart.subtotal') %></span>
+            <span><%= humanized_money_with_symbol(Money.new(@order.line_items.sum { |i| i.price_cents * i.quantity }, 'USD')) %></span>
+          </div>
+
+          <% if @order.discount_cents > 0 %>
+            <div class="flex justify-between text-green-600">
+              <span><%= t('cart.discount') %></span>
+              <span>-<%= humanized_money_with_symbol(@order.discount) %></span>
+            </div>
+          <% end %>
+
+          <% if @order.gift_card_amount_cents.to_i > 0 %>
+            <div class="flex justify-between text-purple-600">
+              <span><%= t('cart.gift_card_credit') %></span>
+              <span>-<%= humanized_money_with_symbol(Money.new(@order.gift_card_amount_cents, 'USD')) %></span>
+            </div>
+          <% end %>
+
+          <div class="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
+            <span><%= t('cart.total') %></span>
+            <span><%= humanized_money_with_symbol(@order.total) %></span>
+          </div>
+        </div>
+      </div>
+
+      <% if @order.coupon.present? %>
+        <div class="bg-green-50 rounded-xl p-4">
+          <div class="flex items-center gap-2">
+            <span class="text-green-600">🏷️</span>
+            <div>
+              <p class="font-medium text-green-800"><%= t('account.coupon_used') %></p>
+              <p class="text-sm text-green-600"><%= @order.coupon.code %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @order.gift_card.present? %>
+        <div class="bg-purple-50 rounded-xl p-4">
+          <div class="flex items-center gap-2">
+            <span class="text-purple-600">🎁</span>
+            <div>
+              <p class="font-medium text-purple-800"><%= t('account.gift_card_used') %></p>
+              <p class="text-sm text-purple-600 font-mono"><%= @order.gift_card.code.last(8) %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Order Timeline -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4"><%= t('account.order_status') %></h2>
+
+        <div class="space-y-4">
+          <% statuses = ['pending', 'paid', 'shipped', 'delivered'] %>
+          <% current_index = statuses.index(@order.status) || (@order.cancelled? ? -1 : 0) %>
+
+          <% if @order.cancelled? %>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </div>
+              <span class="font-medium text-red-600"><%= t('orders.statuses.cancelled') %></span>
+            </div>
+          <% else %>
+            <% statuses.each_with_index do |status, index| %>
+              <div class="flex items-center gap-3">
+                <% if index <= current_index %>
+                  <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <span class="font-medium text-gray-900"><%= t("orders.statuses.#{status}") %></span>
+                <% else %>
+                  <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                  </div>
+                  <span class="text-gray-400"><%= t("orders.statuses.#{status}") %></span>
+                <% end %>
+              </div>
+              <% if index < statuses.length - 1 %>
+                <div class="ml-4 w-0.5 h-4 <%= index < current_index ? 'bg-green-500' : 'bg-gray-200' %>"></div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

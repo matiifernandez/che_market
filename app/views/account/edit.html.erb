@@ -1,0 +1,76 @@
+<div class="max-w-lg mx-auto">
+  <div class="mb-8">
+    <%= link_to account_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <%= t('account.back_to_account') %>
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900"><%= t('account.edit_profile') %></h1>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <%= form_with model: current_user, url: account_path, method: :patch, local: true, class: "space-y-6" do |f| %>
+
+      <% if current_user.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div class="flex items-center mb-2">
+            <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-red-700 font-medium"><%= t('common.please_fix_errors') %></span>
+          </div>
+          <ul class="list-disc list-inside text-red-600 text-sm">
+            <% current_user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :first_name, t('account.first_name'), class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :first_name,
+              class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition",
+              placeholder: t('account.first_name_placeholder') %>
+        </div>
+
+        <div>
+          <%= f.label :last_name, t('account.last_name'), class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :last_name,
+              class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition",
+              placeholder: t('account.last_name_placeholder') %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :email, t('account.email'), class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.email_field :email,
+            class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" %>
+        <p class="text-sm text-gray-500 mt-1"><%= t('account.email_change_note') %></p>
+      </div>
+
+      <div class="border-t pt-6">
+        <div class="flex justify-between items-center">
+          <%= link_to t('common.cancel'), account_path, class: "text-gray-600 hover:text-gray-800" %>
+          <%= f.submit t('account.save_changes'), class: "px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition cursor-pointer" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Change Password Section -->
+  <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4"><%= t('account.change_password') %></h2>
+    <p class="text-gray-600 text-sm mb-4"><%= t('account.change_password_desc') %></p>
+    <%= link_to t('account.change_password_link'), edit_user_registration_path, class: "text-indigo-600 hover:text-indigo-800 font-medium" %>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="bg-red-50 border border-red-200 rounded-xl p-6 mt-6">
+    <h2 class="text-lg font-semibold text-red-800 mb-2"><%= t('account.danger_zone') %></h2>
+    <p class="text-red-600 text-sm mb-4"><%= t('account.delete_account_warning') %></p>
+    <%= button_to t('account.delete_account'), user_registration_path, method: :delete, data: { turbo_confirm: t('account.delete_confirm') }, class: "px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition cursor-pointer" %>
+  </div>
+</div>

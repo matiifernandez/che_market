@@ -2,6 +2,7 @@ class Order < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :cart, optional: true
   belongs_to :coupon, optional: true
+  belongs_to :gift_card, optional: true
   has_many :line_items, dependent: :destroy
   has_many :products, through: :line_items
 
@@ -9,6 +10,7 @@ class Order < ApplicationRecord
 
   monetize :total_cents
   monetize :discount_cents, allow_nil: true
+  monetize :gift_card_amount_cents, allow_nil: true
 
   validates :email, presence: true
   validates :total_cents, presence: true

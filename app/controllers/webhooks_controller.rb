@@ -18,7 +18,13 @@ class WebhooksController < ApplicationController
 
     case event.type
     when "checkout.session.completed"
-      handle_checkout_completed(event.data.object)
+      session_data = event.data.object
+
+      if session_data.metadata&.type == "gift_card"
+        handle_gift_card_purchase(session_data)
+      else
+        handle_checkout_completed(session_data)
+      end
     end
 
     render json: { received: true }, status: 200
@@ -77,7 +83,23 @@ class WebhooksController < ApplicationController
       return user.cart if user&.cart
     end
 
-    #Si no se encuentra por email, buscar por carritos recientes con items.
+    # Si no se encuentra por email, buscar por carritos recientes con items.
     Cart.joins(:cart_items).order(updated_at: :desc).first
+  end
+
+  def handle_gift_card_purchase(session)
+    gift_card = GiftCard.find_by(id: session.metadata&.gift_card_id)
+    return unless gift_card
+    return if gift_card.active? # Ya procesada
+
+    # Activar la gift card
+    gift_card.activate!
+
+    # Enviar email al destinatario
+    GiftCardMailer.delivery(gift_card).deliver_now
+    gift_card.mark_as_delivered!
+
+    # Notificar al admin
+    GiftCardMailer.admin_notification(gift_card).deliver_now
   end
 end

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+      .content { background-color: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; }
+      .details { background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
+      .amount { font-size: 32px; font-weight: bold; color: #4F46E5; text-align: center; margin: 15px 0; }
+      .code { font-family: monospace; font-size: 18px; background-color: #f3f4f6; padding: 10px 20px; border-radius: 8px; text-align: center; letter-spacing: 2px; }
+      .info-row { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+      .info-row:last-child { border-bottom: none; }
+      .label { color: #6b7280; font-size: 14px; }
+      .value { font-weight: 500; }
+      .message-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+      .button { display: inline-block; background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin-top: 15px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎁 Nueva Gift Card Vendida!</h1>
+      </div>
+
+      <div class="content">
+        <div class="amount"><%= @gift_card.formatted_initial_amount %></div>
+        <div class="code"><%= @gift_card.code %></div>
+
+        <div class="details">
+          <div class="info-row">
+            <span class="label">Comprador:</span><br>
+            <span class="value"><%= @gift_card.purchaser_email %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Destinatario:</span><br>
+            <span class="value"><%= @gift_card.recipient_name.presence || @gift_card.recipient_email %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email destinatario:</span><br>
+            <span class="value"><%= @gift_card.recipient_email %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Fecha:</span><br>
+            <span class="value"><%= @gift_card.purchased_at&.strftime("%d/%m/%Y %H:%M") %></span>
+          </div>
+        </div>
+
+        <% if @gift_card.message.present? %>
+          <div class="message-box">
+            <strong>Mensaje incluido:</strong><br>
+            "<%= @gift_card.message %>"
+          </div>
+        <% end %>
+
+        <div style="text-align: center;">
+          <a href="<%= admin_gift_card_url(@gift_card) %>" class="button">Ver en panel de admin</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

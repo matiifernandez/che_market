@@ -1,0 +1,110 @@
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 mb-4 sm:mb-0"><%= t('admin.gift_cards.title') %></h1>
+</div>
+
+<!-- Filters -->
+<div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+  <%= form_with url: admin_gift_cards_path, method: :get, local: true, class: "flex flex-col sm:flex-row gap-4" do %>
+    <div class="flex-1">
+      <input type="text" name="search" value="<%= params[:search] %>"
+             placeholder="<%= t('admin.gift_cards.search_placeholder') %>"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+    <div class="sm:w-48">
+      <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+        <option value=""><%= t('admin.gift_cards.all_statuses') %></option>
+        <% GiftCard.statuses.keys.each do |status| %>
+          <option value="<%= status %>" <%= 'selected' if params[:status] == status %>><%= t("gift_cards.statuses.#{status}") %></option>
+        <% end %>
+      </select>
+    </div>
+    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer">
+      <%= t('admin.gift_cards.filter') %>
+    </button>
+  <% end %>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white rounded-lg shadow-sm p-4">
+    <p class="text-sm text-gray-500"><%= t('admin.gift_cards.stats.total') %></p>
+    <p class="text-2xl font-bold text-gray-900"><%= GiftCard.count %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow-sm p-4">
+    <p class="text-sm text-gray-500"><%= t('admin.gift_cards.stats.active') %></p>
+    <p class="text-2xl font-bold text-green-600"><%= GiftCard.active.count %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow-sm p-4">
+    <p class="text-sm text-gray-500"><%= t('admin.gift_cards.stats.total_sold') %></p>
+    <p class="text-2xl font-bold text-indigo-600"><%= humanized_money_with_symbol(Money.new(GiftCard.where.not(status: :pending).sum(:initial_amount_cents), 'USD')) %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow-sm p-4">
+    <p class="text-sm text-gray-500"><%= t('admin.gift_cards.stats.outstanding') %></p>
+    <p class="text-2xl font-bold text-purple-600"><%= humanized_money_with_symbol(Money.new(GiftCard.active.sum(:balance_cents), 'USD')) %></p>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-lg shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"><%= t('admin.gift_cards.code') %></th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell"><%= t('admin.gift_cards.recipient') %></th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"><%= t('admin.gift_cards.amount') %></th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell"><%= t('admin.gift_cards.balance') %></th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"><%= t('admin.gift_cards.status') %></th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell"><%= t('admin.gift_cards.purchased_at') %></th>
+          <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"><%= t('admin.gift_cards.actions') %></th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @gift_cards.each do |gift_card| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-4 whitespace-nowrap">
+              <span class="font-mono text-sm font-medium text-gray-900"><%= gift_card.code %></span>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
+              <div class="text-sm text-gray-900"><%= gift_card.recipient_name || '-' %></div>
+              <div class="text-sm text-gray-500"><%= gift_card.recipient_email %></div>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+              <%= gift_card.formatted_initial_amount %>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm hidden md:table-cell">
+              <span class="<%= gift_card.balance_cents > 0 ? 'text-green-600 font-medium' : 'text-gray-500' %>">
+                <%= gift_card.formatted_balance %>
+              </span>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap">
+              <% status_colors = {
+                'pending' => 'bg-yellow-100 text-yellow-800',
+                'active' => 'bg-green-100 text-green-800',
+                'depleted' => 'bg-gray-100 text-gray-800',
+                'expired' => 'bg-red-100 text-red-800',
+                'cancelled' => 'bg-red-100 text-red-800'
+              } %>
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <%= status_colors[gift_card.status] %>">
+                <%= t("gift_cards.statuses.#{gift_card.status}") %>
+              </span>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+              <%= gift_card.purchased_at&.strftime("%d/%m/%Y %H:%M") || '-' %>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap text-right text-sm">
+              <%= link_to t('admin.gift_cards.view'), admin_gift_card_path(gift_card), class: "text-indigo-600 hover:text-indigo-900" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if @gift_cards.empty? %>
+    <div class="text-center py-12">
+      <p class="text-gray-500"><%= t('admin.gift_cards.no_gift_cards') %></p>
+    </div>
+  <% end %>
+</div>
+

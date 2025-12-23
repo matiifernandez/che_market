@@ -15,6 +15,22 @@ class CheckoutsController < ApplicationController
       end
     end
 
+    # Calculate amounts
+    gift_card_amount = @cart.gift_card_amount_to_apply
+    amount_to_charge = @cart.total_cents
+
+    # If gift card covers the entire purchase, process without Stripe
+    if amount_to_charge.zero? && gift_card_amount > 0
+      order = create_order_paid_with_gift_card
+      if order
+        redirect_to success_checkout_path(order_id: order.id)
+        return
+      else
+        redirect_to cart_path, alert: t("checkout.error")
+        return
+      end
+    end
+
     session_params = {
       mode: "payment",
       customer_email: current_user&.email,
@@ -26,13 +42,16 @@ class CheckoutsController < ApplicationController
       cancel_url: cancel_checkout_url,
       metadata: {
         cart_id: @cart.id,
-        coupon_id: @cart.coupon_id
+        coupon_id: @cart.coupon_id,
+        gift_card_id: @cart.gift_card_id,
+        gift_card_amount_cents: gift_card_amount
       }
     }
 
-    # Apply discount if coupon is present
-    if @cart.coupon.present? && @cart.discount_cents > 0
-      stripe_coupon = create_stripe_coupon(@cart)
+    # Apply combined discount (coupon + gift card) if present
+    total_discount = @cart.discount_cents + gift_card_amount
+    if total_discount > 0
+      stripe_coupon = create_combined_stripe_discount(@cart, total_discount)
       session_params[:discounts] = [{ coupon: stripe_coupon.id }]
     end
 
@@ -42,10 +61,16 @@ class CheckoutsController < ApplicationController
   end
 
   def success
+    # Check if this was a gift card only purchase (no Stripe)
+    if params[:order_id]
+      @order = Order.find_by(id: params[:order_id])
+      return
+    end
+
     if params[:session_id]
       @order = Order.find_by(stripe_session_id: params[:session_id])
 
-    # Si el webhook aún no procesó, esperamos un poco
+      # Si el webhook aún no procesó, esperamos un poco
       if @order.nil?
         sleep(2)
         @order = Order.find_by(stripe_session_id: params[:session_id])
@@ -74,21 +99,37 @@ class CheckoutsController < ApplicationController
     # Get coupon from metadata if present
     coupon_id = stripe_session.metadata&.coupon_id
     coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
-    discount_cents = stripe_session.total_details&.amount_discount || 0
+
+    # Get gift card from metadata if present
+    gift_card_id = stripe_session.metadata&.gift_card_id
+    gift_card_amount = stripe_session.metadata&.gift_card_amount_cents.to_i
+    gift_card = GiftCard.find_by(id: gift_card_id) if gift_card_id.present?
+
+    # Calculate discount (coupon only, gift card is separate)
+    total_stripe_discount = stripe_session.total_details&.amount_discount || 0
+    coupon_discount = total_stripe_discount - gift_card_amount
+    coupon_discount = [coupon_discount, 0].max
 
     order = Order.create!(
       user: current_user,
       cart: current_cart,
       status: :paid,
       total_cents: stripe_session.amount_total,
-      discount_cents: discount_cents,
+      discount_cents: coupon_discount,
       coupon: coupon,
+      gift_card: gift_card,
+      gift_card_amount_cents: gift_card_amount,
       stripe_session_id: stripe_session.id,
       email: stripe_session.customer_details.email
     )
 
     # Increment coupon usage if present
     coupon&.increment_usage!
+
+    # Apply gift card if present
+    if gift_card && gift_card_amount > 0
+      gift_card.apply_to_order(order, gift_card_amount)
+    end
 
     # Save line items and decrement stock
     current_cart.cart_items.includes(:product).each do |cart_item|
@@ -101,8 +142,9 @@ class CheckoutsController < ApplicationController
       cart_item.product.decrement!(:stock, cart_item.quantity)
     end
 
-    # Clear coupon from cart
+    # Clear coupon and gift card from cart
     current_cart.remove_coupon
+    current_cart.remove_gift_card
 
     # Send emails
     OrderMailer.confirmation(order).deliver_now
@@ -127,23 +169,63 @@ class CheckoutsController < ApplicationController
     end
   end
 
-  def create_stripe_coupon(cart)
-    coupon = cart.coupon
+  def create_combined_stripe_discount(cart, total_discount_cents)
+    coupon_code = cart.coupon&.code || "CREDIT"
 
-    coupon_params = {
-      id: "#{coupon.code}_#{Time.current.to_i}",
-      name: "#{coupon.code} - #{coupon.formatted_discount}",
-      duration: "once"
-    }
+    Stripe::Coupon.create(
+      id: "#{coupon_code}_#{Time.current.to_i}",
+      name: "Descuento aplicado",
+      duration: "once",
+      amount_off: total_discount_cents,
+      currency: "usd"
+    )
+  end
 
-    if coupon.percentage?
-      coupon_params[:percent_off] = coupon.discount_percentage
-    else
-      coupon_params[:amount_off] = cart.discount_cents
-      coupon_params[:currency] = "usd"
+  def create_order_paid_with_gift_card
+    gift_card = current_cart.gift_card
+    return nil unless gift_card&.valid_for_use?
+
+    gift_card_amount = current_cart.gift_card_amount_to_apply
+    email = current_user&.email || "guest@chemarket.com"
+
+    order = Order.create!(
+      user: current_user,
+      cart: current_cart,
+      status: :paid,
+      total_cents: 0,
+      discount_cents: current_cart.discount_cents,
+      coupon: current_cart.coupon,
+      gift_card: gift_card,
+      gift_card_amount_cents: gift_card_amount,
+      email: email
+    )
+
+    # Create line items and decrement stock
+    current_cart.cart_items.includes(:product).each do |cart_item|
+      order.line_items.create!(
+        product: cart_item.product,
+        quantity: cart_item.quantity,
+        price_cents: cart_item.product.price_cents
+      )
+      cart_item.product.decrement!(:stock, cart_item.quantity)
     end
 
-    Stripe::Coupon.create(coupon_params)
+    # Apply gift card balance
+    gift_card.apply_to_order(order, gift_card_amount)
+
+    # Increment coupon usage if present
+    current_cart.coupon&.increment_usage!
+
+    # Clear cart
+    current_cart.remove_coupon
+    current_cart.remove_gift_card
+    current_cart.cart_items.destroy_all
+
+    # Send emails
+    OrderMailer.confirmation(order).deliver_later
+    OrderMailer.admin_notification(order).deliver_later
+
+    order
   end
 
   def shipping_countries

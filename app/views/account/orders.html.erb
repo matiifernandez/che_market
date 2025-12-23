@@ -1,0 +1,74 @@
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <%= link_to account_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <%= t('account.back_to_account') %>
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900"><%= t('account.my_orders') %></h1>
+  </div>
+
+  <% if @orders.any? %>
+    <div class="space-y-4">
+      <% @orders.each do |order| %>
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-3">
+                <h3 class="font-semibold text-gray-900"><%= t('account.order_number', number: order.id) %></h3>
+                <% status_colors = {
+                  'pending' => 'bg-yellow-100 text-yellow-800',
+                  'paid' => 'bg-blue-100 text-blue-800',
+                  'shipped' => 'bg-purple-100 text-purple-800',
+                  'delivered' => 'bg-green-100 text-green-800',
+                  'cancelled' => 'bg-red-100 text-red-800'
+                } %>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <%= status_colors[order.status] %>">
+                  <%= t("orders.statuses.#{order.status}") %>
+                </span>
+              </div>
+              <p class="text-sm text-gray-500 mt-1"><%= order.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-lg font-bold text-gray-900"><%= humanized_money_with_symbol(order.total) %></span>
+              <%= link_to t('account.view_details'), account_order_path(order), class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition" %>
+            </div>
+          </div>
+
+          <div class="px-6 py-4">
+            <div class="flex flex-wrap gap-4">
+              <% order.line_items.includes(:product).limit(4).each do |item| %>
+                <div class="flex items-center gap-3">
+                  <% if item.product&.images&.attached? %>
+                    <%= image_tag item.product.images.first, class: "w-12 h-12 object-cover rounded-lg" %>
+                  <% else %>
+                    <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <span class="text-gray-400 text-xs">📦</span>
+                    </div>
+                  <% end %>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900 line-clamp-1"><%= item.product&.name || t('account.product_deleted') %></p>
+                    <p class="text-xs text-gray-500"><%= t('account.quantity', count: item.quantity) %></p>
+                  </div>
+                </div>
+              <% end %>
+              <% if order.line_items.count > 4 %>
+                <div class="flex items-center">
+                  <span class="text-sm text-gray-500"><%= t('account.and_more', count: order.line_items.count - 4) %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl shadow-sm px-6 py-12 text-center">
+      <div class="text-6xl mb-4">🛍️</div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2"><%= t('account.no_orders') %></h3>
+      <p class="text-gray-500 mb-6"><%= t('account.no_orders_desc') %></p>
+      <%= link_to t('account.start_shopping'), products_path, class: "inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition" %>
+    </div>
+  <% end %>
+</div>

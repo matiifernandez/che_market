@@ -426,6 +426,27 @@ en:
       changes_title: "Changes to This Policy"
       changes_text: "We may update this privacy policy from time to time. We will notify you of significant changes by email or through a notice on our website."
 
+  # Wishlist
+  wishlist:
+    title: "My Wishlist"
+    subtitle:
+      one: "%{count} item saved"
+      other: "%{count} items saved"
+    items_count:
+      one: "%{count} item"
+      other: "%{count} items"
+    add: "Add to Wishlist"
+    remove: "Remove from Wishlist"
+    added: "Added to your wishlist"
+    removed: "Removed from your wishlist"
+    already_added: "This product is already in your wishlist"
+    not_found: "Product not found in wishlist"
+    view_wishlist: "View Wishlist"
+    added_on: "Added %{date}"
+    empty: "Your wishlist is empty"
+    empty_description: "Save products you love to buy them later"
+    browse_products: "Browse Products"
+
   # Reviews
   reviews:
     title: "Customer Reviews"

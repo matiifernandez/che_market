@@ -5,6 +5,7 @@ class Product < ApplicationRecord
   has_many :cart_items, dependent: :destroy
   has_many :line_items, dependent: :nullify
   has_many :reviews, dependent: :destroy
+  has_many :wishlist_items, dependent: :destroy
 
   # Money rails
   monetize :price_cents

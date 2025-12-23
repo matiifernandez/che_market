@@ -1,0 +1,78 @@
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <%= link_to account_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-4" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <%= t('account.back_to_account') %>
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900"><%= t('wishlist.title') %></h1>
+    <p class="text-gray-600 mt-2"><%= t('wishlist.subtitle', count: @wishlist_items.count) %></p>
+  </div>
+
+  <% if @wishlist_items.any? %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @wishlist_items.each do |item| %>
+        <% product = item.product %>
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden group">
+          <!-- Image -->
+          <a href="<%= product_path(product) %>" class="block relative">
+            <div class="aspect-square bg-gray-100">
+              <% if product.images.attached? %>
+                <%= image_tag product.images.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-300" %>
+              <% else %>
+                <div class="w-full h-full flex items-center justify-center text-6xl">📦</div>
+              <% end %>
+            </div>
+            <% unless product.stock > 0 %>
+              <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <%= t('products.out_of_stock') %>
+                </span>
+              </div>
+            <% end %>
+          </a>
+
+          <!-- Info -->
+          <div class="p-4">
+            <a href="<%= product_path(product) %>" class="block">
+              <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600 transition line-clamp-2 mb-2">
+                <%= product.name %>
+              </h3>
+            </a>
+
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-lg font-bold text-indigo-600"><%= humanized_money_with_symbol(product.price) %></span>
+              <span class="text-xs text-gray-500"><%= t('wishlist.added_on', date: item.created_at.strftime("%d/%m/%Y")) %></span>
+            </div>
+
+            <div class="flex gap-2">
+              <% if product.stock > 0 %>
+                <%= button_to add_item_cart_path(product), method: :post, data: { turbo: false }, class: "flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition cursor-pointer text-center" do %>
+                  <%= t('products.add_to_cart') %>
+                <% end %>
+              <% else %>
+                <button disabled class="flex-1 bg-gray-300 text-gray-500 text-sm font-medium py-2 px-4 rounded-lg cursor-not-allowed">
+                  <%= t('products.out_of_stock') %>
+                </button>
+              <% end %>
+
+              <%= button_to remove_wishlist_path(product), method: :delete, class: "p-2 text-red-500 hover:bg-red-50 rounded-lg transition cursor-pointer", title: t('wishlist.remove') do %>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl shadow-sm p-12 text-center">
+      <div class="text-6xl mb-4">❤️</div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2"><%= t('wishlist.empty') %></h3>
+      <p class="text-gray-500 mb-6"><%= t('wishlist.empty_description') %></p>
+      <%= link_to t('wishlist.browse_products'), products_path, class: "inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition" %>
+    </div>
+  <% end %>
+</div>

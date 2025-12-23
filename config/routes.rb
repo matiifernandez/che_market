@@ -25,6 +25,12 @@ Rails.application.routes.draw do
   # Contact
   resource :contact, only: [:new, :create], controller: 'contacts'
 
+  # Wishlist
+  resource :wishlist, only: [:show], controller: 'wishlist' do
+    post 'add/:product_id', action: :add, as: :add
+    delete 'remove/:product_id', action: :remove, as: :remove
+  end
+
   # Cart
   resource :cart, only: [:show] do
     post "add/:product_id", to: "carts#add_item", as: :add_item

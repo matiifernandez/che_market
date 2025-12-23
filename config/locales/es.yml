@@ -426,6 +426,27 @@ es:
       changes_title: "Cambios en esta Politica"
       changes_text: "Podemos actualizar esta politica de privacidad de vez en cuando. Te notificaremos sobre cambios significativos por email o mediante un aviso en nuestro sitio web."
 
+  # Wishlist
+  wishlist:
+    title: "Mi Lista de Deseos"
+    subtitle:
+      one: "%{count} producto guardado"
+      other: "%{count} productos guardados"
+    items_count:
+      one: "%{count} producto"
+      other: "%{count} productos"
+    add: "Agregar a Favoritos"
+    remove: "Quitar de Favoritos"
+    added: "Agregado a tu lista de deseos"
+    removed: "Eliminado de tu lista de deseos"
+    already_added: "Este producto ya esta en tu lista de deseos"
+    not_found: "Producto no encontrado en la lista de deseos"
+    view_wishlist: "Ver Lista de Deseos"
+    added_on: "Agregado el %{date}"
+    empty: "Tu lista de deseos esta vacia"
+    empty_description: "Guarda productos que te gusten para comprarlos despues"
+    browse_products: "Explorar Productos"
+
   # Reviews
   reviews:
     title: "Opiniones de Clientes"

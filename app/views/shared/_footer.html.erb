@@ -1,0 +1,59 @@
+<footer class="bg-gray-900 text-gray-300 mt-16">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Brand -->
+      <div class="md:col-span-1">
+        <a href="<%= root_path %>" class="flex items-center space-x-2 mb-4">
+          <span class="text-2xl">🧉</span>
+          <span class="font-bold text-xl text-white"><%= t('site_name') %></span>
+        </a>
+        <p class="text-sm text-gray-400"><%= t('footer.description') %></p>
+      </div>
+
+      <!-- Shop -->
+      <div>
+        <h3 class="font-semibold text-white mb-4"><%= t('footer.shop') %></h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="<%= products_path %>" class="hover:text-white transition"><%= t('nav.products') %></a></li>
+          <li><a href="<%= gift_cards_path %>" class="hover:text-white transition"><%= t('nav.gift_cards') %></a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h3 class="font-semibold text-white mb-4"><%= t('footer.support') %></h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="mailto:support@chemarket.com" class="hover:text-white transition"><%= t('footer.contact') %></a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="font-semibold text-white mb-4"><%= t('footer.legal') %></h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="<%= terms_path %>" class="hover:text-white transition"><%= t('footer.terms') %></a></li>
+          <li><a href="<%= privacy_path %>" class="hover:text-white transition"><%= t('footer.privacy') %></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+      <p class="text-sm text-gray-400">
+        &copy; <%= Date.today.year %> <%= t('site_name') %>. <%= t('footer.copyright') %>
+      </p>
+
+      <!-- Language Switcher -->
+      <div class="flex items-center space-x-2 text-sm mt-4 md:mt-0">
+        <% if I18n.locale == :es %>
+          <span class="font-semibold text-white">ES</span>
+          <span class="text-gray-600">|</span>
+          <a href="<%= url_for(locale: :en) %>" class="text-gray-400 hover:text-white transition">EN</a>
+        <% else %>
+          <a href="<%= url_for(locale: :es) %>" class="text-gray-400 hover:text-white transition">ES</a>
+          <span class="text-gray-600">|</span>
+          <span class="font-semibold text-white">EN</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</footer>

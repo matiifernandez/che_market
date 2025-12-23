@@ -6,7 +6,7 @@
   </a>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-controller="confirm-modal">
   <!-- Imágenes y descripción -->
   <div class="lg:col-span-2 space-y-6">
     <div class="bg-white rounded-lg shadow p-6">
@@ -70,7 +70,16 @@
       <a href="<%= edit_admin_product_path(@product) %>" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
         Editar producto
       </a>
-      <%= button_to "Eliminar producto", admin_product_path(@product), method: :delete, data: { turbo_confirm: "¿Estás seguro?" }, class: "w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer" %>
+      <button type="button"
+              data-action="confirm-modal#open"
+              data-confirm-modal-title-param="Eliminar producto"
+              data-confirm-modal-message-param="¿Estás seguro de que deseas eliminar '<%= @product.name %>'? Esta acción no se puede deshacer."
+              data-confirm-modal-url-param="<%= admin_product_path(@product) %>"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
+        Eliminar producto
+      </button>
     </div>
   </div>
+
+  <%= render "shared/confirm_modal" %>
 </div>

@@ -9,4 +9,8 @@ class User < ApplicationRecord
 
   has_one :cart, dependent: :destroy
   has_many :orders, dependent: :nullify
+
+  def full_name
+    [first_name, last_name].compact.join(' ').presence
+  end
 end

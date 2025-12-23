@@ -422,6 +422,36 @@ en:
       changes_title: "Changes to This Policy"
       changes_text: "We may update this privacy policy from time to time. We will notify you of significant changes by email or through a notice on our website."
 
+  # Contact
+  contact:
+    title: "Contact Us"
+    subtitle: "Have a question or need help? We're here to assist you. Send us a message and we'll get back to you as soon as possible."
+    email_title: "Email"
+    location_title: "Location"
+    location_value: "Buenos Aires, Argentina"
+    response_title: "Response Time"
+    response_value: "Within 24-48 hours"
+    faq_hint: "Looking for quick answers?"
+    faq_link: "Check our Terms of Service"
+    form_title: "Send us a message"
+    name: "Name"
+    name_placeholder: "Your name"
+    email: "Email"
+    email_placeholder: "your@email.com"
+    subject: "Subject"
+    message: "Message"
+    message_placeholder: "How can we help you?"
+    message_hint: "Please provide as much detail as possible"
+    send: "Send Message"
+    success: "Thank you! Your message has been sent. We'll get back to you soon."
+    subjects:
+      general: "General Question"
+      order: "Order Inquiry"
+      shipping: "Shipping & Delivery"
+      returns: "Returns & Refunds"
+      gift_cards: "Gift Cards"
+      other: "Other"
+
   # Footer
   footer:
     description: "Authentic Argentine products shipped worldwide."

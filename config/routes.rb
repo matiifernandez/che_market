@@ -22,6 +22,9 @@ Rails.application.routes.draw do
   get "terms", to: "pages#terms", as: :terms
   get "privacy", to: "pages#privacy", as: :privacy
 
+  # Contact
+  resource :contact, only: [:new, :create], controller: 'contacts'
+
   # Cart
   resource :cart, only: [:show] do
     post "add/:product_id", to: "carts#add_item", as: :add_item

@@ -422,6 +422,36 @@ es:
       changes_title: "Cambios en esta Politica"
       changes_text: "Podemos actualizar esta politica de privacidad de vez en cuando. Te notificaremos sobre cambios significativos por email o mediante un aviso en nuestro sitio web."
 
+  # Contact
+  contact:
+    title: "Contacto"
+    subtitle: "Tenes alguna pregunta o necesitas ayuda? Estamos aca para asistirte. Envianos un mensaje y te responderemos lo antes posible."
+    email_title: "Email"
+    location_title: "Ubicacion"
+    location_value: "Buenos Aires, Argentina"
+    response_title: "Tiempo de Respuesta"
+    response_value: "Dentro de 24-48 horas"
+    faq_hint: "Buscas respuestas rapidas?"
+    faq_link: "Consulta nuestros Terminos de Servicio"
+    form_title: "Envianos un mensaje"
+    name: "Nombre"
+    name_placeholder: "Tu nombre"
+    email: "Email"
+    email_placeholder: "tu@email.com"
+    subject: "Asunto"
+    message: "Mensaje"
+    message_placeholder: "En que podemos ayudarte?"
+    message_hint: "Por favor proporciona la mayor cantidad de detalles posible"
+    send: "Enviar Mensaje"
+    success: "Gracias! Tu mensaje fue enviado. Te responderemos pronto."
+    subjects:
+      general: "Consulta General"
+      order: "Consulta sobre Pedido"
+      shipping: "Envios y Entregas"
+      returns: "Devoluciones y Reembolsos"
+      gift_cards: "Gift Cards"
+      other: "Otro"
+
   # Footer
   footer:
     description: "Productos argentinos autenticos enviados a todo el mundo."

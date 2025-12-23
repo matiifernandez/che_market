@@ -508,6 +508,13 @@ es:
       gift_cards: "Gift Cards"
       other: "Otro"
 
+  # Pagination
+  pagination:
+    previous: "Anterior"
+    next: "Siguiente"
+    page_of: "Página %{page} de %{pages}"
+    showing: "Mostrando %{from} a %{to} de %{total}"
+
   # Footer
   footer:
     description: "Productos argentinos autenticos enviados a todo el mundo."

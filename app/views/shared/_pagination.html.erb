@@ -1,0 +1,48 @@
+<% if pagy.pages > 1 %>
+  <nav class="flex flex-col sm:flex-row items-center justify-center gap-2 mt-8" aria-label="Pagination">
+    <div class="flex items-center gap-2">
+      <%# Previous %>
+      <% if pagy.prev %>
+        <%= link_to pagy_url_for(pagy, pagy.prev), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span class="hidden sm:inline"><%= t('pagination.previous') %></span>
+        <% end %>
+      <% else %>
+        <span class="inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span class="hidden sm:inline"><%= t('pagination.previous') %></span>
+        </span>
+      <% end %>
+
+      <%# Page indicator %>
+      <span class="px-3 sm:px-4 py-2 text-sm font-medium text-gray-700">
+        <%= t('pagination.page_of', page: pagy.page, pages: pagy.pages) %>
+      </span>
+
+      <%# Next %>
+      <% if pagy.next %>
+        <%= link_to pagy_url_for(pagy, pagy.next), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
+          <span class="hidden sm:inline"><%= t('pagination.next') %></span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        <% end %>
+      <% else %>
+        <span class="inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+          <span class="hidden sm:inline"><%= t('pagination.next') %></span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </span>
+      <% end %>
+    </div>
+  </nav>
+
+  <p class="text-center text-xs sm:text-sm text-gray-500 mt-3">
+    <%= t('pagination.showing', from: pagy.from, to: pagy.to, total: pagy.count) %>
+  </p>
+<% end %>

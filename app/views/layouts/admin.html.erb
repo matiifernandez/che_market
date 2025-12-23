@@ -10,8 +10,8 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-100 min-h-screen">
-    <div class="flex" data-controller="admin-sidebar">
+  <body class="bg-gray-100 min-h-screen overflow-x-hidden">
+    <div class="flex w-full max-w-full" data-controller="admin-sidebar">
       <!-- Overlay for mobile -->
       <div class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden" data-admin-sidebar-target="overlay" data-action="click->admin-sidebar#close"></div>
 
@@ -19,7 +19,7 @@
       <%= render "layouts/admin_sidebar" %>
 
       <!-- Main content -->
-      <div class="flex-1 lg:ml-64">
+      <div class="flex-1 lg:ml-64 min-w-0 overflow-x-hidden">
         <!-- Top bar -->
         <header class="bg-white shadow h-16 flex items-center justify-between px-4 lg:px-6">
           <div class="flex items-center">

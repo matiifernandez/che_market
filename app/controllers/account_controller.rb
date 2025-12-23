@@ -7,6 +7,7 @@ class AccountController < ApplicationController
 
   def orders
     @orders = current_user.orders.order(created_at: :desc)
+    @pagy, @orders = pagy(@orders, items: 10)
   end
 
   def order

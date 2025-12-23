@@ -74,8 +74,9 @@ end
 gem 'devise'           # Authentication
 gem 'pundit'           # Authorization
 gem 'money-rails'      # Pricing and currency handling
-gem 'simple_form'    # Form handling
-gem "cloudinary"      # Cloud-based image and video management
-gem 'stripe'          # Payment processing
+gem 'simple_form'      # Form handling
+gem "cloudinary"       # Cloud-based image and video management
+gem 'stripe'           # Payment processing
+gem 'pagy', '~> 8.0'   # Pagination
 # gem letter_opener_web' Email preview in development was added in development do.
 # dotenv-rails  was added in development, test do.

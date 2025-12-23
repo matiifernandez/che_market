@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   def category_emoji(slug)
     emojis = {
       "yerba-mate" => "🧉",

@@ -9,6 +9,8 @@ class Admin::ProductsController < Admin::BaseController
       @query = params[:q]
       @products = @products.where("name ILIKE ?", "%#{@query}%")
     end
+
+    @pagy, @products = pagy(@products, items: 10)
   end
 
   def show; end

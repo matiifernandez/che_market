@@ -24,7 +24,9 @@
         <tr>
           <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
-              <span class="text-2xl mr-3"><%= category_emoji(category.slug) %></span>
+              <span class="p-2 rounded-lg bg-indigo-100 text-indigo-600 mr-3">
+                <%= category_icon(category.icon, size: "w-5 h-5") %>
+              </span>
               <span class="text-sm font-medium text-gray-900"><%= category.name %></span>
             </div>
           </td>

@@ -2,7 +2,7 @@
   <%= link_to "← #{t('admin.gift_cards.back_to_list')}", admin_gift_cards_path, class: "text-indigo-600 hover:text-indigo-800" %>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-controller="confirm-modal">
   <!-- Main Info -->
   <div class="lg:col-span-2 space-y-6">
     <!-- Gift Card Details -->
@@ -173,10 +173,16 @@
         <% end %>
 
         <% unless @gift_card.cancelled? %>
-          <%= button_to t('admin.gift_cards.cancel_gift_card'), cancel_admin_gift_card_path(@gift_card),
-              method: :post,
-              data: { turbo_confirm: t('admin.gift_cards.cancel_confirm') },
-              class: "w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer" %>
+          <button type="button"
+                  data-action="confirm-modal#open"
+                  data-confirm-modal-title-param="<%= t('admin.gift_cards.cancel_gift_card') %>"
+                  data-confirm-modal-message-param="<%= t('admin.gift_cards.cancel_confirm') %>"
+                  data-confirm-modal-url-param="<%= cancel_admin_gift_card_path(@gift_card) %>"
+                  data-confirm-modal-method-param="post"
+                  data-confirm-modal-button-param="<%= t('admin.gift_cards.cancel_gift_card') %>"
+                  class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer">
+            <%= t('admin.gift_cards.cancel_gift_card') %>
+          </button>
         <% end %>
       </div>
     </div>
@@ -192,4 +198,6 @@
       </div>
     <% end %>
   </div>
+
+  <%= render "shared/confirm_modal" %>
 </div>

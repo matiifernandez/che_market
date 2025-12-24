@@ -1,11 +1,32 @@
-<div class="bg-white rounded-lg shadow p-6 max-w-lg">
+<div class="bg-white rounded-lg shadow p-6 max-w-2xl">
   <%= simple_form_for [:admin, @category], html: { class: "space-y-6" } do |f| %>
     <%= f.error_notification %>
 
     <%= f.input :name, label: "Nombre" %>
     <%= f.input :slug, label: "Slug", hint: "Es el nombre que va a aparecer en la url. se genera automáticamente si lo dejás vacío" %>
 
-    <div class="flex justify-end space-x-4">
+    <!-- Icon Picker -->
+    <div data-controller="icon-picker" data-icon-picker-selected-value="<%= @category.icon || 'cube' %>">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Icono</label>
+
+      <%= f.hidden_field :icon, data: { icon_picker_target: "input" }, value: @category.icon || 'cube' %>
+
+      <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+        <% available_category_icons.each do |key, icon_data| %>
+          <button type="button"
+                  data-icon-picker-target="option"
+                  data-icon="<%= key %>"
+                  data-action="icon-picker#select"
+                  class="flex flex-col items-center justify-center p-3 rounded-lg border-2 transition cursor-pointer border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                  title="<%= icon_data[:name] %>">
+            <%= category_icon(key, size: "w-6 h-6 text-gray-600") %>
+            <span class="text-xs text-gray-500 mt-1 truncate w-full text-center"><%= icon_data[:name] %></span>
+          </button>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-4 pt-4">
       <a href="<%= admin_categories_path %>" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
         Cancelar
       </a>

@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="confirm-modal"
 export default class extends Controller {
-  static targets = ["modal", "title", "message", "form"]
+  static targets = ["modal", "title", "message", "form", "methodField", "submitButton"]
   static values = {
     title: String,
     message: String,
@@ -17,6 +17,8 @@ export default class extends Controller {
     const title = button.dataset.confirmModalTitleParam || this.titleValue || "Confirmar acción"
     const message = button.dataset.confirmModalMessageParam || this.messageValue || "¿Estás seguro de que deseas continuar?"
     const url = button.dataset.confirmModalUrlParam || this.urlValue
+    const method = button.dataset.confirmModalMethodParam || "delete"
+    const buttonText = button.dataset.confirmModalButtonParam || "Eliminar"
 
     // Update modal content
     if (this.hasTitleTarget) {
@@ -27,6 +29,12 @@ export default class extends Controller {
     }
     if (this.hasFormTarget && url) {
       this.formTarget.action = url
+    }
+    if (this.hasMethodFieldTarget) {
+      this.methodFieldTarget.value = method
+    }
+    if (this.hasSubmitButtonTarget) {
+      this.submitButtonTarget.textContent = buttonText
     }
 
     // Show modal

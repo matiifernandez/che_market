@@ -1,19 +1,27 @@
 <%# Confirm Modal - Use with confirm-modal Stimulus controller %>
 <%# Required: data-controller="confirm-modal" on parent element %>
+<%#
+  Trigger button data attributes:
+  - data-confirm-modal-title-param: Modal title
+  - data-confirm-modal-message-param: Modal message
+  - data-confirm-modal-url-param: Form action URL
+  - data-confirm-modal-method-param: HTTP method (delete, post, patch) - defaults to delete
+  - data-confirm-modal-button-param: Submit button text - defaults to "Eliminar"
+%>
 
 <div data-confirm-modal-target="modal"
      data-action="click->confirm-modal#closeOnBackdrop keydown.escape@window->confirm-modal#closeOnEscape"
-     class="hidden fixed inset-0 z-50 overflow-y-auto"
+     class="hidden fixed inset-0 z-[9999] overflow-y-auto"
      aria-labelledby="modal-title"
      role="dialog"
      aria-modal="true">
 
   <!-- Backdrop -->
-  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"></div>
 
   <!-- Modal panel -->
   <div class="flex min-h-full items-center justify-center p-4">
-    <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
+    <div class="relative bg-white rounded-xl shadow-2xl ring-1 ring-gray-900/10 w-full max-w-md transform transition-all">
       <div class="p-6">
         <!-- Icon -->
         <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
@@ -40,12 +48,15 @@
             Cancelar
           </button>
 
-          <%= form_with url: "", method: :delete, local: true, class: "flex-1", data: { confirm_modal_target: "form" } do %>
+          <form action="" method="post" class="flex-1" data-confirm-modal-target="form">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <input type="hidden" name="_method" value="delete" data-confirm-modal-target="methodField">
             <button type="submit"
+                    data-confirm-modal-target="submitButton"
                     class="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition">
               Eliminar
             </button>
-          <% end %>
+          </form>
         </div>
       </div>
     </div>

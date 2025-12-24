@@ -1,18 +1,6 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def category_emoji(slug)
-    emojis = {
-      "yerba-mate" => "🧉",
-      "dulces" => "🍯",
-      "mates-y-bombillas" => "🫖",
-      "alfajores" => "🍪",
-      "bebidas" => "🍷",
-      "snacks" => "🥜"
-    }
-    emojis[slug] || "📦"
-  end
-
   def admin_nav_link(text, path, controller_name, badge_count: nil)
     is_active = controller.controller_name == controller_name || (controller_name == "dashboard" && controller.controller_name == "dashboard")
 

@@ -97,12 +97,12 @@ class CheckoutsController < ApplicationController
 
   def create_order_from_session(stripe_session)
     # Get coupon from metadata if present
-    coupon_id = stripe_session.metadata&.coupon_id
+    coupon_id = stripe_session.metadata['coupon_id']
     coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
 
     # Get gift card from metadata if present
-    gift_card_id = stripe_session.metadata&.gift_card_id
-    gift_card_amount = stripe_session.metadata&.gift_card_amount_cents.to_i
+    gift_card_id = stripe_session.metadata['gift_card_id']
+    gift_card_amount = stripe_session.metadata['gift_card_amount_cents'].to_i
     gift_card = GiftCard.find_by(id: gift_card_id) if gift_card_id.present?
 
     # Calculate discount (coupon only, gift card is separate)

@@ -6,12 +6,14 @@
   </a>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-controller="confirm-modal">
   <!-- Info de la categoría -->
   <div class="lg:col-span-2">
     <div class="bg-white rounded-lg shadow p-6">
       <div class="flex items-center mb-6">
-        <span class="text-4xl mr-4"><%= category_emoji(@category.slug) %></span>
+        <span class="p-3 rounded-xl bg-indigo-100 text-indigo-600 mr-4">
+          <%= category_icon(@category.icon, size: "w-8 h-8") %>
+        </span>
         <div>
           <h2 class="text-2xl font-bold text-gray-900"><%= @category.name %></h2>
           <p class="text-gray-500">Slug: <%= @category.slug %></p>
@@ -54,7 +56,16 @@
       <a href="<%= edit_admin_category_path(@category) %>" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
         Editar categoría
       </a>
-      <%= button_to "Eliminar categoría", admin_category_path(@category), method: :delete, data: { turbo_confirm: "¿Estás seguro? Los productos quedarán sin categoría." }, class: "w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer" %>
+      <button type="button"
+              data-action="confirm-modal#open"
+              data-confirm-modal-title-param="Eliminar categoría"
+              data-confirm-modal-message-param="¿Estás seguro de que deseas eliminar '<%= @category.name %>'? Los productos quedarán sin categoría."
+              data-confirm-modal-url-param="<%= admin_category_path(@category) %>"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
+        Eliminar categoría
+      </button>
     </div>
   </div>
+
+  <%= render "shared/confirm_modal" %>
 </div>

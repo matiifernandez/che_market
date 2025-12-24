@@ -4,6 +4,19 @@
 ¡Hola!
 
 ¡Excelentes noticias! Tu pedido #<%= @order.id %> ha sido despachado y está en camino hacia vos.
+<% if @order.tracking_number.present? %>
+
+INFORMACIÓN DE SEGUIMIENTO
+--------------------------
+Número de seguimiento: <%= @order.tracking_number %>
+<% if @order.carrier.present? %>
+Carrier: <%= carrier_name(@order.carrier) %>
+<% end %>
+<% tracking = tracking_url(@order.carrier, @order.tracking_number) %>
+<% if tracking.present? %>
+Rastrear pedido: <%= tracking %>
+<% end %>
+<% end %>
 
 RESUMEN DEL PEDIDO
 ------------------
@@ -14,11 +27,11 @@ Total: <%= humanized_money_with_symbol(@order.total) %>
 
 ESTADO DE TU PEDIDO
 -------------------
-✓ Pedido confirmado
-✓ Pago procesado
-→ Enviado (actual)
-○ En camino
-○ Entregado
+[x] Pedido confirmado
+[x] Pago procesado
+[>] Enviado (actual)
+[ ] En camino
+[ ] Entregado
 
 INFORMACIÓN IMPORTANTE
 ----------------------

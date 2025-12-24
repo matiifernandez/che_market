@@ -13,6 +13,11 @@ class Admin::OrdersController < Admin::BaseController
     @order = Order.find(params[:id])
     previous_status = @order.status
 
+    # Set shipped_at timestamp when marking as shipped
+    if order_params[:status] == "shipped" && previous_status != "shipped"
+      @order.shipped_at = Time.current
+    end
+
     if @order.update(order_params)
       # Send shipped notification email when status changes to shipped
       if @order.shipped? && previous_status != "shipped"
@@ -28,6 +33,6 @@ class Admin::OrdersController < Admin::BaseController
   private
 
   def order_params
-    params.require(:order).permit(:status)
+    params.require(:order).permit(:status, :tracking_number, :carrier)
   end
 end

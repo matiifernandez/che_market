@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_23_090225) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_24_060514) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_23_090225) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "icon", default: "cube"
     t.index ["slug"], name: "index_categories_on_slug", unique: true
   end
 
@@ -164,6 +165,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_23_090225) do
     t.integer "discount_cents", default: 0
     t.bigint "gift_card_id"
     t.integer "gift_card_amount_cents", default: 0
+    t.string "tracking_number"
+    t.string "carrier"
+    t.datetime "shipped_at"
     t.index ["cart_id"], name: "index_orders_on_cart_id"
     t.index ["coupon_id"], name: "index_orders_on_coupon_id"
     t.index ["gift_card_id"], name: "index_orders_on_gift_card_id"

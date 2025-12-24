@@ -11,6 +11,9 @@
       .order-details { background-color: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
       .total { font-size: 24px; font-weight: bold; color: #4F46E5; }
       .info-box { background-color: #EEF2FF; border-left: 4px solid #4F46E5; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+      .tracking-box { background-color: #ECFDF5; border: 2px solid #10B981; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
+      .tracking-number { font-size: 20px; font-weight: bold; color: #065F46; font-family: monospace; letter-spacing: 1px; }
+      .tracking-button { display: inline-block; background-color: #10B981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; }
       .timeline { margin: 20px 0; }
       .timeline-step { display: flex; align-items: center; margin: 10px 0; }
       .timeline-dot { width: 20px; height: 20px; border-radius: 50%; margin-right: 15px; }
@@ -22,7 +25,7 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>📦 ¡Tu pedido está en camino!</h1>
+        <h1>¡Tu pedido está en camino!</h1>
         <p>Che Market</p>
       </div>
 
@@ -30,6 +33,24 @@
         <p>¡Hola!</p>
 
         <p>¡Excelentes noticias! Tu pedido <strong>#<%= @order.id %></strong> ha sido despachado y está en camino hacia vos.</p>
+
+        <% if @order.tracking_number.present? %>
+          <div class="tracking-box">
+            <p style="margin: 0 0 10px 0; color: #065F46;">Número de seguimiento:</p>
+            <p class="tracking-number"><%= @order.tracking_number %></p>
+            <% if @order.carrier.present? %>
+              <p style="margin: 10px 0 0 0; color: #6B7280; font-size: 14px;">
+                Enviado con: <strong><%= carrier_name(@order.carrier) %></strong>
+              </p>
+            <% end %>
+            <% tracking_url = tracking_url(@order.carrier, @order.tracking_number) %>
+            <% if tracking_url.present? %>
+              <a href="<%= tracking_url %>" class="tracking-button" target="_blank">
+                Rastrear mi pedido →
+              </a>
+            <% end %>
+          </div>
+        <% end %>
 
         <div class="order-details">
           <h3>Resumen del pedido</h3>
@@ -77,7 +98,7 @@
       </div>
 
       <div class="footer">
-        <p>Che Market - Productos argentinos para el mundo 🧉</p>
+        <p>Che Market - Productos argentinos para el mundo</p>
         <p style="font-size: 12px; color: #9CA3AF;">Si no realizaste esta compra, por favor contactanos inmediatamente.</p>
       </div>
     </div>

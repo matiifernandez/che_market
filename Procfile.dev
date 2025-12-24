@@ -1,2 +1,4 @@
 web: bin/rails server
 css: bin/rails tailwindcss:watch
+# Uncomment to test background job processing (set SOLID_QUEUE=1 in .env)
+# jobs: bundle exec rake solid_queue:start

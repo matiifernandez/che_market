@@ -77,4 +77,8 @@ Rails.application.configure do
 
   # Para ver los emails en la consola
   config.action_mailer.delivery_method = :letter_opener_web
+
+  # Use Solid Queue for background jobs (inline in development for simplicity)
+  # Set SOLID_QUEUE=1 to use actual background processing
+  config.active_job.queue_adapter = ENV["SOLID_QUEUE"] ? :solid_queue : :async
 end

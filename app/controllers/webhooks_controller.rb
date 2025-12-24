@@ -87,9 +87,9 @@ class WebhooksController < ApplicationController
         cart.remove_gift_card
       end
 
-      # Send emails
-      OrderMailer.confirmation(order).deliver_now
-      OrderMailer.admin_notification(order).deliver_now
+      # Send emails (background job)
+      OrderMailer.confirmation(order).deliver_later
+      OrderMailer.admin_notification(order).deliver_later
     end
   rescue ActiveRecord::RecordNotUnique
     # Order was created by success callback while we were processing - that's fine
@@ -122,9 +122,9 @@ class WebhooksController < ApplicationController
       return unless gift_card.pending?
 
       gift_card.activate!
-      GiftCardMailer.delivery(gift_card).deliver_now
+      GiftCardMailer.delivery(gift_card).deliver_later
       gift_card.mark_as_delivered!
-      GiftCardMailer.admin_notification(gift_card).deliver_now
+      GiftCardMailer.admin_notification(gift_card).deliver_later
     end
   rescue ActiveRecord::RecordNotFound
     Rails.logger.warn("Gift card #{session.metadata['gift_card_id']} not found")

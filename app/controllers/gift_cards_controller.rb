@@ -77,9 +77,9 @@ class GiftCardsController < ApplicationController
       return unless gift_card.pending?
 
       gift_card.activate!
-      GiftCardMailer.delivery(gift_card).deliver_now
+      GiftCardMailer.delivery(gift_card).deliver_later
       gift_card.mark_as_delivered!
-      GiftCardMailer.admin_notification(gift_card).deliver_now
+      GiftCardMailer.admin_notification(gift_card).deliver_later
     end
   rescue ActiveRecord::RecordNotFound
     # Gift card was deleted (shouldn't happen, but handle gracefully)

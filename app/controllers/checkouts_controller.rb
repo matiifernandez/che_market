@@ -161,9 +161,9 @@ class CheckoutsController < ApplicationController
     current_cart.remove_coupon
     current_cart.remove_gift_card
 
-    # Send emails
-    OrderMailer.confirmation(order).deliver_now
-    OrderMailer.admin_notification(order).deliver_now
+    # Send emails (background job)
+    OrderMailer.confirmation(order).deliver_later
+    OrderMailer.admin_notification(order).deliver_later
 
     order
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_24_060514) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_24_065346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_24_060514) do
     t.index ["purchaser_id"], name: "index_gift_cards_on_purchaser_id"
     t.index ["recipient_email"], name: "index_gift_cards_on_recipient_email"
     t.index ["status"], name: "index_gift_cards_on_status"
+    t.index ["stripe_session_id"], name: "index_gift_cards_on_stripe_session_id", unique: true, where: "(stripe_session_id IS NOT NULL)"
   end
 
   create_table "line_items", force: :cascade do |t|

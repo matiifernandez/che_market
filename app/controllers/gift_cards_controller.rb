@@ -44,22 +44,13 @@ class GiftCardsController < ApplicationController
   end
 
   def success
-    if params[:session_id]
-      @gift_card = GiftCard.find_by(stripe_session_id: params[:session_id])
+    return unless params[:session_id]
 
-      if @gift_card.nil?
-        sleep(2)
-        @gift_card = GiftCard.find_by(stripe_session_id: params[:session_id])
-      end
+    @gift_card = GiftCard.find_by(stripe_session_id: params[:session_id])
 
-      # Fallback: activar y enviar emails si el webhook no lo hizo
-      if @gift_card && @gift_card.pending?
-        @gift_card.activate!
-        GiftCardMailer.delivery(@gift_card).deliver_now
-        @gift_card.mark_as_delivered!
-        GiftCardMailer.admin_notification(@gift_card).deliver_now
-      end
-    end
+    # Activate gift card if webhook hasn't done it yet
+    # Uses with_lock to prevent race conditions with webhook
+    safely_activate_gift_card(@gift_card) if @gift_card&.pending?
   end
 
   def check_balance
@@ -76,6 +67,24 @@ class GiftCardsController < ApplicationController
   end
 
   private
+
+  def safely_activate_gift_card(gift_card)
+    return unless gift_card
+
+    # Use database-level locking to prevent race condition with webhook
+    gift_card.with_lock do
+      # Re-check status after acquiring lock (webhook may have activated it)
+      return unless gift_card.pending?
+
+      gift_card.activate!
+      GiftCardMailer.delivery(gift_card).deliver_now
+      gift_card.mark_as_delivered!
+      GiftCardMailer.admin_notification(gift_card).deliver_now
+    end
+  rescue ActiveRecord::RecordNotFound
+    # Gift card was deleted (shouldn't happen, but handle gracefully)
+    nil
+  end
 
   def gift_card_params
     params.require(:gift_card).permit(

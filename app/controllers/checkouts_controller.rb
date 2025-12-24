@@ -67,26 +67,21 @@ class CheckoutsController < ApplicationController
       return
     end
 
-    if params[:session_id]
-      @order = Order.find_by(stripe_session_id: params[:session_id])
+    return unless params[:session_id]
 
-      # Si el webhook aún no procesó, esperamos un poco
-      if @order.nil?
-        sleep(2)
-        @order = Order.find_by(stripe_session_id: params[:session_id])
-      end
+    # Try to find existing order (may have been created by webhook)
+    @order = Order.find_by(stripe_session_id: params[:session_id])
 
-      # Si aún no existe la orden, la creamos aca (backup)
-      if @order.nil?
-        @session = Stripe::Checkout::Session.retrieve(params[:session_id])
-        @order = create_order_from_session(@session)
-      end
+    # If order doesn't exist, create it now
+    # The unique index on stripe_session_id prevents duplicates
+    if @order.nil?
+      @order = safely_create_order_from_stripe(params[:session_id])
+    end
 
-      # Limpiar el carrito si hay orden
-      if @order
-        current_cart.cart_items.destroy_all
-        session.delete(:cart_secret_id)
-      end
+    # Clear cart if order exists
+    if @order
+      current_cart.cart_items.destroy_all
+      session.delete(:cart_secret_id)
     end
   end
 
@@ -94,6 +89,26 @@ class CheckoutsController < ApplicationController
   end
 
   private
+
+  def safely_create_order_from_stripe(session_id)
+    stripe_session = Stripe::Checkout::Session.retrieve(session_id)
+
+    # Use a transaction to ensure atomicity
+    ActiveRecord::Base.transaction do
+      # Double-check order doesn't exist (in case webhook just created it)
+      existing_order = Order.find_by(stripe_session_id: session_id)
+      return existing_order if existing_order
+
+      create_order_from_session(stripe_session)
+    end
+  rescue ActiveRecord::RecordNotUnique
+    # Race condition: webhook created the order while we were processing
+    # Just find and return the order created by webhook
+    Order.find_by(stripe_session_id: session_id)
+  rescue Stripe::StripeError => e
+    Rails.logger.error("Stripe error retrieving session #{session_id}: #{e.message}")
+    nil
+  end
 
   def create_order_from_session(stripe_session)
     # Get coupon from metadata if present

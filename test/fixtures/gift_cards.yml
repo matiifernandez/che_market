@@ -1,0 +1,42 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+active_card:
+  code: CHE-TEST-AAAA-1111
+  initial_amount_cents: 5000
+  balance_cents: 5000
+  purchaser_email: buyer@example.com
+  recipient_email: recipient@example.com
+  recipient_name: Test Recipient
+  status: 1 # active
+  purchased_at: <%= Time.current %>
+  delivered_at: <%= Time.current %>
+
+partially_used:
+  code: CHE-TEST-BBBB-2222
+  initial_amount_cents: 10000
+  balance_cents: 3000
+  purchaser_email: buyer2@example.com
+  recipient_email: recipient2@example.com
+  status: 1 # active
+  purchased_at: <%= 1.week.ago %>
+  delivered_at: <%= 1.week.ago %>
+  first_used_at: <%= 3.days.ago %>
+
+pending_card:
+  code: CHE-TEST-CCCC-3333
+  initial_amount_cents: 2000
+  balance_cents: 2000
+  purchaser_email: buyer3@example.com
+  recipient_email: recipient3@example.com
+  status: 0 # pending
+  stripe_session_id: cs_test_gift_card_pending
+
+depleted_card:
+  code: CHE-TEST-DDDD-4444
+  initial_amount_cents: 5000
+  balance_cents: 0
+  purchaser_email: buyer4@example.com
+  recipient_email: recipient4@example.com
+  status: 2 # depleted
+  purchased_at: <%= 1.month.ago %>
+  first_used_at: <%= 2.weeks.ago %>

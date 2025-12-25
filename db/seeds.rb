@@ -21,13 +21,15 @@ User.destroy_all
 Coupon.destroy_all if defined?(Coupon)
 
 puts "Creando usuario admin..."
-User.create!(
+admin = User.new(
   email: "admin@chemarket.com",
   password: "password123",
   first_name: "Admin",
   last_name: "Che Market",
   role: :admin
 )
+admin.skip_confirmation! if admin.respond_to?(:skip_confirmation!)
+admin.save!
 
 puts "Creando categorías..."
 categories = {

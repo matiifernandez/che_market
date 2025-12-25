@@ -529,3 +529,12 @@ en:
     terms: "Terms of Service"
     privacy: "Privacy Policy"
     copyright: "All rights reserved."
+
+  # Demo Mode
+  demo:
+    modal_title: "Demo Mode"
+    modal_description: "This is a live demo of Che Market. Stripe is configured in TEST mode, so no real charges will be made."
+    test_card: "Use this test card:"
+    modal_note: "You can use any valid future date and any 3-digit CVC."
+    cancel: "Cancel"
+    proceed: "Continue to Checkout"

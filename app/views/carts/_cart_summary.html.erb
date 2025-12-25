@@ -72,7 +72,53 @@
   </div>
 </div>
 
-<%= button_to t('cart.checkout'), checkout_path, method: :post, data: { turbo: false }, class: "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 cursor-pointer" %>
+<div data-controller="demo-modal" data-action="keydown@window->demo-modal#closeOnEscape">
+  <!-- Checkout button triggers modal -->
+  <button type="button" data-action="demo-modal#show" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 cursor-pointer">
+    <%= t('cart.checkout') %>
+  </button>
+
+  <!-- Hidden form for actual checkout -->
+  <%= form_with url: checkout_path, method: :post, data: { turbo: false, demo_modal_target: "form" }, class: "hidden" do %>
+  <% end %>
+
+  <!-- Demo Warning Modal -->
+  <div data-demo-modal-target="modal" data-action="click->demo-modal#closeOnBackground" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md mx-4 p-6 transform">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <span class="text-4xl">🧪</span>
+        <h3 class="text-xl font-bold text-gray-900 mt-2"><%= t('demo.modal_title', default: 'Demo Mode') %></h3>
+      </div>
+
+      <!-- Content -->
+      <div class="text-gray-600 text-sm space-y-3 mb-6">
+        <p><%= t('demo.modal_description', default: 'This is a live demo of Che Market. Stripe is configured in TEST mode, so no real charges will be made.') %></p>
+
+        <div class="bg-gray-50 rounded-lg p-4">
+          <p class="font-semibold text-gray-900 mb-2"><%= t('demo.test_card', default: 'Use this test card:') %></p>
+          <div class="font-mono text-sm space-y-1">
+            <p><span class="text-gray-500">Number:</span> <span class="text-gray-900">4242 4242 4242 4242</span></p>
+            <p><span class="text-gray-500">Expiry:</span> <span class="text-gray-900">12/34</span></p>
+            <p><span class="text-gray-500">CVC:</span> <span class="text-gray-900">123</span></p>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500"><%= t('demo.modal_note', default: 'You can use any valid-looking future date and any 3-digit CVC.') %></p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button type="button" data-action="demo-modal#close" class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition duration-200 cursor-pointer">
+          <%= t('demo.cancel', default: 'Cancel') %>
+        </button>
+        <button type="button" data-action="demo-modal#proceed" class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 cursor-pointer">
+          <%= t('demo.proceed', default: 'Continue to Checkout') %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <a href="<%= products_path %>" class="block text-center text-indigo-600 hover:text-indigo-800 mt-4">
   ← <%= t('cart.continue_shopping') %>

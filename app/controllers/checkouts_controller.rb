@@ -38,7 +38,7 @@ class CheckoutsController < ApplicationController
       shipping_address_collection: {
         allowed_countries: shipping_countries
       },
-      success_url: success_checkout_url + "?session_id={CHECKOUT_SESSION_ID}",
+      success_url: "#{success_checkout_url}#{success_checkout_url.include?('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}",
       cancel_url: cancel_checkout_url,
       metadata: {
         cart_id: @cart.id,

@@ -108,7 +108,7 @@ class GiftCardsController < ApplicationController
         },
         quantity: 1
       }],
-      success_url: success_gift_cards_url + "?session_id={CHECKOUT_SESSION_ID}",
+      success_url: "#{success_gift_cards_url}#{success_gift_cards_url.include?('?') ? '&' : '?'}session_id={CHECKOUT_SESSION_ID}",
       cancel_url: gift_cards_url,
       metadata: {
         type: "gift_card",

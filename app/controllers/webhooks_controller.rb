@@ -82,8 +82,14 @@ class WebhooksController < ApplicationController
           )
           rows_updated = Product.where(id: cart_item.product_id)
                                 .where("stock >= ?", cart_item.quantity)
-                                .update_all("stock = stock - #{cart_item.quantity}")
-          raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
+                                .update_all(["stock = stock - ?", cart_item.quantity])
+          # Payment already captured — log for admin resolution rather than rolling back
+          if rows_updated == 0
+            Rails.logger.error(
+              "[Webhook] Insufficient stock for product #{cart_item.product_id} " \
+              "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
+            )
+          end
         end
 
         cart.remove_coupon

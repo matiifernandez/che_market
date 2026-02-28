@@ -1,4 +1,8 @@
 class Rack::Attack
+  # Explicitly set cache store so throttles work correctly across multiple app instances.
+  # In production, Rails.cache should be backed by a shared store (Redis/Memcached).
+  Rack::Attack.cache.store = Rails.cache
+
   # Throttle login attempts: 10 per 20 seconds per IP
   throttle("login/ip", limit: 10, period: 20.seconds) do |req|
     req.ip if req.path == "/users/sign_in" && req.post?

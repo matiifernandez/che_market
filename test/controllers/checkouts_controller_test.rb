@@ -250,7 +250,49 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_equal initial_balance - gift_card_amount, gift_card.balance_cents
   end
 
-  private
+  # ============================================
+  # Gift-card-only checkout idempotency
+  # ============================================
+
+  test "gift card checkout creates only one order on double submit" do
+    sign_in @user
+    gift_card = gift_cards(:active_card) # balance: 5000 cents
+    Order.where(cart: @cart).destroy_all # clear fixture paid order for this cart
+    @cart.cart_items.create!(product: @product, quantity: 1) # price: 1200 cents
+    @cart.update!(gift_card: gift_card)
+
+    # Ensure gift card covers full amount
+    assert_equal 0, @cart.total_cents
+
+    assert_difference "Order.count", 1 do
+      post checkout_path
+      post checkout_path # second submit — must be a no-op
+    end
+  end
+
+  test "gift card checkout returns existing order on retry" do
+    sign_in @user
+    gift_card = gift_cards(:active_card)
+    Order.where(cart: @cart).destroy_all # clear fixture paid order for this cart
+    @cart.cart_items.create!(product: @product, quantity: 1)
+    @cart.update!(gift_card: gift_card)
+
+    # Pre-create the paid order (simulates first submit already completed)
+    existing_order = Order.create!(
+      user: @user,
+      cart: @cart,
+      status: :paid,
+      total_cents: 0,
+      email: @user.email
+    )
+
+    assert_no_difference "Order.count" do
+      post checkout_path
+    end
+
+    # Should redirect to success with the existing order
+    assert_redirected_to success_checkout_path(order_id: existing_order.id)
+  end
 
   def mock_stripe_session_object(id, amount_total:, customer_email:, cart_id:, coupon_id: nil, gift_card_id: nil, gift_card_amount_cents: 0, amount_discount: 0)
     metadata = {

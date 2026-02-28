@@ -12,7 +12,7 @@ Rails.application.configure do
     policy.form_action :self
   end
 
-  # Nonce support for importmap inline scripts
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # Generate a fresh random nonce per request (session.id is stable and weakens CSP protection)
+  config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
   config.content_security_policy_nonce_directives = %w[script-src]
 end

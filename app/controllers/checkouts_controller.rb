@@ -153,11 +153,18 @@ class CheckoutsController < ApplicationController
         quantity: cart_item.quantity,
         price_cents: cart_item.product.price_cents
       )
-      # Use a single atomic UPDATE to prevent stock from going negative
+      # Atomic UPDATE: only decrements if stock is sufficient
       rows_updated = Product.where(id: cart_item.product_id)
                             .where("stock >= ?", cart_item.quantity)
-                            .update_all("stock = stock - #{cart_item.quantity}")
-      raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
+                            .update_all(["stock = stock - ?", cart_item.quantity])
+      # Payment already captured — log for admin resolution rather than rolling back
+      if rows_updated == 0
+        Rails.logger.error(
+          "[Checkout] Insufficient stock for product #{cart_item.product_id} " \
+          "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
+        )
+        OrderMailer.admin_notification(order).deliver_later
+      end
     end
 
     # Clear coupon and gift card from cart
@@ -203,54 +210,59 @@ class CheckoutsController < ApplicationController
     gift_card = current_cart.gift_card
     return nil unless gift_card&.valid_for_use?
 
-    # Idempotency guard: return existing paid order if already created for this cart
-    existing_order = Order.find_by(cart: current_cart, status: :paid)
-    return existing_order if existing_order
+    ActiveRecord::Base.transaction do
+      # Lock the cart row to prevent concurrent submissions creating duplicate orders
+      current_cart.with_lock do
+        # Re-check idempotency after acquiring lock
+        existing_order = Order.find_by(cart: current_cart, status: :paid)
+        return existing_order if existing_order
 
-    gift_card_amount = current_cart.gift_card_amount_to_apply
-    email = current_user&.email || "guest@chemarket.com"
+        gift_card_amount = current_cart.gift_card_amount_to_apply
+        email = current_user&.email || "guest@chemarket.com"
 
-    order = Order.create!(
-      user: current_user,
-      cart: current_cart,
-      status: :paid,
-      total_cents: 0,
-      discount_cents: current_cart.discount_cents,
-      coupon: current_cart.coupon,
-      gift_card: gift_card,
-      gift_card_amount_cents: gift_card_amount,
-      email: email
-    )
+        order = Order.create!(
+          user: current_user,
+          cart: current_cart,
+          status: :paid,
+          total_cents: 0,
+          discount_cents: current_cart.discount_cents,
+          coupon: current_cart.coupon,
+          gift_card: gift_card,
+          gift_card_amount_cents: gift_card_amount,
+          email: email
+        )
 
-    # Create line items and decrement stock atomically
-    current_cart.cart_items.includes(:product).each do |cart_item|
-      order.line_items.create!(
-        product: cart_item.product,
-        quantity: cart_item.quantity,
-        price_cents: cart_item.product.price_cents
-      )
-      rows_updated = Product.where(id: cart_item.product_id)
-                            .where("stock >= ?", cart_item.quantity)
-                            .update_all("stock = stock - #{cart_item.quantity}")
-      raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
+        # Create line items and decrement stock atomically
+        current_cart.cart_items.includes(:product).each do |cart_item|
+          order.line_items.create!(
+            product: cart_item.product,
+            quantity: cart_item.quantity,
+            price_cents: cart_item.product.price_cents
+          )
+          rows_updated = Product.where(id: cart_item.product_id)
+                                .where("stock >= ?", cart_item.quantity)
+                                .update_all(["stock = stock - ?", cart_item.quantity])
+          raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
+        end
+
+        # Apply gift card balance
+        gift_card.apply_to_order(order, gift_card_amount)
+
+        # Increment coupon usage if present
+        current_cart.coupon&.increment_usage!
+
+        # Clear cart
+        current_cart.remove_coupon
+        current_cart.remove_gift_card
+        current_cart.cart_items.destroy_all
+
+        # Send emails
+        OrderMailer.confirmation(order).deliver_later
+        OrderMailer.admin_notification(order).deliver_later
+
+        order
+      end
     end
-
-    # Apply gift card balance
-    gift_card.apply_to_order(order, gift_card_amount)
-
-    # Increment coupon usage if present
-    current_cart.coupon&.increment_usage!
-
-    # Clear cart
-    current_cart.remove_coupon
-    current_cart.remove_gift_card
-    current_cart.cart_items.destroy_all
-
-    # Send emails
-    OrderMailer.confirmation(order).deliver_later
-    OrderMailer.admin_notification(order).deliver_later
-
-    order
   end
 
   def shipping_countries

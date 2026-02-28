@@ -13,6 +13,7 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     @cart = @user.cart || @user.create_cart!(secret_id: SecureRandom.hex(16))
     @cart.cart_items.destroy_all
     @cart.update!(coupon: nil, gift_card: nil)
+    Order.where(cart: @cart, status: :paid).destroy_all
   end
 
   # ============================================
@@ -286,11 +287,15 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
       email: @user.email
     )
 
+    # Simulate post-checkout cart state: items and gift card cleared
+    @cart.cart_items.destroy_all
+    @cart.update!(gift_card: nil)
+
     assert_no_difference "Order.count" do
       post checkout_path
     end
 
-    # Should redirect to success with the existing order
+    # Should redirect to success with the existing order even when cart is empty
     assert_redirected_to success_checkout_path(order_id: existing_order.id)
   end
 

@@ -2,6 +2,13 @@ class CheckoutsController < ApplicationController
   def create
     @cart = current_cart
 
+    # Idempotency: redirect to existing paid order on retry (handles case where cart is already cleared)
+    existing_order = Order.find_by(cart: @cart, status: :paid)
+    if existing_order
+      redirect_to success_checkout_path(order_id: existing_order.id)
+      return
+    end
+
     if @cart.cart_items.empty?
       redirect_to cart_path, alert: "Tu carrito está vacío"
       return

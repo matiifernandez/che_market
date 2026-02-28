@@ -299,6 +299,32 @@ class CheckoutsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to success_checkout_path(order_id: existing_order.id)
   end
 
+  test "new gift card purchase is not blocked by old paid order on same cart" do
+    sign_in @user
+    gift_card = gift_cards(:active_card)
+    Order.where(cart: @cart).destroy_all
+
+    # Simulate an old paid order (>10 minutes ago) on the same cart
+    old_order = Order.create!(
+      user: @user,
+      cart: @cart,
+      status: :paid,
+      total_cents: 0,
+      email: @user.email
+    )
+    old_order.update_column(:created_at, 15.minutes.ago)
+
+    # User adds new items for a fresh purchase
+    @cart.cart_items.create!(product: @product, quantity: 1)
+    @cart.update!(gift_card: gift_card)
+    assert_equal 0, @cart.total_cents
+
+    # Should create a new order, not redirect to the stale old one
+    assert_difference "Order.count", 1 do
+      post checkout_path
+    end
+  end
+
   def mock_stripe_session_object(id, amount_total:, customer_email:, cart_id:, coupon_id: nil, gift_card_id: nil, gift_card_amount_cents: 0, amount_discount: 0)
     metadata = {
       "cart_id" => cart_id.to_s,

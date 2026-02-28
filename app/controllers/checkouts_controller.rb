@@ -2,9 +2,11 @@ class CheckoutsController < ApplicationController
   def create
     @cart = current_cart
 
-    # Idempotency: redirect to existing paid order on retry (handles case where cart is already cleared)
+    # Idempotency: redirect to a recent paid order only when the cart is already cleared
+    # (indicates a retry after successful gift-card checkout, not a new purchase).
+    # Scoping to empty cart + 10-minute window prevents blocking future purchases on the same cart.
     existing_order = Order.find_by(cart: @cart, status: :paid)
-    if existing_order
+    if recent_paid_order_retry?(@cart, existing_order)
       redirect_to success_checkout_path(order_id: existing_order.id)
       return
     end
@@ -219,9 +221,10 @@ class CheckoutsController < ApplicationController
     ActiveRecord::Base.transaction do
       # Lock the cart row to prevent concurrent submissions creating duplicate orders
       current_cart.with_lock do
-        # Re-check idempotency after acquiring lock
+        # Re-check idempotency after acquiring lock (concurrent request safety).
+        # Only treat as retry when cart is empty (cleared by competing request) and order is recent.
         existing_order = Order.find_by(cart: current_cart, status: :paid)
-        return existing_order if existing_order
+        return existing_order if recent_paid_order_retry?(current_cart, existing_order)
 
         gift_card_amount = current_cart.gift_card_amount_to_apply
         email = current_user&.email || "guest@chemarket.com"
@@ -275,6 +278,13 @@ class CheckoutsController < ApplicationController
         order
       end
     end
+  end
+
+  # Returns true only when the order represents a true retry:
+  # - the cart was already cleared (indicating checkout completed)
+  # - the order is recent (within 10 minutes) to avoid blocking future purchases on the same cart
+  def recent_paid_order_retry?(cart, order)
+    order && cart.cart_items.empty? && order.created_at >= 10.minutes.ago
   end
 
   def shipping_countries

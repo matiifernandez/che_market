@@ -163,7 +163,6 @@ class CheckoutsController < ApplicationController
           "[Checkout] Insufficient stock for product #{cart_item.product_id} " \
           "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
         )
-        OrderMailer.admin_notification(order).deliver_later
       end
     end
 
@@ -245,8 +244,11 @@ class CheckoutsController < ApplicationController
           raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
         end
 
-        # Apply gift card balance
-        gift_card.apply_to_order(order, gift_card_amount)
+        # Apply gift card balance with row-level lock; abort if it fails
+        gift_card.with_lock do
+          success = gift_card.apply_to_order(order, gift_card_amount)
+          raise "Failed to apply gift card to order" unless success
+        end
 
         # Increment coupon usage if present
         current_cart.coupon&.increment_usage!

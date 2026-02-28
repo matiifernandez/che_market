@@ -10,6 +10,7 @@ Rails.application.configure do
     policy.connect_src :self, :https
     policy.base_uri    :self
     policy.form_action :self
+    policy.frame_ancestors :none
   end
 
   # Generate a fresh random nonce per request (session.id is stable and weakens CSP protection)

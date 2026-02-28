@@ -247,7 +247,10 @@ class CheckoutsController < ApplicationController
         # Apply gift card balance with row-level lock; abort if it fails
         gift_card.with_lock do
           success = gift_card.apply_to_order(order, gift_card_amount)
-          raise "Failed to apply gift card to order" unless success
+          unless success
+            Rails.logger.error("Failed to apply gift card #{gift_card.id} to order #{order.id}")
+            raise ActiveRecord::Rollback, "Failed to apply gift card to order"
+          end
         end
 
         # Increment coupon usage if present

@@ -80,7 +80,10 @@ class WebhooksController < ApplicationController
             quantity: cart_item.quantity,
             price_cents: cart_item.product.price_cents
           )
-          cart_item.product.decrement!(:stock, cart_item.quantity)
+          rows_updated = Product.where(id: cart_item.product_id)
+                                .where("stock >= ?", cart_item.quantity)
+                                .update_all("stock = stock - #{cart_item.quantity}")
+          raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
         end
 
         cart.remove_coupon
@@ -108,9 +111,8 @@ class WebhooksController < ApplicationController
       return user.cart if user&.cart
     end
 
-    # Last resort: most recently updated cart with items (not ideal but prevents order without items)
-    Rails.logger.warn("Could not find cart by ID or email for session #{session.id}, using fallback")
-    Cart.joins(:cart_items).order(updated_at: :desc).first
+    Rails.logger.error("[Webhook] Could not find cart for session #{session.id}. Proceeding without line items.")
+    nil
   end
 
   def handle_gift_card_purchase(session)

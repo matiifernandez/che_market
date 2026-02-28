@@ -146,15 +146,18 @@ class CheckoutsController < ApplicationController
       gift_card.apply_to_order(order, gift_card_amount)
     end
 
-    # Save line items and decrement stock
+    # Save line items and decrement stock atomically
     current_cart.cart_items.includes(:product).each do |cart_item|
       order.line_items.create!(
         product: cart_item.product,
         quantity: cart_item.quantity,
         price_cents: cart_item.product.price_cents
       )
-      # Decrement product stock
-      cart_item.product.decrement!(:stock, cart_item.quantity)
+      # Use a single atomic UPDATE to prevent stock from going negative
+      rows_updated = Product.where(id: cart_item.product_id)
+                            .where("stock >= ?", cart_item.quantity)
+                            .update_all("stock = stock - #{cart_item.quantity}")
+      raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
     end
 
     # Clear coupon and gift card from cart
@@ -200,6 +203,10 @@ class CheckoutsController < ApplicationController
     gift_card = current_cart.gift_card
     return nil unless gift_card&.valid_for_use?
 
+    # Idempotency guard: return existing paid order if already created for this cart
+    existing_order = Order.find_by(cart: current_cart, status: :paid)
+    return existing_order if existing_order
+
     gift_card_amount = current_cart.gift_card_amount_to_apply
     email = current_user&.email || "guest@chemarket.com"
 
@@ -215,14 +222,17 @@ class CheckoutsController < ApplicationController
       email: email
     )
 
-    # Create line items and decrement stock
+    # Create line items and decrement stock atomically
     current_cart.cart_items.includes(:product).each do |cart_item|
       order.line_items.create!(
         product: cart_item.product,
         quantity: cart_item.quantity,
         price_cents: cart_item.product.price_cents
       )
-      cart_item.product.decrement!(:stock, cart_item.quantity)
+      rows_updated = Product.where(id: cart_item.product_id)
+                            .where("stock >= ?", cart_item.quantity)
+                            .update_all("stock = stock - #{cart_item.quantity}")
+      raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
     end
 
     # Apply gift card balance

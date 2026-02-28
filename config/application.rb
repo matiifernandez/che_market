@@ -27,5 +27,8 @@ module CheMarket
     # Default locale
     config.i18n.default_locale = :es
     config.i18n.available_locales = [:es, :en]
+
+    # Rate limiting
+    config.middleware.use Rack::Attack
   end
 end

@@ -9,7 +9,7 @@ class OrderMailer < ApplicationMailer
 
   def admin_notification(order)
     @order = order
-    mail(to: admin_email, subject: "🧉 Nueva orden ##{@order.id} - $#{format_price(@order.total_cents)}")
+    mail(to: admin_email, subject: "🧉 Nueva orden ##{@order.id} - #{format_price(@order.total_cents)}")
   end
 
   def shipped(order)

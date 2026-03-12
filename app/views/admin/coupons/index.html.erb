@@ -31,9 +31,7 @@
             </td>
             <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <%= formatted_coupon_discount(coupon) %>
-              <% if coupon.minimum_purchase_cents.present? && coupon.minimum_purchase_cents > 0 %>
-                <span class="text-gray-500 text-xs block">Min: <%= humanized_money_with_symbol(coupon.minimum_purchase) %></span>
-              <% end %>
+              <span class="text-gray-500 text-xs block"><%= formatted_coupon_minimum_purchase(coupon) %></span>
             </td>
             <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
               <%= coupon.uses_count %><%= coupon.max_uses.present? ? " / #{coupon.max_uses}" : "" %>

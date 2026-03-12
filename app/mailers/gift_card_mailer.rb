@@ -14,7 +14,7 @@ class GiftCardMailer < ApplicationMailer
     @gift_card = gift_card
     mail(
       to: admin_email,
-      subject: t("gift_card_mailer.admin_notification.subject", amount: formatted_gift_card_initial_amount(gift_card))
+      subject: t("gift_card_mailer.admin_notification.subject", amount: gift_card.formatted_initial_amount)
     )
   end
 

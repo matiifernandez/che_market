@@ -1,5 +1,6 @@
 class GiftCardMailer < ApplicationMailer
   helper :application
+  helper :gift_cards
 
   def delivery(gift_card)
     @gift_card = gift_card
@@ -13,13 +14,8 @@ class GiftCardMailer < ApplicationMailer
     @gift_card = gift_card
     mail(
       to: admin_email,
-      subject: t("gift_card_mailer.admin_notification.subject", amount: gift_card.formatted_initial_amount)
+      subject: t("gift_card_mailer.admin_notification.subject", amount: formatted_gift_card_initial_amount(gift_card))
     )
   end
 
-  private
-
-  def admin_email
-    ENV.fetch("ADMIN_EMAIL", "admin@chemarket.com")
-  end
 end

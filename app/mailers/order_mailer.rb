@@ -17,10 +17,6 @@ class OrderMailer < ApplicationMailer
     mail(to: @order.email, subject: "Che Market - ¡Tu pedido ##{@order.id} ha sido enviado! 📦")
   end
 
-  def admin_email
-    ENV.fetch("ADMIN_EMAIL", "admin@chemarket.com")
-  end
-
   def format_price(cents)
     "%.2f" % (cents / 100.0)
   end

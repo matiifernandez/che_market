@@ -41,14 +41,6 @@ class Coupon < ApplicationRecord
     increment!(:uses_count)
   end
 
-  def formatted_discount
-    if percentage?
-      "#{discount_percentage}%"
-    else
-      ActionController::Base.helpers.humanized_money_with_symbol(discount_amount)
-    end
-  end
-
   private
 
   def normalize_code

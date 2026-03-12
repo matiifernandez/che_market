@@ -105,14 +105,6 @@ class GiftCard < ApplicationRecord
     update!(delivered_at: Time.current)
   end
 
-  def formatted_balance
-    ActionController::Base.helpers.humanized_money_with_symbol(balance)
-  end
-
-  def formatted_initial_amount
-    ActionController::Base.helpers.humanized_money_with_symbol(initial_amount)
-  end
-
   def purchaser_name_or_email
     purchaser&.first_name.presence || purchaser_email.split("@").first
   end

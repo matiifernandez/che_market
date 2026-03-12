@@ -9,7 +9,7 @@ class OrderMailer < ApplicationMailer
 
   def admin_notification(order)
     @order = order
-    mail(to: admin_email, subject: "🧉 Nueva orden ##{@order.id} - $#{format_price(@order.total_cents)}")
+    mail(to: admin_email, subject: "🧉 Nueva orden ##{@order.id} - #{format_price(@order.total_cents)}")
   end
 
   def shipped(order)
@@ -17,11 +17,7 @@ class OrderMailer < ApplicationMailer
     mail(to: @order.email, subject: "Che Market - ¡Tu pedido ##{@order.id} ha sido enviado! 📦")
   end
 
-  def admin_email
-    ENV.fetch("ADMIN_EMAIL", "admin@chemarket.com")
-  end
-
   def format_price(cents)
-    "%.2f" % (cents / 100.0)
+    Money.new(cents, "USD").format
   end
 end

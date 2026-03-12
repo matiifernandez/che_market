@@ -151,6 +151,9 @@ es:
     expired: "Este cupon ha expirado"
     minimum_required: "Compra minima de %{amount} requerida"
     discount_off: "%{discount} de descuento"
+    minimum_purchase:
+      none: "Sin mínimo"
+      label: "Mín: %{amount}"
 
   # Account
   account:

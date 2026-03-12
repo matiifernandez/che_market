@@ -1,5 +1,6 @@
 class GiftCardMailer < ApplicationMailer
   helper :application
+  helper :gift_cards
 
   def delivery(gift_card)
     @gift_card = gift_card
@@ -17,9 +18,4 @@ class GiftCardMailer < ApplicationMailer
     )
   end
 
-  private
-
-  def admin_email
-    ENV.fetch("ADMIN_EMAIL", "admin@chemarket.com")
-  end
 end

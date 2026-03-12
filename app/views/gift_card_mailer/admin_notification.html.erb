@@ -25,7 +25,7 @@
       </div>
 
       <div class="content">
-        <div class="amount"><%= @gift_card.formatted_initial_amount %></div>
+        <div class="amount"><%= formatted_gift_card_initial_amount(@gift_card) %></div>
         <div class="code"><%= @gift_card.code %></div>
 
         <div class="details">

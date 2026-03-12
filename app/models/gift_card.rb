@@ -106,11 +106,11 @@ class GiftCard < ApplicationRecord
   end
 
   def formatted_balance
-    balance.format(no_cents_if_whole: true)
+    balance.format
   end
 
   def formatted_initial_amount
-    initial_amount.format(no_cents_if_whole: true)
+    initial_amount.format
   end
 
   def purchaser_name_or_email

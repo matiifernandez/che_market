@@ -105,6 +105,14 @@ class GiftCard < ApplicationRecord
     update!(delivered_at: Time.current)
   end
 
+  def formatted_balance
+    balance.format
+  end
+
+  def formatted_initial_amount
+    initial_amount.format
+  end
+
   def purchaser_name_or_email
     purchaser&.first_name.presence || purchaser_email.split("@").first
   end

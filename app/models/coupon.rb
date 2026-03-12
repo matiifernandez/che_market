@@ -41,6 +41,14 @@ class Coupon < ApplicationRecord
     increment!(:uses_count)
   end
 
+  def formatted_discount
+    if percentage?
+      "#{discount_percentage}%"
+    else
+      discount_amount.format
+    end
+  end
+
   private
 
   def normalize_code

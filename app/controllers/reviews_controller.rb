@@ -29,7 +29,7 @@ class ReviewsController < ApplicationController
   private
 
   def set_product
-    @product = Product.find(params[:product_id])
+    @product = Product.active.find(params[:product_id])
   end
 
   def review_params

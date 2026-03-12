@@ -1,11 +1,11 @@
 class ProductsController < ApplicationController
   def index
-    @products = Product.available.includes(:category).order(created_at: :desc)
+    @products = Product.active.includes(:category).order(created_at: :desc)
 
     # Search by name
     if params[:q].present?
       @query = params[:q]
-      @products = @products.where("name ILIKE ?", "%#{@query}%")
+      @products = @products.where("products.name ILIKE ?", "%#{@query}%")
     end
 
     # Filter by category
@@ -17,6 +17,6 @@ class ProductsController < ApplicationController
     @pagy, @products = pagy(@products, items: 12)
   end
   def show
-    @product = Product.find(params[:id])
+    @product = Product.active.find(params[:id])
   end
 end

@@ -3,7 +3,7 @@ class Admin::CouponsController < Admin::BaseController
 
   def index
     @coupons = Coupon.order(created_at: :desc)
-    @pagy, @coupons = pagy(@coupons, items: 20)
+    @pagy, @coupons = pagy(@coupons)
   end
 
   def show; end

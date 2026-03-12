@@ -45,7 +45,7 @@ class Coupon < ApplicationRecord
     if percentage?
       "#{discount_percentage}%"
     else
-      discount_amount.format
+      discount_amount.format(no_cents_if_whole: true)
     end
   end
 

@@ -64,7 +64,7 @@ class Cart < ApplicationRecord
 
     unless coupon.valid_for_cart?(self)
       if coupon.minimum_purchase_cents.present? && subtotal_cents < coupon.minimum_purchase_cents
-        errors.add(:coupon, I18n.t("coupons.minimum_required", amount: coupon.minimum_purchase.format))
+        errors.add(:coupon, I18n.t("coupons.minimum_required", amount: coupon.minimum_purchase.format(no_cents_if_whole: true)))
       elsif !coupon.active?
         errors.add(:coupon, I18n.t("coupons.not_active"))
       else

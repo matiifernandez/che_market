@@ -32,8 +32,8 @@ class Order < ApplicationRecord
     Money.new(subtotal_cents, "USD")
   end
 
-  def can_transition_to?(new_status)
-    allowed = VALID_TRANSITIONS[status_was.to_s] || []
+  def can_transition_to?(new_status, from_status: status)
+    allowed = VALID_TRANSITIONS[from_status.to_s] || []
     allowed.include?(new_status.to_s)
   end
 
@@ -44,9 +44,8 @@ class Order < ApplicationRecord
 
     previous_status = status_was
     next_status = status
-    allowed = VALID_TRANSITIONS[previous_status.to_s] || []
-    return if allowed.include?(next_status.to_s)
+    return if can_transition_to?(next_status, from_status: previous_status)
 
-    errors.add(:status, "cannot transition from #{previous_status} to #{next_status}")
+    errors.add(:status, :invalid_status_transition, previous_status: previous_status, next_status: next_status)
   end
 end

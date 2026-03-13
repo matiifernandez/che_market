@@ -12,7 +12,8 @@ class OrderTest < ActiveSupport::TestCase
     order = orders(:one) # paid
 
     assert_not order.update(status: :pending)
-    assert_includes order.errors[:status], "cannot transition from paid to pending"
+    assert_not_empty order.errors[:status]
+    assert_equal :invalid_status_transition, order.errors.details[:status].first[:error]
   end
 
   test "allows updates that do not change status" do

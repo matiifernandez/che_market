@@ -272,6 +272,12 @@ en:
 
   # ActiveRecord
   activerecord:
+    errors:
+      models:
+        order:
+          attributes:
+            status:
+              invalid_status_transition: "cannot transition from %{previous_status} to %{next_status}"
     models:
       product: "Product"
       category: "Category"

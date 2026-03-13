@@ -4,7 +4,7 @@ class CartsController < ApplicationController
   end
 
   def add_item
-    @product = Product.find(params[:product_id])
+    @product = Product.active.find(params[:product_id])
     @cart = current_cart
 
     if @cart.add_product(@product, 1)
@@ -29,7 +29,7 @@ class CartsController < ApplicationController
   end
 
   def update_item
-    @product = Product.find_by!(id: params[:product_id])
+    @product = Product.active.find_by!(id: params[:product_id])
     @cart = current_cart
     @cart_item = @cart.cart_items.find_by(product: @product)
 

@@ -12,9 +12,15 @@
 
   <!-- Info -->
   <div class="flex-grow">
-    <a href="<%= product_path(item.product) %>" class="font-semibold text-gray-900 hover:text-indigo-600">
-      <%= item.product.name %>
-    </a>
+    <% if item.product.active? %>
+      <a href="<%= product_path(item.product) %>" class="font-semibold text-gray-900 hover:text-indigo-600">
+        <%= item.product.name %>
+      </a>
+    <% else %>
+      <span class="font-semibold text-gray-400">
+        <%= item.product.name %> (No disponible)
+      </span>
+    <% end %>
     <p class="text-sm text-gray-500"><%= item.product.category&.name %></p>
     <p class="text-indigo-600 font-medium"><%= humanized_money_with_symbol(item.product.price) %></p>
   </div>

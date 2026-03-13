@@ -50,4 +50,22 @@ class CartsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to cart_path
     assert_nil @cart.cart_items.find_by(product: @product)
   end
+
+  # ============================================
+  # Inactive Product restrictions
+  # ============================================
+
+  test "add_item returns 404 for inactive product" do
+    sign_in @user
+    @inactive_product = products(:inactive)
+    post add_item_cart_path(product_id: @inactive_product.id)
+    assert_response :not_found
+  end
+
+  test "update_item returns 404 for inactive product" do
+    sign_in @user
+    @inactive_product = products(:inactive)
+    patch update_item_cart_path(product_id: @inactive_product.id), params: { quantity: 1 }
+    assert_response :not_found
+  end
 end

@@ -13,3 +13,10 @@ two:
   price_cents: 850
   stock: 30
   active: true
+
+inactive:
+  name: Inactive Product
+  category: one
+  price_cents: 1000
+  stock: 10
+  active: false

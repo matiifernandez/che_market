@@ -6,7 +6,7 @@ class WishlistController < ApplicationController
   end
 
   def add
-    @product = Product.find(params[:product_id])
+    @product = Product.active.find(params[:product_id])
 
     if current_user.wishlisted?(@product)
       redirect_back fallback_location: product_path(@product), alert: t('wishlist.already_added')

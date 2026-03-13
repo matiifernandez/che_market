@@ -16,30 +16,51 @@
         <% product = item.product %>
         <div class="bg-white rounded-xl shadow-sm overflow-hidden group">
           <!-- Image -->
-          <a href="<%= product_path(product) %>" class="block relative">
-            <div class="aspect-square bg-gray-100">
+          <% if product.active? %>
+            <a href="<%= product_path(product) %>" class="block relative">
+              <div class="aspect-square bg-gray-100">
+                <% if product.images.attached? %>
+                  <%= image_tag product.images.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-300" %>
+                <% else %>
+                  <div class="w-full h-full flex items-center justify-center text-6xl">📦</div>
+                <% end %>
+              </div>
+              <% unless product.stock > 0 %>
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <%= t('products.out_of_stock') %>
+                  </span>
+                </div>
+              <% end %>
+            </a>
+          <% else %>
+            <div class="aspect-square bg-gray-100 relative opacity-60">
               <% if product.images.attached? %>
-                <%= image_tag product.images.first, class: "w-full h-full object-cover group-hover:scale-105 transition duration-300" %>
+                <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
               <% else %>
                 <div class="w-full h-full flex items-center justify-center text-6xl">📦</div>
               <% end %>
-            </div>
-            <% unless product.stock > 0 %>
-              <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  <%= t('products.out_of_stock') %>
+              <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                <span class="bg-gray-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  No disponible
                 </span>
               </div>
-            <% end %>
-          </a>
+            </div>
+          <% end %>
 
           <!-- Info -->
           <div class="p-4">
-            <a href="<%= product_path(product) %>" class="block">
-              <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600 transition line-clamp-2 mb-2">
+            <% if product.active? %>
+              <a href="<%= product_path(product) %>" class="block">
+                <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600 transition line-clamp-2 mb-2">
+                  <%= product.name %>
+                </h3>
+              </a>
+            <% else %>
+              <h3 class="font-semibold text-gray-400 line-clamp-2 mb-2">
                 <%= product.name %>
               </h3>
-            </a>
+            <% end %>
 
             <div class="flex items-center justify-between mb-4">
               <span class="text-lg font-bold text-indigo-600"><%= humanized_money_with_symbol(product.price) %></span>
@@ -47,13 +68,17 @@
             </div>
 
             <div class="flex gap-2">
-              <% if product.stock > 0 %>
+              <% if product.active? && product.stock > 0 %>
                 <%= button_to add_item_cart_path(product), method: :post, data: { turbo: false }, class: "flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition cursor-pointer text-center" do %>
                   <%= t('products.add_to_cart') %>
                 <% end %>
-              <% else %>
+              <% elsif product.active? %>
                 <button disabled class="flex-1 bg-gray-300 text-gray-500 text-sm font-medium py-2 px-4 rounded-lg cursor-not-allowed">
                   <%= t('products.out_of_stock') %>
+                </button>
+              <% else %>
+                <button disabled class="flex-1 bg-gray-200 text-gray-400 text-sm font-medium py-2 px-4 rounded-lg cursor-not-allowed">
+                  No disponible
                 </button>
               <% end %>
 

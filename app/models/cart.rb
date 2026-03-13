@@ -109,15 +109,25 @@ class Cart < ApplicationRecord
   end
 
   def add_product(product, quantity = 1)
-    item = cart_items.find_by(product: product)
-    if item
-      item.quantity += quantity
-    else
-      item = cart_items.build(product: product, quantity: quantity)
+    quantity = quantity.to_i
+    return false if quantity <= 0
+
+    result = nil
+    product.with_lock do
+      product.reload
+      item = cart_items.find_or_initialize_by(product: product)
+      new_quantity = (item.persisted? ? item.quantity : 0) + quantity
+
+      if new_quantity > product.stock
+        result = false
+        next
+      end
+
+      item.quantity = new_quantity
+      result = item.save ? item : false
     end
 
-    item.save!
-    item
+    result
   end
 
   def remove_product(product)

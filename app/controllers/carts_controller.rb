@@ -36,16 +36,26 @@ class CartsController < ApplicationController
     return redirect_to cart_path unless @cart_item
 
     new_quantity = params[:quantity].to_i
+    stock_error_message = nil
 
     if new_quantity <= 0
       @cart_item.destroy
-    elsif new_quantity > @product.stock
-      return redirect_to cart_path,
-        alert: t("flash.stock_error", product: @product.name, stock: @product.stock)
     else
-      @cart_item.update(quantity: new_quantity)
+      @product.with_lock do
+        @product.reload
+        if new_quantity > @product.stock
+          stock_error_message = t("flash.stock_error", product: @product.name, stock: @product.stock)
+          next
+        end
+
+        @cart_item.update(quantity: new_quantity)
+      end
     end
 
-    redirect_to cart_path
+    if stock_error_message
+      redirect_to cart_path, alert: stock_error_message
+    else
+      redirect_to cart_path
+    end
   end
 end

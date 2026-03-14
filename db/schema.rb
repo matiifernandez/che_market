@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_03_14_212755) do
+ActiveRecord::Schema[7.1].define(version: 2026_03_14_220042) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -187,6 +188,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_14_212755) do
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_products_on_active"
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["name"], name: "index_products_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "review_helpful_votes", force: :cascade do |t|

@@ -191,16 +191,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_14_220042) do
     t.index ["name"], name: "index_products_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
   end
 
-  create_table "review_helpful_votes", force: :cascade do |t|
-    t.bigint "review_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["review_id", "user_id"], name: "index_review_helpful_votes_on_review_id_and_user_id", unique: true
-    t.index ["review_id"], name: "index_review_helpful_votes_on_review_id"
-    t.index ["user_id"], name: "index_review_helpful_votes_on_user_id"
-  end
-
   create_table "reviews", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "product_id", null: false
@@ -387,8 +377,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_14_220042) do
   add_foreign_key "orders", "gift_cards"
   add_foreign_key "orders", "users"
   add_foreign_key "products", "categories"
-  add_foreign_key "review_helpful_votes", "reviews"
-  add_foreign_key "review_helpful_votes", "users"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

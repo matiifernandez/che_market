@@ -16,13 +16,15 @@ class ReviewsController < ApplicationController
   def helpful
     @review = @product.reviews.find(params[:id])
 
-    if session[:helpful_reviews]&.include?(@review.id)
-      redirect_to product_path(@product, anchor: 'reviews'), alert: t('reviews.already_marked_helpful')
-    else
-      @review.mark_helpful!
-      session[:helpful_reviews] ||= []
-      session[:helpful_reviews] << @review.id
+    begin
+      ReviewHelpfulVote.transaction do
+        @review.review_helpful_votes.create!(user: current_user)
+        @review.increment!(:helpful_count)
+      end
+
       redirect_to product_path(@product, anchor: 'reviews'), notice: t('reviews.marked_helpful')
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      redirect_to product_path(@product, anchor: 'reviews'), alert: t('reviews.already_marked_helpful')
     end
   end
 

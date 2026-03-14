@@ -484,6 +484,7 @@ en:
     created: "Thank you! Your review has been submitted and is pending approval."
     already_marked_helpful: "You already marked this review as helpful"
     marked_helpful: "Thanks for your feedback!"
+    helpful_error: "We could not record your feedback. Please try again."
 
   # Contact
   contact:

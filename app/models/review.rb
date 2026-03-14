@@ -25,10 +25,6 @@ class Review < ApplicationRecord
     group(:rating).count.transform_keys(&:to_i)
   end
 
-  def mark_helpful!
-    increment!(:helpful_count)
-  end
-
   private
 
   def check_verified_purchase

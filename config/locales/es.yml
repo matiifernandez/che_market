@@ -490,6 +490,7 @@ es:
     created: "Gracias! Tu opinion fue enviada y esta pendiente de aprobacion."
     already_marked_helpful: "Ya marcaste esta opinion como util"
     marked_helpful: "Gracias por tu feedback!"
+    helpful_error: "No pudimos registrar tu feedback. Intenta de nuevo."
 
   # Contact
   contact:

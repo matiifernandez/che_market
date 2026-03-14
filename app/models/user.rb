@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_one :cart, dependent: :destroy
   has_many :orders, dependent: :nullify
   has_many :reviews, dependent: :destroy
+  has_many :review_helpful_votes, dependent: :destroy
   has_many :wishlist_items, dependent: :destroy
   has_many :wishlisted_products, through: :wishlist_items, source: :product
 

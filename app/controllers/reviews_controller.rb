@@ -16,13 +16,17 @@ class ReviewsController < ApplicationController
   def helpful
     @review = @product.reviews.find(params[:id])
 
-    if session[:helpful_reviews]&.include?(@review.id)
+    begin
+      vote = @review.review_helpful_votes.new(user: current_user)
+      if vote.save
+        redirect_to product_path(@product, anchor: 'reviews'), notice: t('reviews.marked_helpful')
+      elsif duplicate_helpful_vote?(vote)
+        redirect_to product_path(@product, anchor: 'reviews'), alert: t('reviews.already_marked_helpful')
+      else
+        redirect_to product_path(@product, anchor: 'reviews'), alert: t('reviews.helpful_error')
+      end
+    rescue ActiveRecord::RecordNotUnique
       redirect_to product_path(@product, anchor: 'reviews'), alert: t('reviews.already_marked_helpful')
-    else
-      @review.mark_helpful!
-      session[:helpful_reviews] ||= []
-      session[:helpful_reviews] << @review.id
-      redirect_to product_path(@product, anchor: 'reviews'), notice: t('reviews.marked_helpful')
     end
   end
 
@@ -34,5 +38,12 @@ class ReviewsController < ApplicationController
 
   def review_params
     params.require(:review).permit(:rating, :title, :body)
+  end
+
+  def duplicate_helpful_vote?(record)
+    return false unless record.is_a?(ReviewHelpfulVote)
+
+    user_errors = record.errors.details[:user] || record.errors.details[:user_id] || []
+    user_errors.any? { |detail| detail[:error] == :taken }
   end
 end

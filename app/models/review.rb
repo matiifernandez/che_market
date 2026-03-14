@@ -1,6 +1,8 @@
 class Review < ApplicationRecord
   belongs_to :user
   belongs_to :product
+  has_many :review_helpful_votes, dependent: :destroy
+  has_many :helpful_voters, through: :review_helpful_votes, source: :user
 
   enum status: { pending: 0, approved: 1, rejected: 2 }
 
@@ -21,10 +23,6 @@ class Review < ApplicationRecord
 
   def self.rating_distribution
     group(:rating).count.transform_keys(&:to_i)
-  end
-
-  def mark_helpful!
-    increment!(:helpful_count)
   end
 
   private

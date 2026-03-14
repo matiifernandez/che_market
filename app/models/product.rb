@@ -1,5 +1,5 @@
 class Product < ApplicationRecord
-  belongs_to :category, optional: true
+  belongs_to :category
   has_rich_text :description
   has_many_attached :images
   has_many :cart_items, dependent: :destroy

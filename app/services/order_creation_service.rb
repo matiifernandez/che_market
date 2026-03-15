@@ -64,56 +64,58 @@ class OrderCreationService
 
   def create_order!(status:, total_cents:, discount_cents:, coupon:, gift_card:, gift_card_amount_cents:,
                     stripe_session_id: nil, email:, strict_stock:, clear_cart_items:, apply_gift_card_with_lock:)
-    order = Order.create!(
-      user: @user,
-      cart: @cart,
-      status: status,
-      total_cents: total_cents,
-      discount_cents: discount_cents,
-      coupon: coupon,
-      gift_card: gift_card,
-      gift_card_amount_cents: gift_card_amount_cents,
-      stripe_session_id: stripe_session_id,
-      email: email
-    )
+    Order.transaction do
+      order = Order.create!(
+        user: @user,
+        cart: @cart,
+        status: status,
+        total_cents: total_cents,
+        discount_cents: discount_cents,
+        coupon: coupon,
+        gift_card: gift_card,
+        gift_card_amount_cents: gift_card_amount_cents,
+        stripe_session_id: stripe_session_id,
+        email: email
+      )
 
-    coupon&.increment_usage!
+      coupon&.increment_usage!
 
-    if gift_card && gift_card_amount_cents.to_i > 0
-      apply_gift_card(order, gift_card, gift_card_amount_cents, apply_gift_card_with_lock)
-    end
-
-    if @cart
-      @cart.cart_items.includes(:product).each do |cart_item|
-        order.line_items.create!(
-          product: cart_item.product,
-          quantity: cart_item.quantity,
-          price_cents: cart_item.product.price_cents
-        )
-        rows_updated = Product.where(id: cart_item.product_id)
-                              .where("stock >= ?", cart_item.quantity)
-                              .update_all(["stock = stock - ?", cart_item.quantity])
-        if rows_updated == 0
-          if strict_stock
-            raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}"
-          else
-            Rails.logger.error(
-              "#{@log_prefix} Insufficient stock for product #{cart_item.product_id} " \
-              "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
-            )
-          end
-        end
+      if gift_card && gift_card_amount_cents.to_i > 0
+        apply_gift_card(order, gift_card, gift_card_amount_cents, apply_gift_card_with_lock)
       end
 
-      @cart.remove_coupon
-      @cart.remove_gift_card
-      @cart.cart_items.destroy_all if clear_cart_items
+      if @cart
+        @cart.cart_items.includes(:product).each do |cart_item|
+          order.line_items.create!(
+            product: cart_item.product,
+            quantity: cart_item.quantity,
+            price_cents: cart_item.product.price_cents
+          )
+          rows_updated = Product.where(id: cart_item.product_id)
+                                .where("stock >= ?", cart_item.quantity)
+                                .update_all(["stock = stock - ?", cart_item.quantity])
+          if rows_updated == 0
+            if strict_stock
+              raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}"
+            else
+              Rails.logger.error(
+                "#{@log_prefix} Insufficient stock for product #{cart_item.product_id} " \
+                "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
+              )
+            end
+          end
+        end
+
+        @cart.remove_coupon
+        @cart.remove_gift_card
+        @cart.cart_items.destroy_all if clear_cart_items
+      end
+
+      OrderMailer.confirmation(order).deliver_later
+      OrderMailer.admin_notification(order).deliver_later
+
+      order
     end
-
-    OrderMailer.confirmation(order).deliver_later
-    OrderMailer.admin_notification(order).deliver_later
-
-    order
   end
 
   def apply_gift_card(order, gift_card, gift_card_amount_cents, lock)
@@ -126,7 +128,13 @@ class OrderCreationService
         end
       end
     else
-      gift_card.apply_to_order(order, gift_card_amount_cents)
+      success = gift_card.apply_to_order(order, gift_card_amount_cents)
+      unless success
+        Rails.logger.error(
+          "#{@log_prefix} Failed to apply gift card #{gift_card.id} to order #{order.id} (no lock)"
+        )
+        raise ActiveRecord::Rollback, "Failed to apply gift card to order"
+      end
     end
   end
 end

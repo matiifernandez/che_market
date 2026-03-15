@@ -40,65 +40,12 @@ class WebhooksController < ApplicationController
 
       # Find cart using cart_id from metadata (reliable) or fallback methods
       cart = find_cart_for_session(session)
-
-      # Get coupon and gift card from metadata
-      coupon_id = session.metadata['coupon_id']
-      coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
-
-      gift_card_id = session.metadata['gift_card_id']
-      gift_card_amount = session.metadata['gift_card_amount_cents'].to_i
-      gift_card = GiftCard.find_by(id: gift_card_id) if gift_card_id.present?
-
-      # Calculate coupon discount (total discount minus gift card amount)
-      total_stripe_discount = session.total_details&.amount_discount || 0
-      coupon_discount = [ total_stripe_discount - gift_card_amount, 0 ].max
-
-      order = Order.create!(
-        status: :paid,
-        total_cents: session.amount_total,
-        discount_cents: coupon_discount,
-        coupon: coupon,
-        gift_card: gift_card,
-        gift_card_amount_cents: gift_card_amount,
-        stripe_session_id: session.id,
-        email: session.customer_details.email,
-        cart: cart
-      )
-
-      # Increment coupon usage
-      coupon&.increment_usage!
-
-      # Apply gift card if present
-      if gift_card && gift_card_amount > 0
-        gift_card.apply_to_order(order, gift_card_amount)
-      end
-
-      if cart
-        cart.cart_items.includes(:product).each do |cart_item|
-          order.line_items.create!(
-            product: cart_item.product,
-            quantity: cart_item.quantity,
-            price_cents: cart_item.product.price_cents
-          )
-          rows_updated = Product.where(id: cart_item.product_id)
-                                .where("stock >= ?", cart_item.quantity)
-                                .update_all(["stock = stock - ?", cart_item.quantity])
-          # Payment already captured — log for admin resolution rather than rolling back
-          if rows_updated == 0
-            Rails.logger.error(
-              "[Webhook] Insufficient stock for product #{cart_item.product_id} " \
-              "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
-            )
-          end
-        end
-
-        cart.remove_coupon
-        cart.remove_gift_card
-      end
-
-      # Send emails (background job)
-      OrderMailer.confirmation(order).deliver_later
-      OrderMailer.admin_notification(order).deliver_later
+      OrderCreationService.new(
+        cart: cart,
+        stripe_session: session,
+        email: session.customer_details&.email,
+        log_prefix: "[Webhook]"
+      ).create_from_stripe!
     end
   rescue ActiveRecord::RecordNotUnique
     # Order was created by success callback while we were processing - that's fine

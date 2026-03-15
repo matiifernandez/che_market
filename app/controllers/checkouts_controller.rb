@@ -118,70 +118,12 @@ class CheckoutsController < ApplicationController
   end
 
   def create_order_from_session(stripe_session)
-    # Get coupon from metadata if present
-    coupon_id = stripe_session.metadata['coupon_id']
-    coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
-
-    # Get gift card from metadata if present
-    gift_card_id = stripe_session.metadata['gift_card_id']
-    gift_card_amount = stripe_session.metadata['gift_card_amount_cents'].to_i
-    gift_card = GiftCard.find_by(id: gift_card_id) if gift_card_id.present?
-
-    # Calculate discount (coupon only, gift card is separate)
-    total_stripe_discount = stripe_session.total_details&.amount_discount || 0
-    coupon_discount = total_stripe_discount - gift_card_amount
-    coupon_discount = [coupon_discount, 0].max
-
-    order = Order.create!(
-      user: current_user,
+    OrderCreationService.new(
       cart: current_cart,
-      status: :paid,
-      total_cents: stripe_session.amount_total,
-      discount_cents: coupon_discount,
-      coupon: coupon,
-      gift_card: gift_card,
-      gift_card_amount_cents: gift_card_amount,
-      stripe_session_id: stripe_session.id,
-      email: stripe_session.customer_details.email
-    )
-
-    # Increment coupon usage if present
-    coupon&.increment_usage!
-
-    # Apply gift card if present
-    if gift_card && gift_card_amount > 0
-      gift_card.apply_to_order(order, gift_card_amount)
-    end
-
-    # Save line items and decrement stock atomically
-    current_cart.cart_items.includes(:product).each do |cart_item|
-      order.line_items.create!(
-        product: cart_item.product,
-        quantity: cart_item.quantity,
-        price_cents: cart_item.product.price_cents
-      )
-      # Atomic UPDATE: only decrements if stock is sufficient
-      rows_updated = Product.where(id: cart_item.product_id)
-                            .where("stock >= ?", cart_item.quantity)
-                            .update_all(["stock = stock - ?", cart_item.quantity])
-      # Payment already captured — log for admin resolution rather than rolling back
-      if rows_updated == 0
-        Rails.logger.error(
-          "[Checkout] Insufficient stock for product #{cart_item.product_id} " \
-          "(#{cart_item.product.name}) on order #{order.id}. Manual stock correction required."
-        )
-      end
-    end
-
-    # Clear coupon and gift card from cart
-    current_cart.remove_coupon
-    current_cart.remove_gift_card
-
-    # Send emails (background job)
-    OrderMailer.confirmation(order).deliver_later
-    OrderMailer.admin_notification(order).deliver_later
-
-    order
+      user: current_user,
+      stripe_session: stripe_session,
+      log_prefix: "[Checkout]"
+    ).create_from_stripe!
   end
 
   def build_line_items(cart)
@@ -222,57 +164,11 @@ class CheckoutsController < ApplicationController
         # Re-check idempotency after acquiring lock
         existing_order = Order.find_by(cart: current_cart, status: :paid)
         return existing_order if existing_order
-
-        gift_card_amount = current_cart.gift_card_amount_to_apply
-        email = current_user&.email || "guest@chemarket.com"
-
-        order = Order.create!(
-          user: current_user,
+        OrderCreationService.new(
           cart: current_cart,
-          status: :paid,
-          total_cents: 0,
-          discount_cents: current_cart.discount_cents,
-          coupon: current_cart.coupon,
-          gift_card: gift_card,
-          gift_card_amount_cents: gift_card_amount,
-          email: email
-        )
-
-        # Create line items and decrement stock atomically
-        current_cart.cart_items.includes(:product).each do |cart_item|
-          order.line_items.create!(
-            product: cart_item.product,
-            quantity: cart_item.quantity,
-            price_cents: cart_item.product.price_cents
-          )
-          rows_updated = Product.where(id: cart_item.product_id)
-                                .where("stock >= ?", cart_item.quantity)
-                                .update_all(["stock = stock - ?", cart_item.quantity])
-          raise ActiveRecord::Rollback, "Insufficient stock for #{cart_item.product.name}" if rows_updated == 0
-        end
-
-        # Apply gift card balance with row-level lock; abort if it fails
-        gift_card.with_lock do
-          success = gift_card.apply_to_order(order, gift_card_amount)
-          unless success
-            Rails.logger.error("Failed to apply gift card #{gift_card.id} to order #{order.id}")
-            raise ActiveRecord::Rollback, "Failed to apply gift card to order"
-          end
-        end
-
-        # Increment coupon usage if present
-        current_cart.coupon&.increment_usage!
-
-        # Clear cart
-        current_cart.remove_coupon
-        current_cart.remove_gift_card
-        current_cart.cart_items.destroy_all
-
-        # Send emails
-        OrderMailer.confirmation(order).deliver_later
-        OrderMailer.admin_notification(order).deliver_later
-
-        order
+          user: current_user,
+          log_prefix: "[Checkout]"
+        ).create_from_gift_card!
       end
     end
   end

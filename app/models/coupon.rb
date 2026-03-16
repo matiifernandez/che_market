@@ -12,6 +12,7 @@ class Coupon < ApplicationRecord
   validates :discount_amount_cents, numericality: { greater_than: 0 }, if: :fixed_amount?
 
   before_validation :normalize_code
+  before_validation :clear_unused_discount_value
 
   scope :active, -> { where(active: true) }
   scope :valid_now, -> {
@@ -53,6 +54,14 @@ class Coupon < ApplicationRecord
 
   def normalize_code
     self.code = code.to_s.upcase.strip
+  end
+
+  def clear_unused_discount_value
+    if percentage?
+      self.discount_amount_cents = nil
+    elsif fixed_amount?
+      self.discount_percentage = nil
+    end
   end
 
   def expired?

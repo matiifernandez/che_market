@@ -49,9 +49,19 @@ class Review < ApplicationRecord
   def status_transition_valid
     return unless will_save_change_to_status?
 
-    previous_status, next_status = status_change_to_be_saved
-    allowed = VALID_STATUS_TRANSITIONS[previous_status.to_s] || []
-    return if allowed.include?(next_status.to_s)
+    current_status_value = self.class.where(id: id).pick(:status)
+    return if current_status_value.nil?
+
+    previous_status = if current_status_value.is_a?(String)
+      current_status_value
+    else
+      self.class.statuses.key(current_status_value)
+    end
+    return if previous_status.nil?
+
+    next_status = status.to_s
+    allowed = VALID_STATUS_TRANSITIONS[previous_status] || []
+    return if allowed.include?(next_status)
 
     errors.add(:status, :invalid_transition, previous_status: previous_status, next_status: next_status)
   end

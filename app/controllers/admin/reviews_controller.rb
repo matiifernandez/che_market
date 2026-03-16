@@ -23,24 +23,56 @@ module Admin
     end
 
     def approve
-      @review.approved!
-      redirect_to admin_reviews_path, notice: t('admin.reviews.approved')
+      if update_status_with_lock(:approved)
+        redirect_to admin_reviews_path, notice: t('admin.reviews.approved')
+      else
+        redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
+      end
     end
 
     def reject
-      @review.rejected!
-      redirect_to admin_reviews_path, notice: t('admin.reviews.rejected')
+      if update_status_with_lock(:rejected)
+        redirect_to admin_reviews_path, notice: t('admin.reviews.rejected')
+      else
+        redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
+      end
     end
 
     def destroy
-      @review.destroy
-      redirect_to admin_reviews_path, notice: t('admin.reviews.deleted')
+      deleted = false
+      allowed = true
+      @review.with_lock do
+        if @review.pending?
+          @review.destroy
+          deleted = true
+        else
+          allowed = false
+        end
+      end
+
+      if deleted
+        redirect_to admin_reviews_path, notice: t('admin.reviews.deleted')
+      elsif !allowed
+        redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
+      end
     end
 
     private
 
     def set_review
       @review = Review.find(params[:id])
+    end
+
+    def update_status_with_lock(new_status)
+      updated = false
+      @review.with_lock do
+        return false unless @review.pending?
+
+        @review.update!(status: new_status)
+        updated = true
+      end
+
+      updated
     end
   end
 end

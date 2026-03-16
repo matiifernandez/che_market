@@ -278,6 +278,10 @@ en:
           attributes:
             status:
               invalid_status_transition: "cannot transition from %{previous_status} to %{next_status}"
+        review:
+          attributes:
+            status:
+              invalid_transition: "cannot transition from %{previous_status} to %{next_status}"
     models:
       product: "Product"
       category: "Category"
@@ -364,6 +368,7 @@ en:
       approved: "Review has been approved"
       rejected: "Review has been rejected"
       deleted: "Review has been deleted"
+      status_locked: "Review status is final and cannot be changed"
 
   gift_card_mailer:
     delivery:

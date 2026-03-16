@@ -1,6 +1,7 @@
 module Admin
   class ReviewsController < BaseController
     before_action :set_review, only: [:show, :approve, :reject, :destroy]
+    before_action :ensure_review_pending, only: [:approve, :reject, :destroy]
 
     def index
       @reviews = Review.includes(:user, :product).order(created_at: :desc)
@@ -41,6 +42,12 @@ module Admin
 
     def set_review
       @review = Review.find(params[:id])
+    end
+
+    def ensure_review_pending
+      return if @review.pending?
+
+      redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
     end
   end
 end

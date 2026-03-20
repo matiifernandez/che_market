@@ -27,11 +27,35 @@ module MetaTagsHelper
       tag(:link, rel: "canonical", href: canonical_url)
     ]
 
+    # Helper to generate alternate URLs for different locales, maintaining consistency with canonical_url
+    alternate_url_for_locale = lambda do |locale|
+      # If an override URL was provided, we use it as the base for alternates
+      if url
+        begin
+          uri = URI.parse(url)
+          query_params = Rack::Utils.parse_nested_query(uri.query)
+          
+          if locale == I18n.default_locale
+            query_params.delete("locale")
+          else
+            query_params["locale"] = locale.to_s
+          end
+          
+          uri.query = query_params.to_query.presence
+          uri.to_s
+        rescue URI::InvalidURIError
+          url_for(locale: (locale == I18n.default_locale ? nil : locale), only_path: false)
+        end
+      else
+        url_for(locale: (locale == I18n.default_locale ? nil : locale), only_path: false)
+      end
+    end
+
     # Language alternates
     I18n.available_locales.each do |locale|
-      tags << tag(:link, rel: "alternate", hreflang: locale, href: url_for(locale: locale, only_path: false))
+      tags << tag(:link, rel: "alternate", hreflang: locale, href: alternate_url_for_locale.call(locale))
     end
-    tags << tag(:link, rel: "alternate", hreflang: "x-default", href: url_for(locale: I18n.default_locale, only_path: false))
+    tags << tag(:link, rel: "alternate", hreflang: "x-default", href: alternate_url_for_locale.call(I18n.default_locale))
 
     # OpenGraph
     tags += [

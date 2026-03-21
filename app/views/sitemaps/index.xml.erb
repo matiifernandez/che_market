@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <%# Helper to render alternate links for a URL block %>
-  <% def render_alternates(links) %>
-    <% links.each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
-  <% end %>
 
   <!-- Home page -->
   <url>
     <loc><%= root_url(locale: nil) %></loc>
-    <% sitemap_alternate_links(:root_url).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:root_url) %>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -22,9 +13,7 @@
   <!-- Products index -->
   <url>
     <loc><%= products_url(locale: nil) %></loc>
-    <% sitemap_alternate_links(:products_url).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:products_url) %>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -33,9 +22,7 @@
   <% @categories.each do |category| %>
   <url>
     <loc><%= products_url(category: category.slug, locale: nil) %></loc>
-    <% sitemap_alternate_links(:products_url, category: category.slug).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:products_url, nil, { category: category.slug }) %>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -45,9 +32,7 @@
   <% @products.each do |product| %>
   <url>
     <loc><%= product_url(product, locale: nil) %></loc>
-    <% sitemap_alternate_links(:product_url, product).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:product_url, product) %>
     <lastmod><%= product.updated_at.strftime('%Y-%m-%d') %></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -57,17 +42,13 @@
   <!-- Static Pages -->
   <url>
     <loc><%= terms_url(locale: nil) %></loc>
-    <% sitemap_alternate_links(:terms_url).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:terms_url) %>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc><%= privacy_url(locale: nil) %></loc>
-    <% sitemap_alternate_links(:privacy_url).each do |link| %>
-      <xhtml:link rel="alternate" hreflang="<%= link[:hreflang] %>" href="<%= link[:href] %>" />
-    <% end %>
+    <%= sitemap_xhtml_links(:privacy_url) %>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

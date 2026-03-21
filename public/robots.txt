@@ -1,8 +1,4 @@
-# User-agent: *
-# Disallow: /admin/
-# Disallow: /cart/
-# Disallow: /checkout/
-# Disallow: /users/
+# For documentation on how to use this file, see: https://www.robotstxt.org/robotstxt.html
 
 User-agent: *
 Disallow: /admin/

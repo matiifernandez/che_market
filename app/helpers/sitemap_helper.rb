@@ -1,23 +1,28 @@
 module SitemapHelper
-  def sitemap_alternate_links(url_base_method, *args)
-    options = args.extract_options!
-    
-    links = I18n.available_locales.map do |locale|
+  def sitemap_xhtml_links(url_base_method, route_args = nil, options = {})
+    html = ""
+    I18n.available_locales.each do |locale|
       locale_param = (locale == I18n.default_locale ? nil : locale)
-      url = send(url_base_method, *args, options.merge(locale: locale_param, only_path: false))
+      url_options = options.merge(locale: locale_param, only_path: false)
       
-      { hreflang: locale, href: url }
+      url = if route_args
+              send(url_base_method, route_args, url_options)
+            else
+              send(url_base_method, url_options)
+            end
+      
+      html << "<xhtml:link rel=\"alternate\" hreflang=\"#{locale}\" href=\"#{url}\" />\n    "
     end
 
-    # Add x-default
-    default_url = send(url_base_method, *args, options.merge(locale: nil, only_path: false))
-    links << { hreflang: "x-default", href: default_url }
+    # x-default
+    default_url = if route_args
+                    send(url_base_method, route_args, options.merge(locale: nil, only_path: false))
+                  else
+                    send(url_base_method, options.merge(locale: nil, only_path: false))
+                  end
     
-    links
-  end
-
-  # Helper for manual URLs (like root_url)
-  def sitemap_alternate_links_for_path(path_helper, *args)
-    sitemap_alternate_links(path_helper, *args)
+    html << "<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"#{default_url}\" />"
+    
+    html.html_safe
   end
 end

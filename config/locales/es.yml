@@ -220,6 +220,12 @@ es:
       delivered: "Entregado"
       cancelled: "Cancelado"
 
+  # Errors
+  errors:
+    messages:
+      throttled: "Demasiadas solicitudes"
+      throttled_desc: "Por favor espera unos minutos antes de intentar de nuevo. Hacemos esto para mantener la tienda segura y justa para todos."
+
   # Flash messages
   flash:
     product_added: "Producto agregado al carrito"

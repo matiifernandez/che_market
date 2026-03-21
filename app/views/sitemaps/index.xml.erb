@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
   <!-- Home page -->
   <url>
-    <loc><%= root_url %></loc>
+    <loc><%= root_url(locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:root_url) %>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Products index -->
   <url>
-    <loc><%= products_url %></loc>
+    <loc><%= products_url(locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:products_url) %>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -17,7 +21,8 @@
   <!-- Categories -->
   <% @categories.each do |category| %>
   <url>
-    <loc><%= products_url(category: category.slug) %></loc>
+    <loc><%= products_url(category: category.slug, locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:products_url, nil, { category: category.slug }) %>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -26,10 +31,25 @@
   <!-- Individual products -->
   <% @products.each do |product| %>
   <url>
-    <loc><%= product_url(product) %></loc>
+    <loc><%= product_url(product, locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:product_url, product) %>
     <lastmod><%= product.updated_at.strftime('%Y-%m-%d') %></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <% end %>
+
+  <!-- Static Pages -->
+  <url>
+    <loc><%= terms_url(locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:terms_url) %>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc><%= privacy_url(locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:privacy_url) %>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>

@@ -220,6 +220,12 @@ en:
       delivered: "Delivered"
       cancelled: "Cancelled"
 
+  # Errors
+  errors:
+    messages:
+      throttled: "Too many requests"
+      throttled_desc: "Please wait a few minutes before trying again. We do this to keep the store safe and fair for everyone."
+
   # Flash messages
   flash:
     product_added: "Product added to cart"

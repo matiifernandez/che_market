@@ -3,14 +3,36 @@ class Rack::Attack
   # In production, Rails.cache should be backed by a shared store (Redis/Memcached).
   Rack::Attack.cache.store = Rails.cache
 
+  ### Throttle Sensitive Endpoints ###
+
   # Throttle login attempts: 10 per 20 seconds per IP
   throttle("login/ip", limit: 10, period: 20.seconds) do |req|
     req.ip if req.path == "/users/sign_in" && req.post?
   end
 
+  # Throttle account creation (Sign up): 5 per hour per IP to prevent bot accounts
+  throttle("registrations/ip", limit: 5, period: 1.hour) do |req|
+    req.ip if req.path == "/users" && req.post?
+  end
+
   # Throttle password reset requests: 5 per hour per IP
   throttle("password_reset/ip", limit: 5, period: 1.hour) do |req|
     req.ip if req.path == "/users/password" && req.post?
+  end
+
+  # Throttle checkout/order creation: 10 per minute per IP to prevent card testing/fraud
+  throttle("checkout/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if req.path == "/checkout" && req.post?
+  end
+
+  # Throttle product search: 30 per minute per IP to prevent heavy scraping
+  throttle("search/ip", limit: 30, period: 1.minute) do |req|
+    req.ip if req.path == "/products" && req.params["q"].present?
+  end
+
+  # Throttle review creation: 5 per hour per IP to prevent spam
+  throttle("reviews/ip", limit: 5, period: 1.hour) do |req|
+    req.ip if req.path.match?(%r{/products/.*/reviews}) && req.post?
   end
 
   # Throttle coupon code redemption: 10 per minute per IP

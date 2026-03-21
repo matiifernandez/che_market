@@ -1,13 +1,14 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+# User-agent: *
+# Disallow: /admin/
+# Disallow: /cart/
+# Disallow: /checkout/
+# Disallow: /users/
 
 User-agent: *
-Allow: /
-
-# Disallow admin and private areas
 Disallow: /admin/
 Disallow: /cart
 Disallow: /checkout
 Disallow: /users/
+Allow: /
 
-# Sitemap
 Sitemap: https://chemarket.com/sitemap.xml

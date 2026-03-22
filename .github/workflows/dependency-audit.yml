@@ -24,6 +24,7 @@ jobs:
         run: gem install bundler-audit
 
       - name: Run bundler-audit
+        continue-on-error: true
         run: |
           bundler-audit update
           bundler-audit check

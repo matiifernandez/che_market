@@ -32,6 +32,10 @@ en:
     admin: "Admin"
     my_account: "My Account"
 
+  breadcrumbs:
+    home: "Home"
+    aria_label: "Breadcrumb"
+
   # Products
   products:
     title: "Products"

@@ -23,7 +23,7 @@ module StructuredDataHelper
       "@type": "Offer",
       "url": product_url(product),
       "priceCurrency": product.price.currency.iso_code,
-      "price": product.price.to_f,
+      "price": product.price.amount.to_s("F"),
       "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       "itemCondition": "https://schema.org/NewCondition"
     }
@@ -39,7 +39,7 @@ module StructuredDataHelper
       }
 
       # Individual Reviews (show top 5 recent)
-      data[:review] = product.visible_reviews.limit(5).map do |review|
+      data[:review] = product.visible_reviews.includes(:user).limit(5).map do |review|
         {
           "@type": "Review",
           "reviewRating": {
@@ -61,7 +61,7 @@ module StructuredDataHelper
 
     # Return as safe JSON script tag
     content_tag :script, type: "application/ld+json" do
-      data.to_json.html_safe
+      ERB::Util.json_escape(data.to_json).html_safe
     end
   end
 end

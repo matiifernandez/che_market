@@ -5,6 +5,7 @@
     image: @product.images.attached? ? url_for(@product.images.first) : nil,
     type: "product"
   ) %>
+  <%= product_json_ld(@product) %>
 <% end %>
 
 <!-- Back button and Breadcrumb -->

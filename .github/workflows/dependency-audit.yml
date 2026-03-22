@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: "0 3 * * 1"
 
+permissions:
+  contents: read
+
 jobs:
   bundler-audit:
     runs-on: ubuntu-latest
@@ -21,10 +24,13 @@ jobs:
           bundler-cache: true
 
       - name: Install bundler-audit
-        run: gem install bundler-audit
+        run: gem install bundler-audit -v 0.9.3
 
       - name: Run bundler-audit
         continue-on-error: true
         run: |
-          bundler-audit update
-          bundler-audit check
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            bundler-audit check --update
+          else
+            bundler-audit check
+          fi

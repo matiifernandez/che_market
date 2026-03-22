@@ -32,6 +32,10 @@ es:
     admin: "Admin"
     my_account: "Mi Cuenta"
 
+  breadcrumbs:
+    home: "Inicio"
+    aria_label: "Ruta de navegación"
+
   # Products
   products:
     title: "Productos"

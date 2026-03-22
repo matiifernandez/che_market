@@ -1,0 +1,17 @@
+one:
+  user: one
+  product: one
+  rating: 5
+  title: "Amazing Product"
+  body: "I really loved this product, it's authentic and fresh."
+  status: 1 # approved
+  verified_purchase: true
+
+two:
+  user: two
+  product: one
+  rating: 4
+  title: "Great taste"
+  body: "The flavor is exactly what I was looking for."
+  status: 1 # approved
+  verified_purchase: false

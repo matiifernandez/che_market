@@ -283,6 +283,9 @@ es:
   # ActiveRecord
   activerecord:
     errors:
+      messages:
+        record_invalid: "La validación falló: %{errors}"
+        already_reviewed: "Ya dejaste una opinion sobre este producto"
       models:
         order:
           attributes:

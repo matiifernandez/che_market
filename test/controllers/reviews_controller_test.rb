@@ -5,7 +5,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = users(:one)
-    @product = products(:one)
+    @product = products(:two)
     @review = Review.create!(
       user: users(:two),
       product: @product,

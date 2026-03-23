@@ -2,7 +2,7 @@ class Coupon < ApplicationRecord
   has_many :carts
   has_many :orders
 
-  enum discount_type: { percentage: 0, fixed_amount: 1 }
+  enum :discount_type, { percentage: 0, fixed_amount: 1 }
 
   monetize :discount_amount_cents, allow_nil: true
   monetize :minimum_purchase_cents, allow_nil: true

@@ -4,7 +4,7 @@ class GiftCard < ApplicationRecord
   has_many :orders
   has_many :carts
 
-  enum status: {
+  enum :status, {
     pending: 0,
     active: 1,
     depleted: 2,

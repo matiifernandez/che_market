@@ -66,7 +66,12 @@
         <a href="<%= product_path(product) %>" class="block bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition duration-200 group" data-turbo-frame="_top">
           <div class="aspect-square bg-gray-50 border-b border-gray-100 overflow-hidden flex items-center justify-center">
             <% if product.images.attached? %>
-              <%= image_tag product.images.first, class: "w-full h-full object-contain group-hover:scale-105 transition duration-300" %>
+              <%= image_tag product.images.first.variant(resize_to_limit: [600, 600]),
+                class: "w-full h-full object-contain group-hover:scale-105 transition duration-300",
+                loading: "lazy",
+                decoding: "async",
+                width: 600,
+                height: 600 %>
             <% else %>
               <span class="text-6xl">📦</span>
             <% end %>

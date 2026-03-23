@@ -41,7 +41,12 @@
               <% order.line_items.includes(:product).limit(4).each do |item| %>
                 <div class="flex items-center gap-3">
                   <% if item.product&.images&.attached? %>
-                    <%= image_tag item.product.images.first, class: "w-12 h-12 object-cover rounded-lg" %>
+                    <%= image_tag item.product.images.first.variant(resize_to_limit: [120, 120]),
+                      class: "w-12 h-12 object-cover rounded-lg",
+                      loading: "lazy",
+                      decoding: "async",
+                      width: 120,
+                      height: 120 %>
                   <% else %>
                     <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                       <span class="text-gray-400 text-xs">📦</span>

@@ -283,6 +283,8 @@ en:
   # ActiveRecord
   activerecord:
     errors:
+      messages:
+        already_reviewed: "You have already reviewed this product"
       models:
         order:
           attributes:

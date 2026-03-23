@@ -3,7 +3,7 @@ require "test_helper"
 class ReviewTest < ActiveSupport::TestCase
   setup do
     @user = users(:one)
-    @product = products(:one)
+    @product = products(:two)
   end
 
   test "allows pending to approved transition" do

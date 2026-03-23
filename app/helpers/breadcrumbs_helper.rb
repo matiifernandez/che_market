@@ -18,7 +18,12 @@ module BreadcrumbsHelper
       "@type": "BreadcrumbList",
       "itemListElement": breadcrumbs.map.with_index(1) do |crumb, index|
         item_url = if crumb[:path]
-          url_for(crumb[:path], only_path: false)
+          crumb_path = crumb[:path]
+          if crumb_path.is_a?(String)
+            URI.join(request.base_url, crumb_path).to_s
+          else
+            url_for(crumb_path)
+          end
         else
           request.original_url
         end

@@ -20,12 +20,22 @@
             <a href="<%= product_path(product) %>" class="block relative">
               <div class="aspect-square bg-gray-100">
                 <% if product.images.attached? %>
-                  <%= image_tag product.images.first.variant(resize_to_limit: [400, 400]),
-                    class: "w-full h-full object-cover group-hover:scale-105 transition duration-300",
-                    loading: "lazy",
-                    decoding: "async",
-                    width: 400,
-                    height: 400 %>
+                  <% first_image = product.images.first %>
+                  <% if first_image.variable? %>
+                    <%= image_tag first_image.variant(resize_to_limit: [400, 400]),
+                      class: "w-full h-full object-cover group-hover:scale-105 transition duration-300",
+                      loading: "lazy",
+                      decoding: "async",
+                      width: 400,
+                      height: 400 %>
+                  <% else %>
+                    <%= image_tag first_image,
+                      class: "w-full h-full object-cover group-hover:scale-105 transition duration-300",
+                      loading: "lazy",
+                      decoding: "async",
+                      width: 400,
+                      height: 400 %>
+                  <% end %>
                 <% else %>
                   <div class="w-full h-full flex items-center justify-center text-6xl">📦</div>
                 <% end %>
@@ -41,12 +51,22 @@
           <% else %>
             <div class="aspect-square bg-gray-100 relative opacity-60">
               <% if product.images.attached? %>
-                <%= image_tag product.images.first.variant(resize_to_limit: [400, 400]),
-                  class: "w-full h-full object-cover",
-                  loading: "lazy",
-                  decoding: "async",
-                  width: 400,
-                  height: 400 %>
+                <% first_image = product.images.first %>
+                <% if first_image.variable? %>
+                  <%= image_tag first_image.variant(resize_to_limit: [400, 400]),
+                    class: "w-full h-full object-cover",
+                    loading: "lazy",
+                    decoding: "async",
+                    width: 400,
+                    height: 400 %>
+                <% else %>
+                  <%= image_tag first_image,
+                    class: "w-full h-full object-cover",
+                    loading: "lazy",
+                    decoding: "async",
+                    width: 400,
+                    height: 400 %>
+                <% end %>
               <% else %>
                 <div class="w-full h-full flex items-center justify-center text-6xl">📦</div>
               <% end %>

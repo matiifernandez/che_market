@@ -32,15 +32,25 @@
           <h2 class="text-lg font-semibold text-gray-900"><%= t('account.order_items') %></h2>
         </div>
         <div class="divide-y divide-gray-200">
-          <% @order.line_items.includes(:product).each do |item| %>
+          <% @order.line_items.each do |item| %>
             <div class="px-6 py-4 flex items-center gap-4">
               <% if item.product&.images&.attached? %>
-                <%= image_tag item.product.images.first.variant(resize_to_limit: [200, 200]),
-                  class: "w-20 h-20 object-cover rounded-lg",
-                  loading: "lazy",
-                  decoding: "async",
-                  width: 200,
-                  height: 200 %>
+                <% first_image = item.product.images.first %>
+                <% if first_image.variable? %>
+                  <%= image_tag first_image.variant(resize_to_limit: [200, 200]),
+                    class: "w-20 h-20 object-cover rounded-lg",
+                    loading: "lazy",
+                    decoding: "async",
+                    width: 200,
+                    height: 200 %>
+                <% else %>
+                  <%= image_tag first_image,
+                    class: "w-20 h-20 object-cover rounded-lg",
+                    loading: "lazy",
+                    decoding: "async",
+                    width: 200,
+                    height: 200 %>
+                <% end %>
               <% else %>
                 <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
                   <span class="text-gray-400 text-2xl">📦</span>

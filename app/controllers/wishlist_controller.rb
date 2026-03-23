@@ -2,7 +2,9 @@ class WishlistController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    @wishlist_items = current_user.wishlist_items.includes(:product).recent
+    @wishlist_items = current_user.wishlist_items
+      .includes(product: { images_attachments: :blob })
+      .recent
   end
 
   def add

@@ -38,15 +38,25 @@
 
           <div class="px-6 py-4">
             <div class="flex flex-wrap gap-4">
-              <% order.line_items.includes(:product).limit(4).each do |item| %>
+              <% order.line_items.first(4).each do |item| %>
                 <div class="flex items-center gap-3">
                   <% if item.product&.images&.attached? %>
-                    <%= image_tag item.product.images.first.variant(resize_to_limit: [120, 120]),
-                      class: "w-12 h-12 object-cover rounded-lg",
-                      loading: "lazy",
-                      decoding: "async",
-                      width: 120,
-                      height: 120 %>
+                    <% first_image = item.product.images.first %>
+                    <% if first_image.variable? %>
+                      <%= image_tag first_image.variant(resize_to_limit: [120, 120]),
+                        class: "w-12 h-12 object-cover rounded-lg",
+                        loading: "lazy",
+                        decoding: "async",
+                        width: 120,
+                        height: 120 %>
+                    <% else %>
+                      <%= image_tag first_image,
+                        class: "w-12 h-12 object-cover rounded-lg",
+                        loading: "lazy",
+                        decoding: "async",
+                        width: 120,
+                        height: 120 %>
+                    <% end %>
                   <% else %>
                     <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                       <span class="text-gray-400 text-xs">📦</span>
@@ -58,9 +68,9 @@
                   </div>
                 </div>
               <% end %>
-              <% if order.line_items.count > 4 %>
+              <% if order.line_items.size > 4 %>
                 <div class="flex items-center">
-                  <span class="text-sm text-gray-500"><%= t('account.and_more', count: order.line_items.count - 4) %></span>
+                  <span class="text-sm text-gray-500"><%= t('account.and_more', count: order.line_items.size - 4) %></span>
                 </div>
               <% end %>
             </div>

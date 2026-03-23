@@ -18,14 +18,26 @@
   <div>
     <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
       <% if @product.images.attached? %>
-        <%= image_tag @product.images.first.variant(resize_to_limit: [1000, 1000]),
-          class: "w-full h-full object-cover object-center",
-          id: "main-image",
-          loading: "eager",
-          decoding: "async",
-          fetchpriority: "high",
-          width: 1000,
-          height: 1000 %>
+        <% first_image = @product.images.first %>
+        <% if first_image.variable? %>
+          <%= image_tag first_image.variant(resize_to_limit: [1000, 1000]),
+            class: "w-full h-full object-cover object-center",
+            id: "main-image",
+            loading: "eager",
+            decoding: "async",
+            fetchpriority: "high",
+            width: 1000,
+            height: 1000 %>
+        <% else %>
+          <%= image_tag first_image,
+            class: "w-full h-full object-cover object-center",
+            id: "main-image",
+            loading: "eager",
+            decoding: "async",
+            fetchpriority: "high",
+            width: 1000,
+            height: 1000 %>
+        <% end %>
       <% else %>
         <div class="w-full h-full flex items-center justify-center">
           <span class="text-8xl">📦</span>
@@ -37,12 +49,21 @@
       <div class="grid grid-cols-4 gap-2">
         <% @product.images.each do |image| %>
           <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-75 transition">
-            <%= image_tag image.variant(resize_to_limit: [200, 200]),
-              class: "w-full h-full object-cover object-center",
-              loading: "lazy",
-              decoding: "async",
-              width: 200,
-              height: 200 %>
+            <% if image.variable? %>
+              <%= image_tag image.variant(resize_to_limit: [200, 200]),
+                class: "w-full h-full object-cover object-center",
+                loading: "lazy",
+                decoding: "async",
+                width: 200,
+                height: 200 %>
+            <% else %>
+              <%= image_tag image,
+                class: "w-full h-full object-cover object-center",
+                loading: "lazy",
+                decoding: "async",
+                width: 200,
+                height: 200 %>
+            <% end %>
           </div>
         <% end %>
       </div>

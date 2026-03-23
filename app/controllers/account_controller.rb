@@ -6,12 +6,16 @@ class AccountController < ApplicationController
   end
 
   def orders
-    @orders = current_user.orders.order(created_at: :desc)
+    @orders = current_user.orders
+      .includes(line_items: { product: { images_attachments: :blob } })
+      .order(created_at: :desc)
     @pagy, @orders = pagy(@orders, items: 10)
   end
 
   def order
-    @order = current_user.orders.find(params[:id])
+    @order = current_user.orders
+      .includes(line_items: { product: { images_attachments: :blob } })
+      .find(params[:id])
   end
 
   def edit

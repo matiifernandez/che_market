@@ -1,6 +1,7 @@
 class CartsController < ApplicationController
   def show
     @cart = current_cart
+    @cart_items = @cart.cart_items.includes(product: { images_attachments: :blob })
   end
 
   def add_item

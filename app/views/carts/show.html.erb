@@ -10,7 +10,7 @@
     <!-- Lista de items -->
     <div class="lg:col-span-2">
       <div id="cart-items" class="bg-white rounded-lg shadow divide-y divide-gray-200">
-        <% @cart.cart_items.includes(:product).each do |item| %>
+        <% @cart_items.each do |item| %>
           <%= render "cart_item", item: item %>
         <% end %>
       </div>

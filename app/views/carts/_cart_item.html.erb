@@ -2,7 +2,22 @@
   <!-- Imagen -->
   <div class="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
     <% if item.product.images.attached? %>
-      <%= image_tag item.product.images.first, class: "w-full h-full object-cover" %>
+      <% first_image = item.product.images.first %>
+      <% if first_image.variable? %>
+        <%= image_tag first_image.variant(resize_to_limit: [160, 160]),
+          class: "w-full h-full object-cover",
+          loading: "lazy",
+          decoding: "async",
+          width: 160,
+          height: 160 %>
+      <% else %>
+        <%= image_tag first_image,
+          class: "w-full h-full object-cover",
+          loading: "lazy",
+          decoding: "async",
+          width: 160,
+          height: 160 %>
+      <% end %>
     <% else %>
       <div class="w-full h-full flex items-center justify-center">
         <span class="text-2xl">📦</span>

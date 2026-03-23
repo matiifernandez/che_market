@@ -1,6 +1,8 @@
 class ProductsController < ApplicationController
   def index
-    @products = Product.active.includes(:category).order(created_at: :desc)
+    @products = Product.active
+      .includes(:category, images_attachments: :blob)
+      .order(created_at: :desc)
 
     # Search by name
     if params[:q].present?
@@ -17,6 +19,6 @@ class ProductsController < ApplicationController
     @pagy, @products = pagy(@products, items: 12)
   end
   def show
-    @product = Product.active.find(params[:id])
+    @product = Product.active.with_attached_images.find(params[:id])
   end
 end

@@ -6,7 +6,7 @@ class Order < ApplicationRecord
   has_many :line_items, dependent: :destroy
   has_many :products, through: :line_items
 
-  enum status: { pending: 0, paid: 1, shipped: 2, delivered: 3, cancelled: 4 }
+  enum :status, { pending: 0, paid: 1, shipped: 2, delivered: 3, cancelled: 4 }
 
   VALID_TRANSITIONS = {
     "pending" => %w[paid cancelled],

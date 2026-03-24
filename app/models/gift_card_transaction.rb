@@ -2,7 +2,7 @@ class GiftCardTransaction < ApplicationRecord
   belongs_to :gift_card
   belongs_to :order, optional: true
 
-  enum transaction_type: { redemption: 0, refund: 1 }
+  enum :transaction_type, { redemption: 0, refund: 1 }
 
   monetize :amount_cents
   monetize :balance_before_cents

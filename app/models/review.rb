@@ -4,7 +4,7 @@ class Review < ApplicationRecord
   has_many :review_helpful_votes, dependent: :destroy
   has_many :helpful_voters, through: :review_helpful_votes, source: :user
 
-  enum status: { pending: 0, approved: 1, rejected: 2 }
+  enum :status, { pending: 0, approved: 1, rejected: 2 }
 
   VALID_STATUS_TRANSITIONS = {
     "pending" => %w[approved rejected],

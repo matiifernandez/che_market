@@ -5,7 +5,7 @@ class User < ApplicationRecord
         :recoverable, :rememberable, :validatable, :confirmable
 
   # Roles
-  enum role: { customer: 0, admin: 1 }
+  enum :role, { customer: 0, admin: 1 }
 
   has_one :cart, dependent: :destroy
   has_many :orders, dependent: :nullify

@@ -31,4 +31,23 @@ class SitemapsControllerTest < ActionDispatch::IntegrationTest
     # Alternate for product
     assert_match /xhtml:link rel="alternate" hreflang="en" href="http:\/\/.*\/products\/#{product.id}\?locale=en\"/, response.body
   end
+
+  test "sitemap includes published landing pages only" do
+    published_page = LandingPage.create!(
+      title: "Landing SEO",
+      slug: "landing-seo",
+      published: true
+    )
+    LandingPage.create!(
+      title: "Landing draft",
+      slug: "landing-draft",
+      published: false
+    )
+
+    get sitemap_url
+
+    assert_match /<loc>http:\/\/.*\/l\/#{published_page.slug}<\/loc>/, response.body
+    assert_no_match /<loc>http:\/\/.*\/l\/landing-draft<\/loc>/, response.body
+    assert_match /xhtml:link rel="alternate" hreflang="en" href="http:\/\/.*\/l\/#{published_page.slug}\?locale=en\"/, response.body
+  end
 end

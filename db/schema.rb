@@ -153,6 +153,23 @@ ActiveRecord::Schema[7.1].define(version: 2026_03_14_220042) do
     t.index ["product_id"], name: "index_line_items_on_product_id"
   end
 
+  create_table "landing_pages", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "slug", null: false
+    t.string "meta_title"
+    t.text "meta_description"
+    t.string "hero_title"
+    t.text "hero_subtitle"
+    t.string "hero_cta_text"
+    t.string "hero_cta_url"
+    t.jsonb "blocks", default: [], null: false
+    t.boolean "published", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["published"], name: "index_landing_pages_on_published"
+    t.index ["slug"], name: "index_landing_pages_on_slug", unique: true
+  end
+
   create_table "orders", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "cart_id"

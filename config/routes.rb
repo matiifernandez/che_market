@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   # Legal pages
   get "terms", to: "pages#terms", as: :terms
   get "privacy", to: "pages#privacy", as: :privacy
+  get "l/:slug", to: "landing_pages#show", as: :landing_page
 
   # Contact
   resource :contact, only: [:new, :create], controller: 'contacts'
@@ -83,5 +84,6 @@ Rails.application.routes.draw do
         post :reject
       end
     end
+    resources :landing_pages
   end
 end

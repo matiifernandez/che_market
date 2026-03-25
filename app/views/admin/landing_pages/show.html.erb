@@ -1,0 +1,46 @@
+<% content_for :page_title, @landing_page.title %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <p class="text-gray-600">/l/<%= @landing_page.slug %></p>
+    <p class="text-sm text-gray-500">Última actualización: <%= l(@landing_page.updated_at, format: :short) %></p>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= link_to "Editar", edit_admin_landing_page_path(@landing_page), class: "px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition" %>
+    <%= link_to "Ver pública", landing_page_path(@landing_page.slug), class: "px-4 py-2 rounded-lg bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200 transition", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Hero</h3>
+      <p class="text-sm text-gray-500 mb-4">Título: <span class="text-gray-900 font-medium"><%= @landing_page.hero_title.presence || @landing_page.title %></span></p>
+      <p class="text-gray-600"><%= @landing_page.hero_subtitle %></p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Blocks</h3>
+      <pre class="text-xs bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto"><%= JSON.pretty_generate(@landing_page.blocks || []) %></pre>
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">SEO</h3>
+      <p class="text-sm text-gray-500">Meta title</p>
+      <p class="text-gray-900 font-medium mb-3"><%= @landing_page.meta_title.presence || @landing_page.title %></p>
+      <p class="text-sm text-gray-500">Meta description</p>
+      <p class="text-gray-700"><%= @landing_page.meta_description.presence || @landing_page.hero_subtitle %></p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Estado</h3>
+      <% if @landing_page.published? %>
+        <span class="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">Publicada</span>
+      <% else %>
+        <span class="inline-flex px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm font-semibold">Borrador</span>
+      <% end %>
+    </div>
+  </div>
+</div>

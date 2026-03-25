@@ -1,0 +1,42 @@
+<% content_for :page_title, "Landing Pages" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-2xl font-bold text-gray-900">Landing Pages</h2>
+    <p class="text-gray-600">Crea páginas SEO para consultas long-tail.</p>
+  </div>
+  <%= link_to "Nueva Landing", new_admin_landing_page_path, class: "px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition" %>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Título</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Slug</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Estado</th>
+        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Acciones</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <% @landing_pages.each do |page| %>
+        <tr>
+          <td class="px-6 py-4 text-sm font-medium text-gray-900"><%= page.title %></td>
+          <td class="px-6 py-4 text-sm text-gray-600"><%= page.slug %></td>
+          <td class="px-6 py-4 text-sm">
+            <% if page.published? %>
+              <span class="inline-flex px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Publicada</span>
+            <% else %>
+              <span class="inline-flex px-2 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold">Borrador</span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4 text-right text-sm">
+            <%= link_to "Ver", admin_landing_page_path(page), class: "text-indigo-600 hover:text-indigo-800 mr-4" %>
+            <%= link_to "Editar", edit_admin_landing_page_path(page), class: "text-gray-700 hover:text-gray-900 mr-4" %>
+            <%= link_to "Eliminar", admin_landing_page_path(page), method: :delete, data: { confirm: "¿Eliminar landing page?" }, class: "text-red-600 hover:text-red-800" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

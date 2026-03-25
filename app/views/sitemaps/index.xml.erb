@@ -52,4 +52,15 @@
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Landing Pages -->
+  <% @landing_pages.each do |landing_page| %>
+  <url>
+    <loc><%= landing_page_url(landing_page.slug, locale: nil) %></loc>
+    <%= sitemap_xhtml_links(:landing_page_url, landing_page.slug) %>
+    <lastmod><%= landing_page.updated_at.strftime('%Y-%m-%d') %></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <% end %>
 </urlset>

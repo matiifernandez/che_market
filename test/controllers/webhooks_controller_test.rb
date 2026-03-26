@@ -4,6 +4,8 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   include StripeTestHelper
 
   setup do
+    @original_webhook_secret = ENV["STRIPE_WEBHOOK_SECRET"]
+    ENV["STRIPE_WEBHOOK_SECRET"] = "whsec_test"
     @user = users(:one)
     @product = products(:one)
     @gift_card = gift_cards(:pending_card)
@@ -13,6 +15,10 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     @cart.cart_items.destroy_all
     @cart.update!(coupon: nil, gift_card: nil)
     @cart.cart_items.create!(product: @product, quantity: 2)
+  end
+
+  teardown do
+    ENV["STRIPE_WEBHOOK_SECRET"] = @original_webhook_secret
   end
 
   # ============================================
@@ -32,7 +38,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     stub_stripe_construct_event(event) do
       assert_difference "Order.count", 1 do
-        post webhooks_stripe_path, params: event.to_json, as: :json
+        post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
       end
     end
 
@@ -70,7 +76,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
     stub_stripe_construct_event(event) do
       assert_no_difference "Order.count" do
-        post webhooks_stripe_path, params: event.to_json, as: :json
+        post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
       end
     end
 
@@ -94,7 +100,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     initial_uses = coupon.uses_count
 
     stub_stripe_construct_event(event) do
-      post webhooks_stripe_path, params: event.to_json, as: :json
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
     end
 
     assert_response :success
@@ -124,7 +130,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     initial_balance = gift_card.balance_cents
 
     stub_stripe_construct_event(event) do
-      post webhooks_stripe_path, params: event.to_json, as: :json
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
     end
 
     assert_response :success
@@ -151,7 +157,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     )
 
     stub_stripe_construct_event(event) do
-      post webhooks_stripe_path, params: event.to_json, as: :json
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
     end
 
     assert_response :success
@@ -172,7 +178,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     )
 
     stub_stripe_construct_event(event) do
-      post webhooks_stripe_path, params: event.to_json, as: :json
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
     end
 
     assert_response :success
@@ -189,15 +195,40 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test "returns success for unhandled event types" do
     event = {
       id: "evt_test",
+      livemode: false,
       type: "payment_intent.created",
       data: { object: { id: "pi_test" } }
     }
 
     stub_stripe_construct_event(event) do
-      post webhooks_stripe_path, params: event.to_json, as: :json
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
     end
 
     assert_response :success
+  end
+
+  test "stores webhook event and ignores duplicates" do
+    session_id = "cs_test_idempotent_#{Time.now.to_i}"
+    event = build_checkout_completed_event(
+      session_id: session_id,
+      amount_total: 2400,
+      customer_email: @user.email,
+      cart_id: @cart.id
+    )
+
+    stub_stripe_construct_event(event) do
+      assert_difference "StripeWebhookEvent.count", 1 do
+        post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
+      end
+    end
+
+    assert_response :success
+
+    stub_stripe_construct_event(event) do
+      assert_no_difference "StripeWebhookEvent.count" do
+        post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
+      end
+    end
   end
 
   private
@@ -205,6 +236,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   def build_checkout_completed_event(session_id:, amount_total:, customer_email:, cart_id:, coupon_id: nil, gift_card_id: nil, gift_card_amount_cents: 0, amount_discount: 0)
     {
       id: "evt_test_#{SecureRandom.hex(8)}",
+      livemode: false,
       type: "checkout.session.completed",
       data: {
         object: {
@@ -231,6 +263,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   def build_gift_card_purchase_event(session_id:, gift_card_id:, amount:)
     {
       id: "evt_test_gc_#{SecureRandom.hex(8)}",
+      livemode: false,
       type: "checkout.session.completed",
       data: {
         object: {
@@ -247,5 +280,9 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
         }
       }
     }
+  end
+
+  def stripe_signature_header
+    { "HTTP_STRIPE_SIGNATURE" => "t=123456,v1=signature" }
   end
 end

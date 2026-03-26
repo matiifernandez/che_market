@@ -6,6 +6,17 @@ class WebhooksController < ApplicationController
     sig_header = request.env["HTTP_STRIPE_SIGNATURE"]
     endpoint_secret = ENV["STRIPE_WEBHOOK_SECRET"]
 
+    if endpoint_secret.blank?
+      Rails.logger.error("[Webhook] STRIPE_WEBHOOK_SECRET missing")
+      render json: { error: "Webhook misconfigured" }, status: 500
+      return
+    end
+
+    if sig_header.blank?
+      render json: { error: "Missing signature" }, status: 400
+      return
+    end
+
     begin
       event = Stripe::Webhook.construct_event(payload, sig_header, endpoint_secret)
     rescue JSON::ParserError
@@ -16,15 +27,38 @@ class WebhooksController < ApplicationController
       return
     end
 
-    case event.type
-    when "checkout.session.completed"
-      session_data = event.data.object
+    webhook_event = nil
+    begin
+      webhook_event = StripeWebhookEvent.create!(
+        stripe_event_id: event.id,
+        event_type: event.type,
+        livemode: event.livemode,
+        payload: event.to_hash,
+        status: "received"
+      )
+    rescue ActiveRecord::RecordNotUnique
+      render json: { received: true }, status: 200
+      return
+    end
 
-      if session_data.metadata['type'] == "gift_card"
-        handle_gift_card_purchase(session_data)
+    begin
+      case event.type
+      when "checkout.session.completed"
+        session_data = event.data.object
+
+        if session_data.metadata['type'] == "gift_card"
+          handle_gift_card_purchase(session_data)
+        else
+          handle_checkout_completed(session_data)
+        end
+
+        webhook_event.update!(status: "processed", processed_at: Time.current)
       else
-        handle_checkout_completed(session_data)
+        webhook_event.update!(status: "ignored", processed_at: Time.current)
       end
+    rescue StandardError => e
+      webhook_event&.update!(status: "failed", processed_at: Time.current, error_message: e.message)
+      raise
     end
 
     render json: { received: true }, status: 200

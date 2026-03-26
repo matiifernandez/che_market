@@ -36,7 +36,12 @@ class WebhooksController < ApplicationController
         payload: event.to_hash,
         status: "received"
       )
-    rescue ActiveRecord::RecordNotUnique
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
+      if e.is_a?(ActiveRecord::RecordInvalid)
+        record = e.record
+        raise unless record&.errors&.added?(:stripe_event_id, :taken)
+      end
+
       render json: { received: true }, status: 200
       return
     end

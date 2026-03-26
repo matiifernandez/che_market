@@ -207,6 +207,38 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "returns 500 when webhook secret is missing" do
+    ENV["STRIPE_WEBHOOK_SECRET"] = nil
+
+    event = {
+      id: "evt_test_missing_secret",
+      livemode: false,
+      type: "payment_intent.created",
+      data: { object: { id: "pi_test" } }
+    }
+
+    stub_stripe_construct_event(event) do
+      post webhooks_stripe_path, params: event.to_json, as: :json, headers: stripe_signature_header
+    end
+
+    assert_response 500
+  end
+
+  test "returns 400 when signature header is missing" do
+    event = {
+      id: "evt_test_missing_sig",
+      livemode: false,
+      type: "payment_intent.created",
+      data: { object: { id: "pi_test" } }
+    }
+
+    stub_stripe_construct_event(event) do
+      post webhooks_stripe_path, params: event.to_json, as: :json
+    end
+
+    assert_response 400
+  end
+
   test "stores webhook event and ignores duplicates" do
     session_id = "cs_test_idempotent_#{Time.now.to_i}"
     event = build_checkout_completed_event(

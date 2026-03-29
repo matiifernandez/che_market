@@ -21,5 +21,14 @@ class CspReportsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :no_content
+    report = CspReport.order(:id).last
+    assert_equal "script-src", report.effective_directive
+    assert_equal "https://evil.example.com", report.blocked_uri
+    assert_equal "https://example.com/products", report.document_uri
+    raw = report.raw
+    effective = raw["effective-directive"] || raw["effective_directive"] || raw[:effective_directive] || raw[:effective_directive]
+    blocked = raw["blocked-uri"] || raw["blocked_uri"] || raw[:blocked_uri]
+    assert_equal "script-src", effective
+    assert_equal "https://evil.example.com", blocked
   end
 end

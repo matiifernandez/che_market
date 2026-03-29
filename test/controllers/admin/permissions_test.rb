@@ -23,7 +23,7 @@ class Admin::PermissionsTest < ActionDispatch::IntegrationTest
         product: {
           name: "Test Product",
           category_id: @category.id,
-          price_cents: 1000,
+          price: 10,
           stock: 5,
           active: true
         }
@@ -42,7 +42,7 @@ class Admin::PermissionsTest < ActionDispatch::IntegrationTest
         product: {
           name: "Admin Product",
           category_id: @category.id,
-          price_cents: 2000,
+          price: 20,
           stock: 3,
           active: true
         }
@@ -50,5 +50,15 @@ class Admin::PermissionsTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to admin_products_path
+  end
+
+  test "staff viewing order does not mark as viewed" do
+    sign_in @staff
+    order = orders(:one)
+    order.update!(viewed_at: nil)
+
+    get admin_order_path(order)
+    assert_response :success
+    assert_nil order.reload.viewed_at
   end
 end

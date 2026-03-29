@@ -57,6 +57,11 @@ class Rack::Attack
     req.ip if req.path == "/gift_cards/balance" && req.post?
   end
 
+  # Throttle CSP report ingestion: 60 per minute per IP
+  throttle("csp_reports/ip", limit: 60, period: 1.minute) do |req|
+    req.ip if req.path == "/csp_reports" && req.post?
+  end
+
   # Customized responder with Localization and HTML support
   self.throttled_responder = lambda do |request|
     # Detect locale from params or default

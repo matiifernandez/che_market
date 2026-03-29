@@ -11,9 +11,12 @@ Rails.application.configure do
     policy.base_uri    :self
     policy.form_action :self
     policy.frame_ancestors :none
+
+    policy.report_uri "/csp_reports"
   end
 
   # Generate a fresh random nonce per request (session.id is stable and weakens CSP protection)
   config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
   config.content_security_policy_nonce_directives = %w[script-src]
+
 end

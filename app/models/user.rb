@@ -5,7 +5,7 @@ class User < ApplicationRecord
         :recoverable, :rememberable, :validatable, :confirmable
 
   # Roles
-  enum :role, { customer: 0, admin: 1 }
+  enum :role, { customer: 0, admin: 1, staff: 2 }
 
   has_one :cart, dependent: :destroy
   has_many :orders, dependent: :nullify
@@ -20,5 +20,13 @@ class User < ApplicationRecord
 
   def wishlisted?(product)
     wishlist_items.exists?(product: product)
+  end
+
+  def admin_access?
+    admin? || staff?
+  end
+
+  def admin_write_access?
+    admin?
   end
 end

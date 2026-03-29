@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_25_093000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_25_094500) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -101,6 +101,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_093000) do
     t.datetime "updated_at", null: false
     t.integer "uses_count", default: 0, null: false
     t.index ["code"], name: "index_coupons_on_code", unique: true
+  end
+
+  create_table "csp_reports", force: :cascade do |t|
+    t.string "blocked_uri"
+    t.datetime "created_at", null: false
+    t.string "disposition"
+    t.string "document_uri"
+    t.string "effective_directive"
+    t.string "ip_address"
+    t.datetime "occurred_at", null: false
+    t.string "original_policy"
+    t.jsonb "raw", default: {}, null: false
+    t.string "referrer"
+    t.string "source_file"
+    t.integer "status_code"
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.string "violated_directive"
+    t.index ["effective_directive"], name: "index_csp_reports_on_effective_directive"
+    t.index ["occurred_at"], name: "index_csp_reports_on_occurred_at"
   end
 
   create_table "gift_card_transactions", force: :cascade do |t|

@@ -10,7 +10,7 @@ class Admin::ProductsController < Admin::BaseController
       @products = @products.where("name ILIKE ?", "%#{@query}%")
     end
 
-    @pagy, @products = pagy(@products, items: 10)
+    @pagy, @products = pagy(:offset, @products, limit: 10)
   end
 
   def show; end

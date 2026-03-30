@@ -79,7 +79,7 @@ gem 'money-rails'      # Pricing and currency handling
 gem 'simple_form'      # Form handling
 gem "cloudinary"       # Cloud-based image and video management
 gem 'stripe'           # Payment processing
-gem 'pagy', '~> 8.0'   # Pagination
+gem 'pagy', '~> 43.4'  # Pagination
 gem 'solid_queue'      # Background job processing (database-backed)
 gem 'rack-attack'      # Rate limiting and throttling
 # gem letter_opener_web' Email preview in development was added in development do.

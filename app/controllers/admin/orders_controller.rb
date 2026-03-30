@@ -1,7 +1,7 @@
 class Admin::OrdersController < Admin::BaseController
   def index
     @orders = Order.order(created_at: :desc)
-    @pagy, @orders = pagy(@orders, items: 20)
+    @pagy, @orders = pagy(:offset, @orders, limit: 20)
   end
 
   def show

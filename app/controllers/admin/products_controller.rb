@@ -22,6 +22,7 @@ class Admin::ProductsController < Admin::BaseController
   def create
     @product = Product.new(product_params)
     if @product.save
+      log_admin_action!(action: "product.create", auditable: @product, change_set: @product.saved_changes)
       redirect_to admin_products_path, notice: "Producto creado exitosamente."
     else
       render :new, status: :unprocessable_entity
@@ -32,6 +33,7 @@ class Admin::ProductsController < Admin::BaseController
 
   def update
     if @product.update(product_params)
+      log_admin_action!(action: "product.update", auditable: @product, change_set: @product.saved_changes)
       redirect_to admin_products_path, notice: "Producto actualizado exitosamente."
     else
       render :edit, status: :unprocessable_entity
@@ -39,7 +41,9 @@ class Admin::ProductsController < Admin::BaseController
   end
 
   def destroy
+    change_set = @product.attributes
     @product.destroy
+    log_admin_action!(action: "product.destroy", auditable: @product, change_set: change_set) if @product.destroyed?
     redirect_to admin_products_path, notice: "Producto eliminado."
   end
 

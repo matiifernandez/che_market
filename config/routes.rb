@@ -86,6 +86,7 @@ Rails.application.routes.draw do
       end
     end
     resources :csp_reports, only: [:index]
+    resources :audit_logs, only: [:index]
     resources :landing_pages
   end
 end

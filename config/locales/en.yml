@@ -329,6 +329,8 @@ en:
 
   # Admin
   admin:
+    access_denied: "Access denied."
+    readonly: "Read-only access."
     gift_cards:
       title: "Gift Cards"
       search_placeholder: "Search by code or email..."

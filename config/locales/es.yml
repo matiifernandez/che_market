@@ -330,6 +330,8 @@ es:
 
   # Admin
   admin:
+    access_denied: "Acceso no autorizado."
+    readonly: "Acceso de solo lectura."
     gift_cards:
       title: "Gift Cards"
       search_placeholder: "Buscar por codigo o email..."

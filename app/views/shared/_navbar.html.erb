@@ -64,7 +64,7 @@
             <%= t('nav.my_account') %>
           </a>
 
-          <% if current_user.admin? %>
+          <% if current_user.admin_access? %>
             <a href="<%= admin_root_path %>" class="text-indigo-600 hover:text-indigo-800 font-medium">
               <%= t('nav.admin') %>
             </a>
@@ -143,7 +143,7 @@
           <%= t('nav.my_account') %>
         </a>
 
-        <% if current_user.admin? %>
+        <% if current_user.admin_access? %>
           <a href="<%= admin_root_path %>" class="block text-indigo-600 hover:text-indigo-800 font-medium">
             <%= t('nav.admin') %>
           </a>

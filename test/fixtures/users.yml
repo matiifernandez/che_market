@@ -17,3 +17,9 @@ admin:
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
   role: 1
   confirmed_at: <%= Time.current %>
+
+staff:
+  email: staff@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  role: 2
+  confirmed_at: <%= Time.current %>

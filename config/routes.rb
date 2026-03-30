@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   # Webhooks
   post "/webhooks/stripe", to: "webhooks#stripe"
+  post "/csp_reports", to: "csp_reports#create"
 
   # Sitemap
   get "sitemap", to: "sitemaps#index", as: :sitemap, defaults: { format: :xml }
@@ -84,6 +85,7 @@ Rails.application.routes.draw do
         post :reject
       end
     end
+    resources :csp_reports, only: [:index]
     resources :landing_pages
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_25_094500) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -51,6 +51,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_094500) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_audit_logs", force: :cascade do |t|
+    t.string "action", null: false
+    t.bigint "admin_user_id", null: false
+    t.bigint "auditable_id"
+    t.string "auditable_type"
+    t.jsonb "change_set", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "ip_address"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "occurred_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.index ["action"], name: "index_admin_audit_logs_on_action"
+    t.index ["admin_user_id"], name: "index_admin_audit_logs_on_admin_user_id"
+    t.index ["auditable_type", "auditable_id"], name: "index_admin_audit_logs_on_auditable_type_and_auditable_id"
+    t.index ["occurred_at"], name: "index_admin_audit_logs_on_occurred_at"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -423,6 +441,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_094500) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "admin_audit_logs", "users", column: "admin_user_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "coupons"

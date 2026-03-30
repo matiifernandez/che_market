@@ -15,6 +15,7 @@ class Admin::CouponsController < Admin::BaseController
   def create
     @coupon = Coupon.new(coupon_params)
     if @coupon.save
+      log_admin_action!(action: "coupon.create", auditable: @coupon, change_set: @coupon.saved_changes)
       redirect_to admin_coupons_path, notice: "Cupón creado exitosamente."
     else
       render :new, status: :unprocessable_entity
@@ -25,6 +26,7 @@ class Admin::CouponsController < Admin::BaseController
 
   def update
     if @coupon.update(coupon_params)
+      log_admin_action!(action: "coupon.update", auditable: @coupon, change_set: @coupon.saved_changes)
       redirect_to admin_coupons_path, notice: "Cupón actualizado exitosamente."
     else
       render :edit, status: :unprocessable_entity
@@ -32,7 +34,9 @@ class Admin::CouponsController < Admin::BaseController
   end
 
   def destroy
+    change_set = @coupon.attributes
     @coupon.destroy
+    log_admin_action!(action: "coupon.destroy", auditable: @coupon, change_set: change_set) if @coupon.destroyed?
     redirect_to admin_coupons_path, notice: "Cupón eliminado."
   end
 

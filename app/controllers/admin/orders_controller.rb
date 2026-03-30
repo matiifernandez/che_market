@@ -21,6 +21,13 @@ class Admin::OrdersController < Admin::BaseController
     end
 
     if @order.update(order_params)
+      log_admin_action!(
+        action: "order.update",
+        auditable: @order,
+        change_set: @order.saved_changes,
+        metadata: { previous_status: previous_status }
+      )
+
       # Send shipped notification email when status changes to shipped
       if @order.shipped? && previous_status != "shipped"
         OrderMailer.shipped(@order).deliver_later

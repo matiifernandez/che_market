@@ -32,9 +32,14 @@ class Admin::BaseController < ApplicationController
         method: request.request_method,
         request_id: request.request_id
       }.merge(metadata || {}),
-      ip_address: request.remote_ip,
-      user_agent: request.user_agent,
+      ip_address: request.remote_ip.to_s,
+      user_agent: request.user_agent.to_s,
       occurred_at: Time.current
+    )
+  rescue StandardError => e
+    Rails.logger.error(
+      "Failed to log admin action #{action.inspect} for user #{current_user&.id}: " \
+      "#{e.class} - #{e.message}"
     )
   end
 end

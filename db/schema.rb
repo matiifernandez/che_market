@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_090000) do
     t.jsonb "metadata", default: {}, null: false
     t.datetime "occurred_at", null: false
     t.datetime "updated_at", null: false
-    t.string "user_agent"
+    t.text "user_agent"
     t.index ["action"], name: "index_admin_audit_logs_on_action"
     t.index ["admin_user_id"], name: "index_admin_audit_logs_on_admin_user_id"
     t.index ["auditable_type", "auditable_id"], name: "index_admin_audit_logs_on_auditable_type_and_auditable_id"

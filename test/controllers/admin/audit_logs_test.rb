@@ -31,4 +31,28 @@ class Admin::AuditLogsTest < ActionDispatch::IntegrationTest
     assert_equal "Product", log.auditable_type
     assert log.auditable_id.present?
   end
+
+  test "creates audit log on admin product update" do
+    sign_in @admin
+    product = products(:one)
+
+    assert_difference "AdminAuditLog.count", 1 do
+      patch admin_product_path(product), params: {
+        product: {
+          name: "Updated Product Name"
+        }
+      }
+    end
+
+    log = AdminAuditLog.order(:id).last
+    assert_equal "product.update", log.action
+    assert_includes log.change_set.keys, "name"
+  end
+
+  test "admin can view audit logs index" do
+    sign_in @admin
+
+    get admin_audit_logs_path
+    assert_response :success
+  end
 end

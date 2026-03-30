@@ -10,7 +10,7 @@ class CreateAdminAuditLogs < ActiveRecord::Migration[7.1]
       t.jsonb :change_set, null: false, default: {}
       t.jsonb :metadata, null: false, default: {}
       t.string :ip_address
-      t.string :user_agent
+      t.text :user_agent
       t.datetime :occurred_at, null: false
 
       t.timestamps

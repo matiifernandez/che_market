@@ -193,6 +193,7 @@ GEM
     minitest (6.0.2)
       drb (~> 2.0)
       prism (~> 1.5)
+    minitest-mock (5.27.0)
     monetize (2.0.0)
       money (~> 7.0)
     money (7.0.2)
@@ -401,6 +402,7 @@ DEPENDENCIES
   jbuilder
   letter_opener_web
   minitest (~> 6.0)
+  minitest-mock
   money-rails
   pagy (~> 8.0)
   pg (~> 1.1)

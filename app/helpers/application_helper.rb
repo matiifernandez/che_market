@@ -1,5 +1,6 @@
 module ApplicationHelper
-  include Pagy::Frontend
+  include Pagy::HelperLoader
+  include Pagy::NumericHelperLoader
 
   def admin_nav_link(text, path, controller_name, badge_count: nil)
     is_active = controller.controller_name == controller_name || (controller_name == "dashboard" && controller.controller_name == "dashboard")

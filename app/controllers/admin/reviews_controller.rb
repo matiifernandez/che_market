@@ -9,7 +9,7 @@ module Admin
         @reviews = @reviews.where(status: params[:status])
       end
 
-      @pagy, @reviews = pagy(@reviews, items: 20)
+      @pagy, @reviews = pagy(:offset, @reviews, limit: 20)
 
       @stats = {
         total: Review.count,

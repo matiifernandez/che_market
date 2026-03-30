@@ -16,7 +16,7 @@ class ProductsController < ApplicationController
       @products = @products.where(category: @category) if @category
     end
 
-    @pagy, @products = pagy(@products, items: 12)
+    @pagy, @products = pagy(:offset, @products, limit: 12)
   end
   def show
     @product = Product.active.with_attached_images.find(params[:id])

@@ -9,7 +9,7 @@ class AccountController < ApplicationController
     @orders = current_user.orders
       .includes(line_items: { product: { images_attachments: :blob } })
       .order(created_at: :desc)
-    @pagy, @orders = pagy(@orders, items: 10)
+    @pagy, @orders = pagy(:offset, @orders, limit: 10)
   end
 
   def order

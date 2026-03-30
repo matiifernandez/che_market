@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  include Pagy::Backend
+  include Pagy::Method
   include CartManagement
 
   before_action :set_locale

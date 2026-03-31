@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   include CartManagement
 
   before_action :set_locale
+  before_action :verify_session_token, if: :user_signed_in?
   after_action :transfer_cart_to_user, if: :user_signed_in?
 
   private
@@ -14,5 +15,12 @@ class ApplicationController < ActionController::Base
 
   def default_url_options
     { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }
+  end
+
+  def verify_session_token
+    return if session[:session_token].present? && session[:session_token] == current_user.session_token
+
+    sign_out(current_user)
+    redirect_to new_user_session_path, alert: t("auth.session_expired")
   end
 end

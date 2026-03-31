@@ -7,6 +7,9 @@ class Admin::PermissionsTest < ActionDispatch::IntegrationTest
     @staff = users(:staff)
     @admin = users(:admin)
     @category = categories(:one)
+
+    @staff.update!(otp_required_for_login: true)
+    @admin.update!(otp_required_for_login: true)
   end
 
   test "staff can view admin pages" do

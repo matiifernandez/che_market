@@ -74,6 +74,7 @@ end
 
 # Custom added gems.
 gem 'devise'           # Authentication
+gem 'devise-two-factor' # TOTP-based 2FA
 gem 'pundit'           # Authorization
 gem 'money-rails'      # Pricing and currency handling
 gem 'simple_form'      # Form handling

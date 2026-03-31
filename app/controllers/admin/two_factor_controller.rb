@@ -4,7 +4,6 @@ class Admin::TwoFactorController < Admin::BaseController
   skip_before_action :require_admin_write_access!
   skip_before_action :require_admin_two_factor!
 
-  before_action :ensure_admin_access!
   before_action :ensure_otp_secret!
 
   def show
@@ -37,12 +36,6 @@ class Admin::TwoFactorController < Admin::BaseController
   end
 
   private
-
-  def ensure_admin_access!
-    return if current_user&.admin_access?
-
-    redirect_to root_path, alert: t("admin.access_denied")
-  end
 
   def ensure_otp_secret!
     return if current_user.otp_secret.present?

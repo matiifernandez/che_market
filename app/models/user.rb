@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :wishlist_items, dependent: :destroy
   has_many :wishlisted_products, through: :wishlist_items, source: :product
 
-  serialize :otp_backup_codes, Array
+  serialize :otp_backup_codes, coder: JSON
 
   before_create :ensure_session_token
 

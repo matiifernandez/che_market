@@ -1,9 +1,8 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable, :trackable and :omniauthable
-  otp_key = ENV.fetch("DEVISE_OTP_SECRET_KEY") do
-    Rails.application.credentials.dig(:devise, :otp_secret_key) || Rails.application.secret_key_base
-  end
+  otp_key = ENV["DEVISE_OTP_SECRET_KEY"] || Rails.application.credentials.dig(:devise, :otp_secret_key)
+  raise "Missing OTP secret encryption key. Set ENV['DEVISE_OTP_SECRET_KEY'] or credentials devise.otp_secret_key." if otp_key.blank?
 
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable, :confirmable,
@@ -49,7 +48,10 @@ class User < ApplicationRecord
   end
 
   def self.generate_unique_session_token
-    SecureRandom.hex(32)
+    loop do
+      token = SecureRandom.hex(32)
+      break token unless exists?(session_token: token)
+    end
   end
 
   private

@@ -313,5 +313,7 @@ Devise.setup do |config|
 end
 
 Warden::Manager.after_set_user except: :fetch do |user, auth, _opts|
-  auth.session(:user)[:session_token] = user.session_token
+  session_token = user.session_token
+  auth.session(:user)[:session_token] = session_token
+  auth.request.session[:session_token] = session_token
 end

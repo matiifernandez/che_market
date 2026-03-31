@@ -5,21 +5,25 @@ one:
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
   role: 0
   confirmed_at: <%= Time.current %>
+  session_token: <%= SecureRandom.hex(32) %>
 
 two:
   email: user2@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
   role: 0
   confirmed_at: <%= Time.current %>
+  session_token: <%= SecureRandom.hex(32) %>
 
 admin:
   email: admin@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
   role: 1
   confirmed_at: <%= Time.current %>
+  session_token: <%= SecureRandom.hex(32) %>
 
 staff:
   email: staff@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
   role: 2
   confirmed_at: <%= Time.current %>
+  session_token: <%= SecureRandom.hex(32) %>

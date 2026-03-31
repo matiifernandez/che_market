@@ -20,6 +20,11 @@ class Admin::LandingPagesController < Admin::BaseController
   def create
     @landing_page = LandingPage.new(landing_page_params)
     if @landing_page.save
+      log_admin_action!(
+        action: "landing_page.create",
+        auditable: @landing_page,
+        change_set: @landing_page.saved_changes
+      )
       redirect_to admin_landing_page_path(@landing_page), notice: "Landing page creada."
     else
       render :new, status: :unprocessable_entity
@@ -28,6 +33,11 @@ class Admin::LandingPagesController < Admin::BaseController
 
   def update
     if @landing_page.update(landing_page_params)
+      log_admin_action!(
+        action: "landing_page.update",
+        auditable: @landing_page,
+        change_set: @landing_page.saved_changes
+      )
       redirect_to admin_landing_page_path(@landing_page), notice: "Landing page actualizada."
     else
       render :edit, status: :unprocessable_entity
@@ -35,7 +45,13 @@ class Admin::LandingPagesController < Admin::BaseController
   end
 
   def destroy
+    change_set = @landing_page.attributes
     @landing_page.destroy
+    log_admin_action!(
+      action: "landing_page.destroy",
+      auditable: @landing_page,
+      change_set: change_set
+    ) if @landing_page.destroyed?
     redirect_to admin_landing_pages_path, notice: "Landing page eliminada."
   end
 

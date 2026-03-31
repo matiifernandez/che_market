@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       post :regenerate_backup_codes
       post :revoke_sessions
     end
+    resources :audit_logs, only: [:index]
     resources :landing_pages
   end
 end

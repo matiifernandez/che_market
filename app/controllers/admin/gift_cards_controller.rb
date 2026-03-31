@@ -31,6 +31,11 @@ class Admin::GiftCardsController < Admin::BaseController
     end
 
     @gift_card.update!(status: :cancelled)
+    log_admin_action!(
+      action: "gift_card.cancel",
+      auditable: @gift_card,
+      change_set: @gift_card.saved_changes
+    )
     redirect_to admin_gift_card_path(@gift_card), notice: t("admin.gift_cards.cancelled_success")
   end
 
@@ -43,6 +48,7 @@ class Admin::GiftCardsController < Admin::BaseController
     end
 
     GiftCardMailer.delivery(@gift_card).deliver_later
+    log_admin_action!(action: "gift_card.resend_email", auditable: @gift_card)
     redirect_to admin_gift_card_path(@gift_card), notice: t("admin.gift_cards.email_resent")
   end
 end

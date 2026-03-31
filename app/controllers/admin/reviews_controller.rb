@@ -24,6 +24,7 @@ module Admin
 
     def approve
       if update_status_with_lock(:approved)
+        log_admin_action!(action: "review.approve", auditable: @review, change_set: @last_review_changes)
         redirect_to admin_reviews_path, notice: t('admin.reviews.approved')
       else
         redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
@@ -32,6 +33,7 @@ module Admin
 
     def reject
       if update_status_with_lock(:rejected)
+        log_admin_action!(action: "review.reject", auditable: @review, change_set: @last_review_changes)
         redirect_to admin_reviews_path, notice: t('admin.reviews.rejected')
       else
         redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
@@ -40,6 +42,7 @@ module Admin
 
     def destroy
       deleted = false
+      change_set = @review.attributes
       allowed = true
       @review.with_lock do
         if @review.pending?
@@ -51,6 +54,7 @@ module Admin
       end
 
       if deleted
+        log_admin_action!(action: "review.destroy", auditable: @review, change_set: change_set)
         redirect_to admin_reviews_path, notice: t('admin.reviews.deleted')
       elsif !allowed
         redirect_to admin_reviews_path, alert: t('admin.reviews.status_locked')
@@ -64,11 +68,13 @@ module Admin
     end
 
     def update_status_with_lock(new_status)
+      @last_review_changes = nil
       updated = false
       @review.with_lock do
         return false unless @review.pending?
 
         @review.update!(status: new_status)
+        @last_review_changes = @review.saved_changes
         updated = true
       end
 

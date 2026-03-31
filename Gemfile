@@ -83,5 +83,6 @@ gem 'stripe'           # Payment processing
 gem 'pagy', '~> 43.4'  # Pagination
 gem 'solid_queue'      # Background job processing (database-backed)
 gem 'rack-attack'      # Rate limiting and throttling
+gem 'mini_magick'      # Image processing (Active Storage variants)
 # gem letter_opener_web' Email preview in development was added in development do.
 # dotenv-rails  was added in development, test do.

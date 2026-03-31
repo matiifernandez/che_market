@@ -412,6 +412,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   letter_opener_web
+  mini_magick
   minitest (~> 6.0)
   minitest-mock
   money-rails

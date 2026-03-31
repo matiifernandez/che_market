@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-MiniMagick.configure do |config|
-  config.cli = :magick
+unless ENV["PATH"].to_s.include?("/opt/homebrew/bin")
+  ENV["PATH"] = "/opt/homebrew/bin:#{ENV["PATH"]}"
 end

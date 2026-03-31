@@ -1,0 +1,63 @@
+<% content_for :page_title, "Security" %>
+
+<div class="max-w-3xl space-y-6">
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-2"><%= t("admin.two_factor.title") %></h2>
+
+    <% if current_user.otp_required_for_login? %>
+      <p class="text-sm text-gray-600"><%= t("admin.two_factor.enabled") %></p>
+    <% else %>
+      <p class="text-sm text-gray-600 mb-6"><%= t("admin.two_factor.instructions") %></p>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+        <p class="text-xs uppercase text-gray-500 mb-2"><%= t("admin.two_factor.secret_label") %></p>
+        <p class="font-mono text-sm text-gray-900 break-all"><%= current_user.otp_secret %></p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+        <p class="text-xs uppercase text-gray-500 mb-2"><%= t("admin.two_factor.uri_label") %></p>
+        <p class="font-mono text-xs text-gray-700 break-all"><%= @provisioning_uri %></p>
+      </div>
+
+      <%= form_with url: admin_two_factor_path, method: :put, local: true, class: "space-y-4" do |f| %>
+        <div>
+          <%= label_tag :otp_attempt, t("admin.two_factor.code_label"), class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= text_field_tag :otp_attempt, nil,
+            placeholder: t("admin.two_factor.code_placeholder"),
+            class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" %>
+        </div>
+
+        <%= f.submit t("admin.two_factor.enable_button"),
+          class: "inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if current_user.otp_required_for_login? && current_user.otp_backup_codes.present? %>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900"><%= t("admin.two_factor.backup_codes_title") %></h3>
+        <%= button_to t("admin.two_factor.regenerate_backup_codes"), regenerate_backup_codes_admin_two_factor_path,
+          method: :post,
+          class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+      </div>
+      <p class="text-sm text-gray-600 mb-4"><%= t("admin.two_factor.backup_codes_hint") %></p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <% current_user.otp_backup_codes.each do |code| %>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-mono text-sm text-gray-800">
+            <%= code %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-2"><%= t("admin.two_factor.sessions_title") %></h3>
+    <p class="text-sm text-gray-600 mb-4"><%= t("admin.two_factor.sessions_hint") %></p>
+    <%= button_to t("admin.two_factor.revoke_sessions"),
+      revoke_sessions_admin_two_factor_path,
+      method: :post,
+      class: "inline-flex items-center justify-center bg-gray-900 hover:bg-gray-800 text-white px-5 py-2 rounded-lg font-medium transition" %>
+  </div>
+</div>

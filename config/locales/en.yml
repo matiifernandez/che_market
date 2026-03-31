@@ -252,6 +252,8 @@ en:
     password_confirmation: "Confirm password"
     password_confirmation_placeholder: "Repeat your password"
     password_minimum: "Minimum %{count} characters"
+    otp_code: "Authenticator code"
+    otp_placeholder: "6-digit code"
     remember_me: "Remember me"
     login_button: "Log in"
     register_button: "Create account"
@@ -259,6 +261,7 @@ en:
     forgot_password: "Forgot your password?"
     no_confirmation_email: "Didn't receive confirmation email?"
     no_unlock_instructions: "Didn't receive unlock instructions?"
+    session_expired: "Your session has expired. Please sign in again."
 
   # Common
   common:
@@ -331,6 +334,25 @@ en:
   admin:
     access_denied: "Access denied."
     readonly: "Read-only access."
+    two_factor:
+      title: "Two-Factor Authentication"
+      required: "You must enable 2FA to access the admin panel."
+      instructions: "Scan the secret with your authenticator app or use the setup URI below, then enter the 6-digit code to enable 2FA."
+      secret_label: "Secret key"
+      uri_label: "Setup URI"
+      code_label: "Verification code"
+      code_placeholder: "Enter your 6-digit code"
+      enable_button: "Enable 2FA"
+      enabled: "Two-factor authentication enabled."
+      invalid_code: "Invalid authentication code."
+      backup_codes_title: "Recovery codes"
+      backup_codes_hint: "Save these codes in a safe place. Each code can be used once if you lose access to your authenticator."
+      regenerate_backup_codes: "Regenerate codes"
+      backup_codes_regenerated: "Recovery codes regenerated."
+      sessions_title: "Session control"
+      sessions_hint: "Revoke all existing sessions and force re-authentication."
+      revoke_sessions: "Revoke other sessions"
+      sessions_revoked: "Sessions revoked."
     gift_cards:
       title: "Gift Cards"
       search_placeholder: "Search by code or email..."

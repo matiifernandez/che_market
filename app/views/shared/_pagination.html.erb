@@ -1,9 +1,11 @@
 <% if pagy.pages > 1 %>
+  <% prev_page = pagy.page > 1 ? pagy.page - 1 : nil %>
+  <% next_page = pagy.page < pagy.pages ? pagy.page + 1 : nil %>
   <nav class="flex flex-col sm:flex-row items-center justify-center gap-2 mt-8" aria-label="Pagination">
     <div class="flex items-center gap-2">
       <%# Previous %>
-      <% if pagy.prev %>
-        <%= link_to page_url(pagy, pagy.prev), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
+      <% if prev_page %>
+        <%= link_to page_url(pagy, prev_page), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
           </svg>
@@ -24,8 +26,8 @@
       </span>
 
       <%# Next %>
-      <% if pagy.next %>
-        <%= link_to page_url(pagy, pagy.next), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
+      <% if next_page %>
+        <%= link_to page_url(pagy, next_page), class: "inline-flex items-center gap-1 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition" do %>
           <span class="hidden sm:inline"><%= t('pagination.next') %></span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

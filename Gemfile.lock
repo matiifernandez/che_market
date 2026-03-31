@@ -113,6 +113,11 @@ GEM
       railties (>= 7.0)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (6.4.0)
+      activesupport (>= 7.2, < 8.2)
+      devise (>= 4.0, < 6.0)
+      railties (>= 7.2, < 8.2)
+      rotp (~> 6.0)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
       dotenv (= 3.2.0)
@@ -313,6 +318,7 @@ GEM
       actionpack (>= 7.0)
       railties (>= 7.0)
     rexml (3.4.4)
+    rotp (6.3.0)
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
@@ -400,11 +406,13 @@ DEPENDENCIES
   cloudinary
   debug
   devise
+  devise-two-factor
   dotenv-rails
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
   letter_opener_web
+  mini_magick
   minitest (~> 6.0)
   minitest-mock
   money-rails

@@ -3,6 +3,7 @@ class Admin::BaseController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin_access!
   before_action :require_admin_write_access!
+  before_action :require_admin_two_factor!
 
   private
 
@@ -17,6 +18,14 @@ class Admin::BaseController < ApplicationController
     return unless %w[POST PATCH PUT DELETE].include?(request.request_method)
 
     redirect_to admin_root_path, alert: t("admin.readonly")
+  end
+
+  def require_admin_two_factor!
+    return unless current_user&.admin_access?
+    return if current_user.otp_required_for_login?
+    return if controller_name == "two_factor"
+
+    redirect_to admin_two_factor_path, alert: t("admin.two_factor.required")
   end
 
   def log_admin_action!(action:, auditable: nil, change_set: nil, metadata: {})

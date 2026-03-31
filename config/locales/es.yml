@@ -252,6 +252,8 @@ es:
     password_confirmation: "Confirmar contrasena"
     password_confirmation_placeholder: "Repeti tu contrasena"
     password_minimum: "Minimo %{count} caracteres"
+    otp_code: "Codigo del autenticador"
+    otp_placeholder: "Codigo de 6 digitos"
     remember_me: "Recordarme"
     login_button: "Iniciar sesion"
     register_button: "Crear cuenta"
@@ -259,6 +261,7 @@ es:
     forgot_password: "Olvidaste tu contrasena?"
     no_confirmation_email: "No recibiste el email de confirmacion?"
     no_unlock_instructions: "No recibiste instrucciones de desbloqueo?"
+    session_expired: "Tu sesion expiro. Inicia sesion nuevamente."
 
   # Common
   common:
@@ -332,6 +335,25 @@ es:
   admin:
     access_denied: "Acceso no autorizado."
     readonly: "Acceso de solo lectura."
+    two_factor:
+      title: "Autenticacion en dos pasos"
+      required: "Debes habilitar 2FA para acceder al panel admin."
+      instructions: "Escanea la clave con tu app autenticadora o usa el URI, luego ingresa el codigo de 6 digitos para habilitar 2FA."
+      secret_label: "Clave secreta"
+      uri_label: "URI de configuracion"
+      code_label: "Codigo de verificacion"
+      code_placeholder: "Ingresa tu codigo de 6 digitos"
+      enable_button: "Habilitar 2FA"
+      enabled: "Autenticacion en dos pasos habilitada."
+      invalid_code: "Codigo de autenticacion invalido."
+      backup_codes_title: "Codigos de recuperacion"
+      backup_codes_hint: "Guarda estos codigos en un lugar seguro. Cada codigo se puede usar una sola vez."
+      regenerate_backup_codes: "Regenerar codigos"
+      backup_codes_regenerated: "Codigos de recuperacion regenerados."
+      sessions_title: "Control de sesiones"
+      sessions_hint: "Revoca todas las sesiones activas y fuerza reautenticacion."
+      revoke_sessions: "Revocar otras sesiones"
+      sessions_revoked: "Sesiones revocadas."
     gift_cards:
       title: "Gift Cards"
       search_placeholder: "Buscar por codigo o email..."

@@ -93,7 +93,7 @@
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Riesgo</h2>
       <% if @order.risk_flagged? %>
         <div class="space-y-2 text-sm">
-          <p><span class="font-medium text-gray-700">Nivel:</span> <%= @order.risk_level || "medium" %></p>
+          <p><span class="font-medium text-gray-700">Nivel:</span> <%= @order.risk_level || "unknown" %></p>
           <p><span class="font-medium text-gray-700">Puntaje:</span> <%= @order.risk_score %></p>
           <p><span class="font-medium text-gray-700">Flags:</span> <%= @order.risk_flags.join(", ") %></p>
         </div>

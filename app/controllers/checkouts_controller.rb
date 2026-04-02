@@ -189,9 +189,12 @@ class CheckoutsController < ApplicationController
   end
 
   def evaluate_checkout_risk
+    email = current_user&.email
+    email ||= params[:email] if params[:email].present?
+
     CheckoutRiskEvaluator.new(
       user: current_user,
-      email: current_user&.email,
+      email: email,
       ip: request.remote_ip
     ).evaluate
   end

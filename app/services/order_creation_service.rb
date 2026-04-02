@@ -29,6 +29,12 @@ class OrderCreationService
     risk_level = metadata["risk_level"].presence
     checkout_ip = metadata["checkout_ip"].presence
     checkout_user_agent = metadata["checkout_user_agent"].presence
+    if risk_level.blank? && (checkout_ip.present? || email.present?)
+      evaluated = CheckoutRiskEvaluator.new(user: @user, email: email, ip: checkout_ip).evaluate
+      risk_flags = evaluated.flags
+      risk_score = evaluated.score
+      risk_level = evaluated.level
+    end
 
     create_order!(
       status: :paid,

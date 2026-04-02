@@ -2,7 +2,7 @@ class Admin::OrdersController < Admin::BaseController
   def index
     @orders = Order.order(created_at: :desc)
     if params[:risk] == "flagged"
-      @orders = @orders.where("jsonb_array_length(risk_flags) > 0")
+      @orders = @orders.where.not(risk_flags: [])
     end
     @pagy, @orders = pagy(:offset, @orders, limit: 20)
   end

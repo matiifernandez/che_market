@@ -26,7 +26,7 @@ class CheckoutRiskEvaluator
       "medium"
     end
 
-    Result.new(flags: flags, score: score, level: level, blocked?: flags.any?)
+    Result.new(flags: flags, score: score, level: level, blocked?: level == "high")
   end
 
   private

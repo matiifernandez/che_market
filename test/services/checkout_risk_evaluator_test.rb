@@ -9,12 +9,10 @@ class CheckoutRiskEvaluatorTest < ActiveSupport::TestCase
     fraud_config.stub(:max_per_ip, 3) do
       fraud_config.stub(:max_per_user, 3) do
         3.times do
-          Order.create!(
+          CheckoutAttempt.create!(
             user: user,
             email: user.email,
-            status: :paid,
-            total_cents: 1000,
-            checkout_ip: ip
+            ip_address: ip
           )
         end
 
@@ -34,13 +32,12 @@ class CheckoutRiskEvaluatorTest < ActiveSupport::TestCase
     fraud_config = Rails.application.config.x.fraud
 
     fraud_config.stub(:max_per_email, 3) do
+      fraud_config.stub(:max_per_ip, 10) do
       3.times do
-        Order.create!(
+        CheckoutAttempt.create!(
           user: nil,
           email: email,
-          status: :paid,
-          total_cents: 1500,
-          checkout_ip: "198.51.100.5"
+          ip_address: "198.51.100.5"
         )
       end
 
@@ -49,7 +46,8 @@ class CheckoutRiskEvaluatorTest < ActiveSupport::TestCase
 
       assert_includes result.flags, "velocity_email"
       assert_not result.blocked?
-      assert_includes ["medium", "high"], result.level
+      assert_equal "medium", result.level
+      end
     end
   end
 
@@ -58,12 +56,10 @@ class CheckoutRiskEvaluatorTest < ActiveSupport::TestCase
     ip = "203.0.113.20"
     email = "single-checkout@example.com"
 
-    Order.create!(
+    CheckoutAttempt.create!(
       user: user,
       email: email,
-      status: :paid,
-      total_cents: 2000,
-      checkout_ip: ip
+      ip_address: ip
     )
 
     evaluator = CheckoutRiskEvaluator.new(user: user, email: email, ip: ip, window_minutes: 60)

@@ -22,6 +22,7 @@ class CheckoutsController < ApplicationController
       end
     end
 
+    record_checkout_attempt
     risk = evaluate_checkout_risk
     if risk.blocked?
       redirect_to cart_path, alert: t("checkout.velocity_blocked")
@@ -197,6 +198,16 @@ class CheckoutsController < ApplicationController
       email: email,
       ip: request.remote_ip
     ).evaluate
+  end
+
+  def record_checkout_attempt
+    CheckoutAttempt.create!(
+      user: current_user,
+      email: current_user&.email,
+      ip_address: request.remote_ip.to_s
+    )
+  rescue StandardError => e
+    Rails.logger.warn("[Checkout] Failed to record checkout attempt: #{e.class} - #{e.message}")
   end
 
   def truncate_user_agent(user_agent)

@@ -13,9 +13,9 @@ class CheckoutRiskEvaluator
   def evaluate
     flags = []
 
-    flags << "velocity_ip" if @ip.present? && exceeded?(Order.where(checkout_ip: @ip), limit_for(:ip))
-    flags << "velocity_user" if @user && exceeded?(Order.where(user_id: @user.id), limit_for(:user))
-    flags << "velocity_email" if @email.present? && exceeded?(Order.where(email: @email), limit_for(:email))
+    flags << "velocity_ip" if @ip.present? && exceeded?(CheckoutAttempt.where(ip_address: @ip), limit_for(:ip))
+    flags << "velocity_user" if @user && exceeded?(CheckoutAttempt.where(user_id: @user.id), limit_for(:user))
+    flags << "velocity_email" if @email.present? && exceeded?(CheckoutAttempt.where(email: @email), limit_for(:email))
 
     score = flags.size * 50
     level = if flags.empty?

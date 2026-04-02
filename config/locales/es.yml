@@ -82,6 +82,7 @@ es:
     cancel_message: "Tu pago fue cancelado. No te preocupes, tu carrito sigue intacto."
     back_to_cart: "Volver al carrito"
     error: "Hubo un error procesando tu orden"
+    velocity_blocked: "Detectamos demasiados intentos de compra. Espera unos minutos y volvé a intentar."
 
   # Gift Cards
   gift_cards:

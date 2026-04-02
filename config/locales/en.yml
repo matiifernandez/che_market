@@ -82,6 +82,7 @@ en:
     cancel_message: "Your payment was cancelled. Don't worry, your cart is still intact."
     back_to_cart: "Back to cart"
     error: "There was an error processing your order"
+    velocity_blocked: "We detected too many checkout attempts. Please wait a few minutes and try again."
 
   # Gift Cards
   gift_cards:

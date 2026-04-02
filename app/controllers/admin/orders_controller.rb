@@ -1,6 +1,9 @@
 class Admin::OrdersController < Admin::BaseController
   def index
     @orders = Order.order(created_at: :desc)
+    if params[:risk] == "flagged"
+      @orders = @orders.where(risk_level: %w[medium high])
+    end
     @pagy, @orders = pagy(:offset, @orders, limit: 20)
   end
 

@@ -24,6 +24,10 @@ class Order < ApplicationRecord
   validates :total_cents, presence: true
   validate :status_transition_valid, on: :update
 
+  def risk_flagged?
+    risk_flags.present?
+  end
+
   def subtotal_cents
     line_items.sum { |item| item.quantity * item.price_cents }
   end

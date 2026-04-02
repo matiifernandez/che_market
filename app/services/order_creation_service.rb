@@ -12,17 +12,29 @@ class OrderCreationService
   def create_from_stripe!
     raise ArgumentError, "stripe_session is required" unless @stripe_session
 
-    coupon_id = @stripe_session.metadata["coupon_id"]
+    metadata = @stripe_session.metadata || {}
+    coupon_id = metadata["coupon_id"]
     coupon = Coupon.find_by(id: coupon_id) if coupon_id.present?
 
-    gift_card_id = @stripe_session.metadata["gift_card_id"]
-    gift_card_amount = @stripe_session.metadata["gift_card_amount_cents"].to_i
+    gift_card_id = metadata["gift_card_id"]
+    gift_card_amount = metadata["gift_card_amount_cents"].to_i
     gift_card = GiftCard.find_by(id: gift_card_id) if gift_card_id.present?
 
     total_stripe_discount = @stripe_session.total_details&.amount_discount || 0
     coupon_discount = [total_stripe_discount - gift_card_amount, 0].max
 
     email = @stripe_session.customer_details&.email || @user&.email || @email
+    risk_flags = metadata["risk_flags"].to_s.split(",").reject(&:blank?)
+    risk_score = metadata["risk_score"].to_i
+    risk_level = metadata["risk_level"].presence
+    checkout_ip = metadata["checkout_ip"].presence
+    checkout_user_agent = metadata["checkout_user_agent"].presence
+    if risk_level.blank? && (checkout_ip.present? || email.present?)
+      evaluated = CheckoutRiskEvaluator.new(user: @user, email: email, ip: checkout_ip).evaluate
+      risk_flags = evaluated.flags
+      risk_score = evaluated.score
+      risk_level = evaluated.level
+    end
 
     create_order!(
       status: :paid,
@@ -35,16 +47,24 @@ class OrderCreationService
       email: email,
       strict_stock: false,
       clear_cart_items: false,
-      apply_gift_card_with_lock: false
+      apply_gift_card_with_lock: false,
+      risk_flags: risk_flags,
+      risk_score: risk_score,
+      risk_level: risk_level,
+      checkout_ip: checkout_ip,
+      checkout_user_agent: checkout_user_agent
     )
   end
 
-  def create_from_gift_card!
+  def create_from_gift_card!(risk: nil, checkout_ip: nil, checkout_user_agent: nil)
     gift_card = @cart&.gift_card
     return nil unless gift_card&.valid_for_use?
 
     gift_card_amount = @cart.gift_card_amount_to_apply
     email = @user&.email || @email || "guest@chemarket.com"
+    risk_flags = risk&.flags || []
+    risk_score = risk&.score || 0
+    risk_level = risk&.level
 
     create_order!(
       status: :paid,
@@ -56,14 +76,20 @@ class OrderCreationService
       email: email,
       strict_stock: true,
       clear_cart_items: true,
-      apply_gift_card_with_lock: true
+      apply_gift_card_with_lock: true,
+      risk_flags: risk_flags,
+      risk_score: risk_score,
+      risk_level: risk_level,
+      checkout_ip: checkout_ip,
+      checkout_user_agent: checkout_user_agent
     )
   end
 
   private
 
   def create_order!(status:, total_cents:, discount_cents:, coupon:, gift_card:, gift_card_amount_cents:,
-                    stripe_session_id: nil, email:, strict_stock:, clear_cart_items:, apply_gift_card_with_lock:)
+                    stripe_session_id: nil, email:, strict_stock:, clear_cart_items:, apply_gift_card_with_lock:,
+                    risk_flags:, risk_score:, risk_level:, checkout_ip:, checkout_user_agent:)
     Order.transaction do
       order = Order.create!(
         user: @user,
@@ -75,7 +101,12 @@ class OrderCreationService
         gift_card: gift_card,
         gift_card_amount_cents: gift_card_amount_cents,
         stripe_session_id: stripe_session_id,
-        email: email
+        email: email,
+        risk_flags: risk_flags || [],
+        risk_score: risk_score || 0,
+        risk_level: risk_level,
+        checkout_ip: checkout_ip,
+        checkout_user_agent: checkout_user_agent
       )
 
       coupon&.increment_usage!

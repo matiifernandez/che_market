@@ -90,6 +90,23 @@
   <!-- Resumen y estado -->
   <div class="space-y-6">
     <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Riesgo</h2>
+      <% if @order.risk_flagged? %>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-medium text-gray-700">Nivel:</span> <%= @order.risk_level || "unknown" %></p>
+          <p><span class="font-medium text-gray-700">Puntaje:</span> <%= @order.risk_score %></p>
+          <p><span class="font-medium text-gray-700">Flags:</span> <%= @order.risk_flags.join(", ") %></p>
+        </div>
+      <% else %>
+        <p class="text-sm text-gray-500">Sin señales de riesgo.</p>
+      <% end %>
+      <div class="mt-3 text-xs text-gray-500">
+        <div>IP: <%= @order.checkout_ip || "-" %></div>
+        <div>User Agent: <%= truncate(@order.checkout_user_agent.to_s, length: 80) %></div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Resumen</h2>
       <div class="space-y-3">
         <div class="flex justify-between">

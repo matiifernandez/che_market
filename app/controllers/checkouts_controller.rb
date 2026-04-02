@@ -22,13 +22,19 @@ class CheckoutsController < ApplicationController
       end
     end
 
+    risk = evaluate_checkout_risk
+    if risk.blocked?
+      redirect_to cart_path, alert: t("checkout.velocity_blocked")
+      return
+    end
+
     # Calculate amounts
     gift_card_amount = @cart.gift_card_amount_to_apply
     amount_to_charge = @cart.total_cents
 
     # If gift card covers the entire purchase, process without Stripe
     if amount_to_charge.zero? && gift_card_amount > 0
-      order = create_order_paid_with_gift_card
+      order = create_order_paid_with_gift_card(risk)
       if order
         redirect_to success_checkout_path(order_id: order.id)
         return
@@ -51,7 +57,12 @@ class CheckoutsController < ApplicationController
         cart_id: @cart.id,
         coupon_id: @cart.coupon_id,
         gift_card_id: @cart.gift_card_id,
-        gift_card_amount_cents: gift_card_amount
+        gift_card_amount_cents: gift_card_amount,
+        risk_flags: risk.flags.join(","),
+        risk_score: risk.score.to_s,
+        risk_level: risk.level.to_s,
+        checkout_ip: request.remote_ip.to_s,
+        checkout_user_agent: truncate_user_agent(request.user_agent)
       }
     }
 
@@ -154,7 +165,7 @@ class CheckoutsController < ApplicationController
     )
   end
 
-  def create_order_paid_with_gift_card
+  def create_order_paid_with_gift_card(risk)
     gift_card = current_cart.gift_card
     return nil unless gift_card&.valid_for_use?
 
@@ -168,9 +179,25 @@ class CheckoutsController < ApplicationController
           cart: current_cart,
           user: current_user,
           log_prefix: "[Checkout]"
-        ).create_from_gift_card!
+        ).create_from_gift_card!(
+          risk: risk,
+          checkout_ip: request.remote_ip.to_s,
+          checkout_user_agent: truncate_user_agent(request.user_agent)
+        )
       end
     end
+  end
+
+  def evaluate_checkout_risk
+    CheckoutRiskEvaluator.new(
+      user: current_user,
+      email: current_user&.email,
+      ip: request.remote_ip
+    ).evaluate
+  end
+
+  def truncate_user_agent(user_agent)
+    user_agent.to_s.first(255)
   end
 
   def shipping_countries

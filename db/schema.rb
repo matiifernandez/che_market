@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_31_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_02_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -212,11 +212,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_090000) do
     t.string "carrier"
     t.bigint "cart_id"
     t.bigint "coupon_id"
+    t.string "checkout_ip"
+    t.string "checkout_user_agent"
     t.datetime "created_at", null: false
     t.integer "discount_cents", default: 0
     t.string "email", null: false
     t.integer "gift_card_amount_cents", default: 0
     t.bigint "gift_card_id"
+    t.jsonb "risk_flags", default: [], null: false
+    t.string "risk_level"
+    t.integer "risk_score", default: 0, null: false
     t.datetime "shipped_at"
     t.integer "status", default: 0, null: false
     t.string "stripe_session_id"
@@ -227,7 +232,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_090000) do
     t.datetime "viewed_at"
     t.index ["cart_id"], name: "index_orders_on_cart_id"
     t.index ["coupon_id"], name: "index_orders_on_coupon_id"
+    t.index ["email"], name: "index_orders_on_email"
     t.index ["gift_card_id"], name: "index_orders_on_gift_card_id"
+    t.index ["checkout_ip"], name: "index_orders_on_checkout_ip"
+    t.index ["risk_level"], name: "index_orders_on_risk_level"
     t.index ["status"], name: "index_orders_on_status"
     t.index ["stripe_session_id"], name: "index_orders_on_stripe_session_id", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"

@@ -101,6 +101,7 @@ CLOUDINARY_CLOUD_NAME=xxx
 CLOUDINARY_API_KEY=xxx
 CLOUDINARY_API_SECRET=xxx
 DEVISE_OTP_SECRET_KEY=your_32_char_secret
+# Alternatively, set credentials: devise.otp_secret_key
 
 # Email
 ADMIN_EMAIL=admin@yourdomain.com

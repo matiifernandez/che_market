@@ -2,7 +2,14 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable, :trackable and :omniauthable
   otp_key = ENV["DEVISE_OTP_SECRET_KEY"] || Rails.application.credentials.dig(:devise, :otp_secret_key)
-  raise "Missing OTP secret encryption key. Set ENV['DEVISE_OTP_SECRET_KEY'] or credentials devise.otp_secret_key." if otp_key.blank?
+  if otp_key.blank?
+    if Rails.env.development? || Rails.env.test?
+      otp_key = Rails.application.secret_key_base
+      Rails.logger.warn("[2FA] DEVISE_OTP_SECRET_KEY missing; falling back to secret_key_base in #{Rails.env}.")
+    else
+      raise "Missing OTP secret encryption key. Set ENV['DEVISE_OTP_SECRET_KEY'] or credentials devise.otp_secret_key."
+    end
+  end
 
   devise :database_authenticatable, :registerable,
         :recoverable, :rememberable, :validatable, :confirmable,

@@ -86,7 +86,7 @@ Rails.application.routes.draw do
       end
     end
     resources :csp_reports, only: [:index]
-    resource :two_factor, only: [:show, :update] do
+    resource :two_factor, controller: "two_factor", only: [:show, :update] do
       post :regenerate_backup_codes
       post :revoke_sessions
     end

@@ -13,9 +13,15 @@ Rails.application.config.to_prepare do
       secret = Rails.application.secret_key_base
       generator = ActiveSupport::KeyGenerator.new(secret, iterations: 1000)
 
-      encryption.primary_key ||= generator.generate_key("active_record_encryption_primary_key", 32)
-      encryption.deterministic_key ||= generator.generate_key("active_record_encryption_deterministic_key", 32)
-      encryption.key_derivation_salt ||= generator.generate_key("active_record_encryption_key_derivation_salt", 32)
+      if encryption.primary_key.blank?
+        encryption.primary_key = generator.generate_key("active_record_encryption_primary_key", 32)
+      end
+      if encryption.deterministic_key.blank?
+        encryption.deterministic_key = generator.generate_key("active_record_encryption_deterministic_key", 32)
+      end
+      if encryption.key_derivation_salt.blank?
+        encryption.key_derivation_salt = generator.generate_key("active_record_encryption_key_derivation_salt", 32)
+      end
 
       Rails.logger.warn("[Encryption] Active Record encryption keys missing; derived from secret_key_base in #{Rails.env}.")
     else

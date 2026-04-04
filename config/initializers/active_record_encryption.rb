@@ -3,25 +3,28 @@
 # Ensure Active Record Encryption keys are present in development/test to avoid
 # boot/runtime errors when encrypted attributes are used (e.g., OTP secrets).
 Rails.application.config.to_prepare do
-  encryption = Rails.application.config.active_record.encryption
-  primary_key = encryption.primary_key
-  deterministic_key = encryption.deterministic_key
-  key_derivation_salt = encryption.key_derivation_salt
+  app_encryption = Rails.application.config.active_record.encryption
+  encryption = ActiveRecord::Encryption.config
+  primary_key = encryption.primary_key.presence || app_encryption.primary_key
+  deterministic_key = encryption.deterministic_key.presence || app_encryption.deterministic_key
+  key_derivation_salt = encryption.key_derivation_salt.presence || app_encryption.key_derivation_salt
 
   if primary_key.blank? || deterministic_key.blank? || key_derivation_salt.blank?
     if Rails.env.development? || Rails.env.test?
       secret = Rails.application.secret_key_base
       generator = ActiveSupport::KeyGenerator.new(secret, iterations: 1000)
 
-      if encryption.primary_key.blank?
-        encryption.primary_key = generator.generate_key("active_record_encryption_primary_key", 32)
-      end
-      if encryption.deterministic_key.blank?
-        encryption.deterministic_key = generator.generate_key("active_record_encryption_deterministic_key", 32)
-      end
-      if encryption.key_derivation_salt.blank?
-        encryption.key_derivation_salt = generator.generate_key("active_record_encryption_key_derivation_salt", 32)
-      end
+      primary_key ||= generator.generate_key("active_record_encryption_primary_key", 32)
+      deterministic_key ||= generator.generate_key("active_record_encryption_deterministic_key", 32)
+      key_derivation_salt ||= generator.generate_key("active_record_encryption_key_derivation_salt", 32)
+
+      encryption.primary_key = primary_key
+      encryption.deterministic_key = deterministic_key
+      encryption.key_derivation_salt = key_derivation_salt
+
+      app_encryption.primary_key = primary_key
+      app_encryption.deterministic_key = deterministic_key
+      app_encryption.key_derivation_salt = key_derivation_salt
 
       Rails.logger.warn("[Encryption] Active Record encryption keys missing; derived from secret_key_base in #{Rails.env}.")
     else

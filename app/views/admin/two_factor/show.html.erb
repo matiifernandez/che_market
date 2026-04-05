@@ -44,7 +44,7 @@
       <p class="text-sm text-gray-600 mb-4"><%= t("admin.two_factor.backup_codes_hint") %></p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <% current_user.otp_backup_codes.each do |code| %>
-          <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-mono text-sm text-gray-800">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-mono text-sm text-gray-800 break-all">
             <%= code %>
           </div>
         <% end %>

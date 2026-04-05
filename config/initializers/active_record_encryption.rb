@@ -3,9 +3,9 @@
 # Ensure Active Record Encryption keys are present in development/test to avoid
 # boot/runtime errors when encrypted attributes are used (e.g., OTP secrets).
 app_encryption = Rails.application.config.active_record.encryption
-primary_key = app_encryption.primary_key
-deterministic_key = app_encryption.deterministic_key
-key_derivation_salt = app_encryption.key_derivation_salt
+primary_key = app_encryption.primary_key.presence
+deterministic_key = app_encryption.deterministic_key.presence
+key_derivation_salt = app_encryption.key_derivation_salt.presence
 
 if primary_key.blank? || deterministic_key.blank? || key_derivation_salt.blank?
   if Rails.env.development? || Rails.env.test?
